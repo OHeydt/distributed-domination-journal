@@ -1,0 +1,58 @@
+% !TEX root = sirocco-main.tex
+
+\section{Finding dominators greedily}
+
+Before we continue, let us pause for a moment to realize what we
+have already achieved towards a good solution for the dominating set
+problem. To illustrate the achievements, we consider a modified
+greedy algorithm to solve the dominating set problem on classes with
+bounded $\nabla_1$.
+
+Given a graph $G$, in a preprocessing step,
+we compute the set
+of all vertices $v$ whose neighborhood $N(v)$ cannot be covered
+by at most $2\nabla_1(G)$ vertices different from $v$. According
+to \cref{lem:neighborhood-dom1}, almost all vertices do not
+have this property and we can safely add all vertices with the property
+to the output dominating set. We remove these vertices from the
+graph and mark their neighbors as dominated. In the following, we call
+the number of non-dominated neighbors of a vertex $v$ the \emph{residual
+degree} of $v$, and slightly abusing notation, by $N(v)$
+we denote the non-dominated neighbors of $v$.
+
+We now iteratively consider the remaining vertices in the following
+greedy procedure. Let $v$ be a vertex of maximum residual degree.
+Assume first that~$N(v)$ is large TODO: fill numbers.
+We compute all $(\alpha, q,\ell,K)$-pseudo-covers of $N(v)$.
+According to \cref{lem:num-pseudo-covers}, this number is
+bounded $2(4\nabla_1(G)/\alpha)^K$. As every
+$(\alpha, q,\ell,K)$-pseudo-cover has at most $K$ vertices,
+the total number of vertices in this collection is bounded by
+$c=2K(4\nabla_1(G)/\alpha)^K$. We add all these vertices
+to a dominating set, remove them, mark their neighbors as
+dominated and update the residual degrees.
+
+We claim that after at most $3\gamma$ steps this process terminates
+because it does not find vertices with large residual degree anymore.
+The reason is that according to \cref{lem:neighborhood-dom2},
+in all but at most $2\gamma$ many steps we add a vertex from the
+optimal dominating set $D$ to our dominating set. This implies in particular,
+that up to this point we have added at most $3c\gamma$ vertices
+to the dominating set.
+
+However, when we have reached the situation that the residual degree
+of every vertex is at most $x$, in particular every remaining vertex of
+$D$ has residual degree at most $x$. Hence, we know that the resulting
+graph has at most $(x+1)\gamma$ non-dominated vertices. By adding all
+non-dominated vertices (iteratively if we like) we hence compute a $(3+3c+x)$-approximation of a minimum dominating set.
+
+The same idea is the key approach to the modified greedy algorithms
+on graphs with bounded arboricity and graphs that exclude some biclique~\cite{jones2017parameterized,siebertz2019greedy}. Unfortunately,
+the same approach cannot be directly carried out in parallel. It could be
+the case that all pseudo-covers contain the same vertex from the
+optimal dominating set $D$ and a further dummy vertex. When adding
+all pseudo-covers in parallel, we would in this case collect an unbounded
+number of dummy vertices, which would not result in a good
+approximation. The truly beautiful contribution of Czygrinow et al.\ is
+an iterative selection procedure of vertices from the pseudo-covers
+that works in parallel.

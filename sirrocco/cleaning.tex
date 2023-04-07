@@ -1,0 +1,76 @@
+% !TEX root = sirocco-main.tex
+
+\section{Cleaning up}
+
+We now show that after defining and computing $D_2$ as explained in the
+previous section, every neighborhood is almost entirely dominated by $D_2$.
+More precisely, for every vertex $v$ of the graph
+$|\{v'\in N(v) ~:~ v' \not\in N(D_2)\}| <  k^{t-1}(2t-1+(t-1)q)$ holds.
+
+Before explaining why this holds, note that it implies that,
+in particular, the vertices of $D$ have at most
+$ k^{t-1}(2t-1+(t-1)q)$ non-dominated neighbors. Since every vertex is
+either in $D$ or a
+neighbor of some element in $D$, this implies that in the whole
+graph there are at most $ k^{t-1}(2t-1+(t-1)q)\cdot \gamma$ non-dominated vertices left.
+
+\begin{tcolorbox}
+We can therefore define $D_3 \coloneqq \{v\in V(G) ~:~ v\not\in N(D_2) \}$
+and have that $|D_3|\le  k^{t-1}(2t-1+(t-1)q)\cdot \gamma$, and that $D_1\cup D_2\cup D_3$ is a dominating
+set of~$G$. 
+\end{tcolorbox}
+
+We now turn to the proof of the above claim.
+
+\begin{lemma}\label{lem:smalldegree}
+  For every vertex $v$ of the graph, the following holds:
+  \[|\{v'\in N(v) ~:~ v' \not\in N(D_2)\}| < k^{t-1}(2t-1+(t-1)q).\]
+
+\end{lemma}
+\begin{proof}
+  Assume, for the sake of reaching a contradiction, that there is a vertex $v$
+  such that $|\{v'\in N(v) ~:~ v' \not\in N(D_2)\}| \ge  k^{t-1}(2t-1+(t-1)q)$.
+
+  We then define $B_1\coloneqq \{v'\in N(v) ~:~ v' \not\in N(D_2)\}$.
+
+  Exactly as in the proof of \cref{lem:max-dom-sequence}, we have that $B_1$
+  can be dominated by at most $k$ elements of $D'$. Hence by
+  \cref{lem:cover-to-pseudo-cover}, we can derive a
+  pseudo-cover $S=(u_1,\ldots,u_m)$ of
+  $B_1$, where $m\le k$ and every $u_i$ is an element of $D'$. This
+  leads to the existence of some vertex $u$ in $S$ that covers at least a
+  $1/k$ fraction of $B_1\setminus X$. This yields a vertex $v_2$, and a set $B_2$.
+
+  We can then continue and build a maximal $k$-dominating-sequence
+  $(v_1,\ldots v_s)$ of $v$. By construction, this sequence has the property
+  that every $v_i$ dominates some elements of $B_1$. This is true in particular
+  for $v_s$, but also we have that $v_s\in D_2$, hence a contradiction.
+
+%Let us fix some $v_1\in V(G)$ and let $B_1=N(v_1)$.
+%Assume that $|B_1|\geq k^{t-1}(2t-1+(t-1)q)$. In the algorithm
+%we follow
+%all $k$-domination sequences $(v_1,v_2,\ldots)$, where
+%$B_2=N(v_2)\cap B_1$ satisfies $|B_{2}|\geq k^{t-2}(2t-2+(t-2)q)$
+%and where $v_2$ is in an
+%$(\alpha,q,\ell,k)$-pseudo-cover of $N(v_{1})$. Since every
+%$(\alpha,q,\ell,k)$-pseudo-cover consists of at most $k$ vertices
+%and leaves at most $q$ vertices non-dominated, there is at least
+%one such vertex $v_2$. Furthermore, there are at most
+%$k-1$ vertices in the cluster that we do not consider in the
+%domination sequence. In total there are at most $(k-1)k^{t-2}(2t-2+(t-2)q)+q$ vertices that are not considered in further intersections.
+%When following the domination sequence, we can make the same
+%argument at depth $i$ and show that for every intersection
+%at most $(k-1)k^{t-i}(2t-i+(t-i)q)+q$ vertices are not dominated.
+%Observe that this estimation is most pessimistic when we consider
+%only one pseudo-cover of $\Tt(v_i)$, as we can cover only more
+%vertices when we consider all pseudo-covers from $\Tt(v_i)$.
+%This gives us a recursion tree of branching degree $k$ and depth
+%$t$. With a very rough estimation in total we have at most
+%$k^t(k-1)k^{t-2}(2t-2+(t-2)q)+q\leq k^{2t}(2t+tq)$ non-dominated
+%vertices.
+\end{proof}
+
+\begin{corollary}\label{crl:d3}
+The graph contains at most $k^{t-1}(2t-1+(t-1)q)\cdot \gamma$ non-dominated
+vertices. In particular, the set $D_3$ has at most this size.
+\end{corollary}

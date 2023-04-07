@@ -1,0 +1,337 @@
+\documentclass[1p,number,a4paper]{elsarticle}
+\usepackage{stix}
+%\usepackage[pagewise]{lineno}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{enumerate}
+\usepackage{graphics}
+\usepackage{mathtools}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage[czech, english]{babel}
+\usepackage{esvect}
+\usepackage{complexity}
+\usepackage{comment}
+\usepackage[many]{tcolorbox}
+\usepackage{thm-restate}
+\usepackage{mdwtab}
+%\usepackage{pgfornament}
+\usepackage[all]{xy}
+\usepackage[colorlinks=true,linkcolor={blue},citecolor=blue]{hyperref}
+\usepackage[noabbrev,capitalise,nameinlink]{cleveref}
+\usepackage[defaultlines=4]{nowidow}
+
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% % % % % % % % % % % % % % For commenting the text % % % % % % % % % % % % % %
+
+\newcommand{\dr}{d_{\hspace{-1pt}R}}
+\newcommand{\Dr}{\Delta_{\hspace{-1pt}R}}
+\newcommand{\Nr}{N_{\hspace{-1pt}R}}
+
+% Add your name and pick a color !
+%%% comments %%%
+\newcommand{\commentmargin}[1]{\marginpar{\tiny\textit{#1}}}
+\newcommand{\commenttext}[1]{ \begin{center} {\fbox{\begin{minipage}[h]{0.9 \linewidth}   {\textsf{ #1}} \end{minipage} }} \end{center}}
+
+% \newcommand{\alexL}[1]{{\color{green}\commenttext{Alex L.: #1}}}
+% \newcommand{\alexLmargin}[1]{{\commentmargin{\color{green}Alex L.: #1}}}
+
+\newcommand{\alex}[1]{{\color{blue}\commenttext{Alex: #1}}}
+\newcommand{\alexmargin}[1]{\commentmargin{\color{blue}Alex: #1}}
+
+\newcommand{\idea}[1]{{\color{green}\commenttext{Impact of the new idea: #1}}}
+
+\newcommand{\sebi}[1]{{\color{red}\commenttext{Sebastian: #1}}}
+\newcommand{\sebimargin}[1]{\commentmargin{\color{red}Sebastian: #1}}
+
+
+\newcommand{\pom}[1]{{\color{purple}\commenttext{Pom: #1}}}
+\newcommand{\pommargin}[1]{\commentmargin{\color{purple}Pom: #1}}
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% % % % % % % % % % % % % % End Comments % % % % % % % % % % % % %
+
+
+\theoremstyle{remark}
+\newtheorem{claim}{$\rhd$ Claim}
+\newcommand{\cqed}{\ensuremath{\lhd}}
+\makeatletter
+
+\tcolorboxenvironment{theorem}{
+colframe=cyan,interior hidden, breakable,before skip=10pt,after skip=10pt,	outer arc=0pt,
+	arc=0pt,
+	colback=white,
+	rightrule=0pt,
+	toprule=0pt,
+	top=0pt,
+	right=0pt,
+	bottom=0pt,
+	bottomrule=0pt,
+ }
+
+\tcolorboxenvironment{lemma}{
+colframe=cyan,interior hidden, breakable,before skip=10pt,after skip=10pt,	outer arc=0pt,
+	arc=0pt,
+	colback=white,
+	rightrule=0pt,
+	toprule=0pt,
+	top=0pt,
+	right=0pt,
+	bottom=0pt,
+	bottomrule=0pt,
+ }
+
+\tcolorboxenvironment{corollary}{
+	colframe=blue,interior hidden, breakable,before skip=10pt,after skip=10pt,	outer arc=0pt,
+	arc=0pt,
+	colback=white,
+	rightrule=0pt,
+	toprule=0pt,
+	top=0pt,
+	right=0pt,
+	bottom=0pt,
+	bottomrule=0pt,
+}
+\newenvironment{clproof}{\par
+	\pushQED{\cqed}%
+	\normalfont \topsep6\p@\@plus6\p@\relax
+	\trivlist
+	\item\relax
+	{\itshape
+		Proof of the claim\@addpunct{.}}\hspace\labelsep\ignorespaces
+}{%
+	\hfill\popQED\endtrivlist\@endpefalse
+}
+\makeatother
+%\linenumbers
+\newcommand{\DG}{\vv{G}^+}
+\DeclareTColorBox{answer}{O{orange}O{0cm}}{
+	breakable,
+	outer arc=0pt,
+	arc=0pt,
+	colback=white,
+	rightrule=0pt,
+	toprule=0pt,
+	top=0pt,
+	right=0pt,
+	bottom=0pt,
+	bottomrule=0pt,
+	colframe=#1,
+	enlarge left by=#2,
+	width=\linewidth-#2,
+}
+\DeclareTColorBox{solution}{O{orange}O{0cm}}{
+	breakable,
+	outer arc=0pt,
+	arc=0pt,
+	colback=white,
+	rightrule=0pt,
+	toprule=0pt,
+	top=0pt,
+	right=0pt,
+	bottom=0pt,
+	bottomrule=0pt,
+	colframe=#1,
+	enlarge left by=#2,
+	width=\linewidth-#2,
+}
+%\newenvironment{answer}{%
+%	\noindent\begin{list}{}{%
+%			\setlength{\topsep}{0pt}%
+%			\setlength{\leftmargin}{12pt}%
+%			\setlength{\rightmargin}{0pt}%
+%			\setlength{\listparindent}{\parindent}%
+%			\setlength{\itemindent}{\parindent}%
+%			\setlength{\parsep}{\parskip}%
+%		}%
+%		\item[$\rhd$]}{\end{list}}
+
+\renewcommand{\overline}[1]{\bar{#1}}
+\newcommand{\qr}{\mathrm{qr}}
+\newcommand{\disc}{\mathrm{disc}}
+\newcommand{\herdisc}{\mathrm{herdisc}}
+\newcommand{\mondisc}{\mathrm{mondisc}}
+\newcommand{\Oof}{\mathcal{O}}
+\newcommand{\CCC}{\mathscr{C}}
+\newcommand{\Cc}{\mathscr{C}}
+\newcommand{\Dd}{\mathscr{D}}
+\newcommand{\Ee}{\mathscr{E}}
+\newcommand{\Gg}{\mathscr{G}}
+\newcommand{\Hh}{\mathscr{H}}
+\newcommand{\TP}{\mathcal{TP}}
+\newcommand{\Ff}{\mathcal{F}}
+\newcommand{\Ll}{\mathcal{L}}
+\newcommand{\Jj}{\mathcal{J}}
+%\newcommand{\PPP}{\mathcal{P}}
+\newcommand{\Pp}{\mathcal{P}}
+\newcommand{\Qq}{\mathcal{Q}}
+\newcommand{\Rr}{\mathcal{R}}
+\newcommand{\Ss}{\mathscr{S}}
+\newcommand{\Tt}{\mathcal{T}}
+\newcommand{\XXX}{\mathcal{X}}
+\newcommand{\Xx}{\mathcal{X}}
+\newcommand{\minor}{\preccurlyeq}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\dist}{\mathrm{dist}}
+\newcommand{\rad}{\mathrm{rad}}
+\newcommand{\strA}{\mathbf{A}}
+\newcommand{\strB}{\mathbf{B}}
+\newcommand{\strC}{\mathbf{C}}
+\newcommand{\strM}{\mathbf{M}}
+\newcommand{\strN}{\mathbf{N}}
+\newcommand{\Mon}{{\mathcal F}_\sigma}
+\renewcommand{\phi}{\varphi}
+%\newcommand{\tp}{\mathrm{tp}}
+\newcommand{\free}{\mathrm{free}}
+\renewcommand{\FO}{\mathrm{FO}}
+\newcommand{\lca}{\mathrm{lca}}
+\newcommand{\QF}{{\sf QF}}
+\newcommand{\MSO}{\mathrm{MSO}}
+\newcommand{\CMSO}{\mathrm{CMSO}}
+\newcommand{\II}{\mathfrak{I}}
+\newcommand{\shm}{\,\triangledown\,}
+\newcommand{\shtm}{\,\widetilde{\triangledown}\,}
+\newcommand{\bag}{\mathrm{Bag}}
+\newcommand{\adh}{\mathrm{Adh}}
+\newcommand{\Torso}{\mathrm{Torso}}
+\newcommand{\mrg}{\mathrm{Margin}}
+\newcommand{\Sk}{\mathrm{Skeleton}}
+\newcommand{\ie}{i.e.,}
+
+\newcommand{\x}{\overline{x}}
+\newcommand{\y}{\overline{y}}
+\renewcommand{\a}{\overline{a}}
+\renewcommand{\b}{\overline{b}}
+
+\renewcommand{\epsilon}{\varepsilon}
+
+\newcommand{\xfootnote}[1]{\ifcsname ismain\endcsname{}\else\footnote{#1}\fi}
+
+\usepackage[all]{xy}
+\newcommand{\interp}[1]{\mathsf{#1}}
+\newcommand{\Ww}{\mathcal{W}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\tp}{tp}
+\DeclareMathOperator{\td}{td}
+\DeclareMathOperator{\height}{height}
+\DeclareMathOperator{\col}{col}
+\DeclareMathOperator{\wcol}{wcol}
+\DeclareMathOperator{\adm}{adm}
+\DeclareMathOperator{\tw}{tw}
+\newcommand{\tr}[1]{{\rm Tr}(#1)}
+\DeclareMathOperator{\bb}{Bb}
+\DeclareMathOperator{\WReach}{WReach}
+\DeclareMathOperator{\SReach}{SReach}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat = newest}
+
+
+\newcommand{\ad}{\overline{\rm d}}
+\newcommand{\bomega}{\ensuremath{{\rm b}\omega}}
+\newcommand{\ERCagreement}{This paper is part of a project that has received funding from the European Research Council (ERC) under the European Union's Horizon 2020 research and innovation programme (grant agreements No 810115 -- {\sc Dynasnet} and 948057) and from the German
+	Research Foundation (DFG) with grant agreement
+	No 444419611.\\
+			\includegraphics[width=.25\textwidth]{ERC.jpg}\
+			\includegraphics[width=.2\textwidth]{DFGLogo2.png}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{ext_theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{fact}{Fact}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{observation}{Observation}[section]
+\newtheorem{problem}{Problem}
+\newtheorem{question}[problem]{Question}
+\newtheorem{conjecture}[problem]{Conjecture}
+\newtheorem{example}{Example}
+\crefname{ext_theorem}{Theorem}{Theorems}
+\crefname{corollary}{Corollary}{Corollaries}
+\crefname{lemma}{Lemma}{Lemmas}
+\crefname{section}{Section}{Sections}
+\newenvironment{absolutelynopagebreak}
+  {\par\nobreak\vfil\penalty0\vfilneg
+   \vtop\bgroup}
+  {\par\xdef\tpd{\the\prevdepth}\egroup
+   \prevdepth=\tpd}
+
+   \setlength{\footskip}{24pt}
+\flushbottom
+
+\newcommand{\myqed}{\qed}
+
+\newcommand{\nc}[1]{\newcommand{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\nc{\e}{\epsilon}
+\nc{\dd}{\delta}
+\nc{\dom}{\text{dom}}
+\nc{\nn}{\nabla}
+\nc{\bn}{\nabla\!\!\!\nabla_1}
+
+\journal{}
+\begin{document}
+\begin{frontmatter}
+% \vspace{-2cm}
+\title{Distributed domination on sparse graph classes}
+%\tnoteref{This paper subsumes the results of~\cite{kublenz2020distributed} and \cite{}.}}
+\tnotetext[ERC]{\ERCagreement}
+\author{Ozan Heydt}\address{University of Bremen, Bremen, Germany}\ead{heydt@uni-bremen.de}
+\author{Simeon Kublenz}\address{University of Bremen, Bremen, Germany}\ead{kublenz@uni-bremen.de}
+\author{Patrice Ossona de Mendez}\address{Centre d'Analyse et de Math\'ematiques Sociales (CNRS, UMR 8557), Paris, France and \\Computer Science Institute of Charles University, Praha, Czech Republic}\ead{pom@ehess.fr}
+\author{Sebastian Siebertz}\address{University of Bremen, Bremen, Germany}\ead{siebertz@uni-bremen.de}
+\author{Alexandre Vigny}\address{University of Bremen, Bremen, Germany}\ead{vigny@uni-bremen.de}
+\begin{keyword}
+  Dominating set, Distributed LOCAL algorithms, Bounded expansion graph classes, Planar graphs.\\[2.5mm]
+
+This journal paper subsumes the results of the extended abstracts~\cite{kublenz2020distributed} and \cite{heydt2021local}.
+\end{keyword}
+\input{1-abstract}
+\end{frontmatter}
+
+\input{2-intro}
+
+\input{3-prelims}
+
+\input{4-preprocessing}
+
+\input{5-covers-new}
+
+%\input{5-covers}
+
+\input{6-dominators}
+
+\input{7-LP}
+
+\input{8-cleaning}
+
+\input{7b-bounded-genus}
+
+\input{8-LP-K3t}
+
+%\input{9-residual-degrees}
+
+\input{10-girth}
+
+\input{11-discussion}
+
+%\input{12-conclusion}
+
+\pagebreak
+\bibliographystyle{abbrv}
+\bibliography{ref}
+
+%\appendix
+%
+%\input{13-cplex}
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

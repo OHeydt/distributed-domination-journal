@@ -1,0 +1,240 @@
+% !TEX root = sirocco-main.tex
+
+\section{Finding dominators in parallel}
+
+According to \cref{lem:neighborhood-dom1}, the
+neighborhood $N(v)$ of almost every vertex $v$
+can be dominated by a few vertices different from $v$ and we added
+the exceptions to the output dominating set. After this step, we
+were hence allowed to assume that the neighborhood $N(v)$
+of every vertex $v$ is dominated by a few vertices different from $v$.
+In fact, according to \cref{lem:neighborhood-dom1}, the neighborhood $N(v)$ of almost every vertex $v$ can
+be dominated by a few vertices from $D$, however, we cannot
+determine locally which vertices do not have this property. Let us
+fix for those vertices $v$ whose neighborhood cannot be dominated
+by $2\nabla_1(G)$ vertices of $D$ different from $v$ arbitrary
+$2\nabla_1(G)$ vertices different from $v$ that dominate $N(v)$.
+We collect all of these dominating vertices together with the vertices
+from $D$ in a set $D'$. According to \cref{lem:neighborhood-dom1} and \cref{lem:neighborhood-dom2}, $D'$ contains at most
+$(1+4\nabla_1(G))\gamma$ vertices.
+
+By construction of $D'$ we find for every vertex $v$ a cover of
+$N(v)$ consisting of at most $2\nabla_1(G)$ vertices from $D'$.
+We now consider all $W=N(v)$ of size at least ... Then according
+to \cref{lem:num-pseudo-covers}, the number of
+$(\alpha,q,\ell,K)$-pseudo-covers is bounded by
+$2(4\nabla_1(G)/\alpha)^K$. Furthermore, within those
+pseudo-covers there are enough vertices of $D'$ that cover
+all but $q$ vertices of $N(v)$.
+
+\smallskip
+Intuitively, we now proceed as follows. Every vertex $v$, instead of
+choosing itself for the dominating set, considers all vertices from
+the pseudo-covers of~$N(v)$ as a dominator for its neighborhood.
+The pseudo-covers induce a partition of~$N(v)$ by forming
+intersections of the neighborhoods of all the elements from the
+pseudo-covers. For all these intersections, instead of directly
+choosing a vertex~$w$ from a pseudo-cover, we again postpone
+the decision and consider all vertices from the pseudo-covers of
+$N(w)$ as possible dominators. This process is iterated again
+and again, and by forming more and more refined intersections,
+in $s$ rounds of the construction we construct a $K_{s,t}$
+subgraph for some value of $s$. Recall that we observed that
+if \mbox{$\nabla_0(G)< t/2$}, then $G$ excludes $K_{t,t}$ as
+a subgraph. This fact is used to conclude that the process
+must terminate after at most $t$ rounds. \textcolor{red}{TODO:
+remark in the prelims that $\nabla_0\leq \nabla_1$. TODO:
+Motivate bounded expansion more and give examples of bounded
+expansion that do not exclude topological minors.} Furthermore,
+it will turn out that the iterative process will at some point
+consider a vertex from $D'$. This will allow us to bound the
+number of vertices that are considered in the very last step
+of the selection process. Choosing these last vertices as dominators
+will hence be possible as their number is small, and this choice
+will leave us with a graph of bounded degree. As in the greedy
+algorithm we add all remaining vertices to the dominating set
+and obtain a constant factor approximation of a minimum
+dominating set.
+
+\smallskip
+Let us now formalize this approach. We slightly diverge from the
+presentation of Czygrinow et al.\ to simplify the arguments and
+algorithm. For families $\Aa, \Bb$ of sets, define
+$\Aa\bigcap\Bb$ as the intersection closure of all
+sets from $\Aa$ and $\Bb$ and $\Aa\bigcap_{\geq q}\Bb$
+as $(\Aa\bigcap\Bb)\setminus \{X~:~|X|<q\}$. In other words,
+$\Aa\bigcap_{\geq q}\Bb$ contains all possible intersections
+$A_1\cap A_\ell\cap B_1\cap B_k$ for $A_1,\ldots, A_\ell\in \Aa,
+B_1,\ldots, B_k\in \Bb$ of size at least $q$.
+
+Slightly abusing notation, we write $\bigcup \Tt(v)$
+for the set of all vertices that appear in some $S\in \Tt(v)$.
+Let \[\Nn(v)\coloneqq \{(N(v)\cap N(x))\setminus \bigcup\Tt(v)~:~x\in \Tt(v)\}.\]
+Hence, $\Nn(v)$ contains all intersections of $N(v)$ with
+$N(x)$ for $x$ in some pseudo-cover from $\Tt(v)$, where
+from the intersection the elements of $\bigcup\Tt(v)$ have
+been removed. Let
+$\Rr'(v)\coloneqq \Nn(v)\bigcap_{\geq q}\Nn(v)$. Finally,
+let \[\Rr(v) \coloneqq \{X~:~X\text{ is $\subseteq$-minimal in }\Rr'(v)\}.\]
+
+In other
+words, we form all possible intersections $N(x_1)\cap N(x_2)\cap\ldots
+\cap N(x_i)$ for $x_1,\ldots, x_i\in \bigcup \Tt(v)$ and remove
+all vertices that are not in $N(v)$ and remove all vertices that
+are in $\bigcup\Tt(v)$. Then we keep only those sets $X$ with at
+least $q$
+elements for which there is no other intersection $Y\subsetneq X$
+with $|Y|\geq q$.
+
+%
+%Following Czygrinow et al.\ we call
+%$\Tt(v)$ the set of all $(\alpha,q,\ell,K)$-pseudo-covers of $N(v)$.
+%For $S=(x_1,\ldots, x_m)\in \Tt(v)$ define the following partition
+%$\Pp_S=\{W_0,W_1,\ldots, W_m\}$ of $N(v)$. Let
+%\begin{itemize}
+%\item $W_1\coloneqq N(v)\cap N[x_1]$,
+%\item $W_i\coloneqq (N(v)\cap N[x_i])\setminus \bigcup_{j<i} W_j$ for $i>1$ and
+%\item $W_0\coloneqq N(v)\setminus \bigcup_{j\leq m}N[x_j]$.
+%\end{itemize}
+%Since $S$ is an $(\alpha,q,\ell,K)$-pseudo-cover of $N(v)$, we have $|W_0|\leq q$. Let
+%$\Qq(v)$ be the minimal partition that refines the partitions
+%$\Pp_S$ over all $(\alpha,q,\ell,K)$-pseudo-covers $S$ from $\Tt(v)$.
+
+%\textcolor{red}{TODO: good figure}
+
+\textcolor{red}{I don't know if we need this next lemma
+or if we should actually
+cut out the small intersections.}
+\begin{lemma}
+Let $X,Y\in \Rr(v)$. Then $|X\cap Y|<q$.
+\end{lemma}
+\begin{proof}
+If $|X\cap Y|\geq q$, then $X$ and $Y$ are not $\subseteq$-minimal
+in~$\Rr'(v)$.
+\end{proof}
+
+\textcolor{red}{TODO: plug in the number $c$ for $|\bigcup\Tt(v)|$.}
+
+\begin{lemma}
+If $G$ excludes $K_{q,t}$ as a subgraph, then
+$|\Rr(v)|\leq c^t$.
+\end{lemma}
+\begin{proof}
+Each element $X$ in $\Rr(v)$ is defined as the intersection
+$N(x_1)\cap\ldots\cap N(x_i)\cap (N(v)\setminus \bigcup\Tt(v))$
+for some $x_1,\ldots, x_i\in \bigcup\Tt(v)$. Furthermore,
+$|X|\geq q$, so the vertices of $X$ together with $x_1, \ldots, x_i$
+form a $K_{q,i}$ subgraph, which implies that $i\leq t$.
+\end{proof}
+
+
+%
+%Slightly diverging from the presentation of Czygrinow et al.,
+%we let $V_0$ be the union of the classes from $\Qq(v)$ that have
+%size at most $q$ and let $V_1,\ldots, V_s$ denote the remaining classes.
+%Then $\{V_0,V_1,\ldots, V_s\}$ is a partition of $N(v)$.
+%We let $\Rr(v)\coloneqq \{V_1,\ldots, V_s\}$.
+%
+%\textcolor{red}{TODO: good figure}
+
+\textcolor{red}{$q$ should actually be replaced by $\min\{q,c\}$.}
+
+\begin{lemma}
+If $G$ excludes $K_{q,t}$ as a subgraph, then at most $m\coloneqq q+c+c^{t+q}q$ vertices of $N(v)$ are not covered by $\Rr(v)$.
+\end{lemma}
+\begin{proof}
+At most $q$ vertices of $N(v)$ are not covered at all by the
+neighborhoods $N(x)$ for some $x\in \bigcup\Tt(v)$. We remove
+$c=|\bigcup\Tt(v)|$ vertices by hand, which are not covered.
+All other vertices are not covered because they lie in some
+intersection $X=N(x_1)\cap\ldots\cap N(x_i)\cap (N(v)
+\setminus \bigcup\Tt(v))$ of size smaller than $q$. We can choose
+$x_1,\ldots, x_j$ for $j\leq t$ among $c$ vertices
+until the intersection size drops
+below $q$, as otherwise we find a $K_{q,t}$ subgraph as in the
+proof of the previous lemma. When making the remaining
+choices, the intersection gets smaller by at least one by every
+choice we make, leaving us with at most $q$ choices among $c$
+vertices.
+\end{proof}
+
+
+Motivated by our discussion of iteratively considering covering
+vertices as better dominators, we define the following sets.
+For a set $U\subseteq V(G)$ let \[\Tt(U)\coloneqq \bigcup_{v\in U}\Tt(v).\]
+For a set $\Ss$ of pseudo-covers, again with a slight
+abuse of notation, we define \[\Tt(\Ss)\coloneqq \Tt(\bigcup \Ss).\]
+We now define
+\[\Tt^{(1)}(U)\coloneqq \Tt(U)\]
+and  for $i>1$
+\[\Tt^{(i)}(U)\coloneqq \Tt(\Tt^{(i-1)}(U)).\]
+Finally, $\Tt^{(\leq k)}(U)\coloneqq \bigcup_{1\leq i\leq k}\Tt^{(i)}(U)$.
+
+\begin{lemma}
+For all $i$ we have $\Tt^{(i)}(D')\leq c^i|D'|$.
+\end{lemma}
+
+We now consider the following process. Let $v=v_1\in V(G)$ and let
+$\Rr_1\coloneqq \Rr(v_1)$ be as defined above.
+For $i\geq 2$ we now choose some $v_i\in \bigcup\Tt(v_{i-1})$
+different from $v_1,\ldots, v_{i-1}$ and let
+$\Rr_i\coloneqq \Rr_{i-1}\bigcap_{\geq q}\Rr(v_i)$.
+We terminate this construction
+if we have constructed a sequence $v_1,\ldots,v_i$ and for all
+possible choices of $v_{i+1}$ different from $v_1,\ldots, v_i$ we have
+$\Rr_{i+1}=\emptyset$, that is, if all intersections of $\Rr_i$ with
+$\Rr(v_{i+1})$ have size smaller than $q$.
+
+\begin{center}
+\fbox{\begin{minipage}{10cm}
+We now define $\hat{D}$ as the set consisting of all vertices
+$v_i$ such that there exists a maximal sequence $v_1,\ldots, v_i$
+as constructed above.
+\end{minipage}}
+\end{center}
+
+In the next lemmas we will prove that $\hat{D}$ is small
+and that $G-N[\hat D]$ contains only vertices of bounded degree.
+We can then argue as in the proof of the greedy algorithm that
+also choosing all remaining vertices gives us in altogether a
+small dominating set.
+
+\smallskip
+We state the first lemma for graphs excluding a complete
+bipartite graph $K_{s,t}$ to make the argument as clear as possible.
+Recall that we are working on graphs with $\nabla_1$ bounded
+and that we have that $G$ excludes $K_{t,t}$ as a subgraph when
+\mbox{$\nabla_0(G)< t/2$}.
+
+\begin{lemma}
+Let $v_1,\ldots, v_i$ be a maximal sequence constructed as above.
+If $G$ excludes $K_{q,t}$ as a subgraph, then $i<t$.
+\end{lemma}
+\begin{proof}
+\textcolor{red}{TODO: } We are otherwise constructing a $K_{q,t}$ subgraph.
+\end{proof}
+
+
+\begin{lemma}
+If $G$ excludes $K_{q,t}$ as a subgraph, then
+$\hat D\subseteq \Tt^{(\leq t)}(D')$.
+\end{lemma}
+\begin{proof}
+By assumption, for every $v\in V(G)$ we have that $N(v)$ is
+covered by at most $2\nabla_1(G)$ vertices of $D'$. By
+\cref{lem:cover-to-pseudo-cover}, $N(v)$ hence has
+a pseudo-cover $S$ with only vertices from $D'$. Every set
+$\Rr(v_j)=\{V_1,\ldots, V_s\}$ therefore has the property that
+$V_i\subseteq N(d)$ for some $d\in D'$. Hence, in every
+step $j$ we can choose $v_j=d\in D'$, unless it has been chosen
+already before and is therefore not available anymore. In this
+case however, all choices for $v_j$ lie in $\Tt^{(\leq t)}(D')$.
+\end{proof}
+
+
+\begin{lemma}
+$G-N[\hat D]$ is a graph of maximum degree ...
+\end{lemma}
+\begin{proof}
+TODO
+\end{proof}

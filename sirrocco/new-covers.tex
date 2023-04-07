@@ -1,0 +1,304 @@
+% !TEX root = sirocco-main.tex
+
+\section{Finding dominators}
+
+
+Recall that by \cref{lem:neighborhood-dom2} for every $v\in V(G)$ we can
+cover $N(v)$ with at most~$k$ vertices from $D'$.
+To first gain an intuitive understanding of the second phase of the
+algorithm, where we construct a set $D_2\subseteq V(G)$, let us consider the
+following iterative procedure.
+
+Fix some $v\in V(G)$. Let $v_1=v$ and $B_1\coloneqq N(v)$
+and assume $|B_1|\geq k^{t-1}(2t{-}1)$. We consider $s$
+vertices $v_1,v_2\ldots, v_s$ as follows.
+Choose as~$v_2$ an arbitrary vertex different from $v_1$
+that dominates at least $k^{t-2}(2t-1)$ vertices of~$B_1$, that is,
+a vertex that satisfies $|N[v_2]\cap B_1|\geq k^{t-2}(2t-1)$.
+Note that any vertex~$v_2$ that dominate a $1/k$-fraction of $B_1$ can
+be such vertex, i.e.~it is enough for $v_2$ to be $\alpha$-strong for $B_1$.
+
+Let $B_2\coloneqq N(v_2)\cap B_1$. Observe that we consider
+the open neighborhood of $v_2$ here, hence $B_2$ does
+not contain $v_2$. Hence, $|B_2|\geq k^{t-2}(2t-1)-1\geq
+k^{t-2}(2t-2)$.
+We continue to choose vertices $v_3,\ldots$ inductively
+just as above. That is, if the vertices $v_1,\ldots,v_i$ and sets
+$B_1,\ldots, B_i\subseteq V(G)$ have been defined, we choose
+the next vertex $v_{i+1}$ as an arbitrary vertex not in $\{v_1,\ldots,
+v_i\}$ that dominates
+at least $k^{t-i-1}(2t-i)$ vertices of $B_i$, that is, a vertex with
+$|N[v_{i+1}]\cap B_i| \ge k^{t-i-1}(2t-i)$ and let
+$B_{i+1}\coloneqq N(v_{i+1})\cap B_i$, of size at least
+$k^{t-i-1}(2t-i-1)$.
+
+
+
+\begin{lemma}\label{lem:sequence}
+Assume $|N(v)|\geq k^{t-1}\cdot (2t-1)$. Let $v_1,\ldots, v_s$
+be a maximal sequence obtained as above. Then $s<t$ and
+$D'\cap \{v_1,\ldots, v_s\}\neq \emptyset$.
+\end{lemma}
+\begin{proof}
+  Assume that we can compute a sequence $v_1,v_2,\ldots,v_t$. By definition,
+  every $v_i$ is connected to every vertices of $B_t$.
+  For every $1\leq i\leq t$ we have $|B_i|\geq k^{t-i}(2t-i)$
+  and therefore
+  $|B_t|\ge t$. This shows that the two sets
+  $\{v_1,\ldots,v_t\}$ and $B_t$ form a $K_{t,t}$ as a subgraph of $G$.
+  Since this is not possible, the process must stop having performed at
+  most $t-1$ rounds.
+
+  We now turn to the second claim of the lemma. Assume that
+  $v_1,v_2,\ldots,v_s$ is a maximal sequence for some $s < t$. We assume
+  $v_1\not\in \hat{D}$, otherwise, we are done, as $\hat{D}\subseteq D'$.
+  Because $s <t$,
+  we have that $B_s$ is not empty. Because $B_s \subseteq B_1 = N(v_1)$, we have
+  that $B_s$ can be dominated with at most~$k$ elements of~$D$ (by definition of $\hat{D}$), and in particular by at most $k$ elements of $D'$. Therefore,
+  there must be an element~$v$ of~$D'$ that dominates a $1/k$ fraction of $B_s$.
+  If $v$ was not one of the $v_1,\ldots,v_s$, we could have continued the
+  sequence by defining $v_{s+1} \coloneqq v$.
+  Since the sequence is maximal, $v$ must be one of the $v_1,\ldots,v_s$,
+  which leads to $D'\cap \{v_1,\ldots, v_s\}\neq\emptyset$.
+
+%
+%  By assumption, $B_1$ is dominated by at most $k$
+%  vertices of $D'$. Hence, unless $v_1$ is in $B'$, we can find
+%  a vertex $v_2\in V(G)$ that dominates at least
+%  a $1/k$ fraction of $B_1$, that is, at least $k^{t-1}\cdot 2t$ vertices
+%  of $B_1$. Let $B_2\coloneqq N(v_2)\cap B_1$,
+%  hence $|B_2|\geq k^{t-1}\cdot 2t-1\geq k^{t-1}\cdot (2t-1)$.
+%  Observe that we subtracted $1$, as $v_2$ is not in $B_2$.
+%
+%  Assume that neither $v_1$ nor $v_2$ are in $D'$. We repeat the same argument
+%  as above for $B_2$. Because $B_2$ is dominated by at most $k$ vertices
+%  of $D'$, there exists a vertex $v_3\in V(G)$ that
+%  dominates at least a $1/k$ fraction of $B_2$, that is, at least
+%  $k^{t-2}\cdot (2t-1)$ vertices of~$B_2$. Let $B_3\coloneqq
+%  (N(v_3)\cap B_2)$,
+%  hence $|B_3|\geq k^{t-2}\cdot (2t-1)-1\geq k^{t-2}\cdot (2t-2)$.
+%  We repeat the argument for $v_4,\ldots,v_{\ell}$ and $B_4,\ldots, B_{\ell}$, each $B_i$
+%  for $1\leq i\leq \ell<t$ of size at
+%  least $k^{t-i}\cdot (2t-i)$, ending with a set~$B_{\ell}$ of
+%  size at least $k\cdot (t+1)$.
+%
+%  Hence, assuming that $v_1,\ldots, v_\ell\not\in D'$, we have $\ell=t-1$
+%  and there must
+%  exist a vertex~$v$ with
+%  $|N(v)\cap B_\ell|\geq t+1$. Fix any subset $B=\{w_1,\ldots, w_t\}$
+%  of $N(v)\cap B_\ell$ of size exactly $t$. Then the vertices
+%  $v,v_1,\ldots, v_{t-1}$ and the vertices $w_1,\ldots, w_t$
+%  form a subgraph $K_{t,t}$, contradicting that
+%  such a subgraph does not exist in $G$. Hence, one of
+%  $v_1,\ldots, v_\ell$ must be contained in $D'$.
+\end{proof}
+
+We aim to carry out this iterative process in parallel
+for all vertices \mbox{$v\in V(G)$} with a sufficiently large neighborhood.
+Of course, in the process
+we cannot tell when we have encountered the element of~$D'$.
+Hence, from the constructed vertices $v_1,\ldots, v_s$
+we will simply choose the element~$v_s$ into the dominating set.
+Unfortunately, this approach alone can give us arbitrarily large
+dominating sets, as we can have many choices for the vertices
+$v_i$, while already $v_1$ was possibly optimal.
+We address this issue by restricting
+the possible choices for the vertices~$v_i$.
+
+\begin{definition}\label{def:dom-sequence}
+  For any vertex $v\in V(G)$, a {\em $k$-dominating-sequence} of $v$ is a sequence
+  $(v_1,\ldots,v_s)$ for which we can define sets $B_1,\ldots,B_s$ such that:
+  \begin{itemize}
+    \item $v_1=v$, $B_1 \subseteq N(v_1)$,
+    \item for every $i\le s$ we have $B_{i} \subseteq N(v_{i})\cap B_{i-1}$,
+    \item $|B_{i}|\geq k^{t-i}(2t-i+(t-i)q)$
+    \item and for every $i\le s$ we have $v_i\in \Pp(v_{i-1})$.
+  \end{itemize}
+  A $k$-dominating-sequence $(v_1,\ldots,v_s)$ is {\em maximal} if there is no
+  vertex $u$ such that $(v_1,\ldots,v_s,u)$ is a $k$-dominating-sequence.
+\end{definition}
+
+%Remember that $t$ is an integer such that $G$ excludes a $K_{t,t}$ subgraph,
+%and that $2\nabla_0(G)+1$ is such an integer. Also remember that we
+%defined $K=k$,
+%$\alpha = 1/k$, $\ell = 4k^3$ and $q=4k^4$, where $k=2\nabla_1(G)$.
+Note that this definition requires $|N(v)|\ge k^{t-1}(2t-1+(t-1)q)$. For a
+vertex~$v$ with a not sufficiently large neighborhood, there are no
+$k$-dominating-sequences of $v$.
+We show two main properties of these dominating-sequences.
+First, \cref{lem:max-dom-sequence} shows that a maximal dominating sequence must
+encounter $D'$ at some point. Second, with \cref{lem:shape-sequences,lem:small-D-hat,lem:inclusion-D-hat},
+we show that collecting all ``end points'' of all maximal dominating sequences
+results in a set $D_2$ of size linear in the size of $D'$. While $D'$ cannot be computed, we
+can compute $D_2$.
+%
+% For $v\in V(G)$ consider the following modified construction of
+% $v_1,\ldots, v_s$. Every $v_i$ is chosen such that it has
+% an intersection $|N(v_i)\cap B_{i-1}|\geq k^{t-i}(2t-i+(t-i)q)$.
+% Furthermore, we
+% restrict the choice of $v_i$ to the set of vertices that appear
+% in some $(\alpha,q,\ell,K)$-pseudo-cover in $\Tt(v_{i-1})$.
+% We observe that this process still works as desired.
+
+\begin{lemma}\label{lem:max-dom-sequence}
+Let $v$ be a vertex %with $|N(v)|\geq k^{t-1}\cdot (2t-1+(t-1)q)$,
+and let
+$(v_1,\ldots, v_s)$ be a maximal $k$-dominating-sequence of $v$. Then $s<t$ and
+$D'\cap \{v_1,\ldots, v_s\}\neq \emptyset$.
+\end{lemma}
+\begin{proof}
+  The statement $s<t$ is proved exactly as for \cref{lem:sequence}.\\
+  To prove the second statement we assume, in order to reach
+  a contradiction, that $D'\cap\{ v_1,\ldots, v_s\}=\emptyset$.
+  We have that $B_s \subseteq N(v_s)$, and remember that $N(v_s)$ can be
+  dominated by at most $k$ elements of $D'$. By \cref{lem:cover-to-pseudo-cover},
+  we can derive a pseudo-cover $S=(u_1,\ldots,u_m)$ of
+  $N(v_s)$, where $m\le k$ and every $u_i$ is an element of $D'$.
+  Let $X$ denote the set (of size at most $q$) of vertices not covered by $S$.
+  As $S$ contains at most $k$ vertices there must exist a
+  vertex $u$ in~$S$ that covers at least a $1/k$ fraction of
+  $B_s\setminus X$.
+  By construction, we have that $|B_s| \ge k^{t-s}\cdot(2t-s+(t-s)q)\ge k(t+q)$
+  because $s<t$. Therefore $|B_s\setminus X| \ge k$ and we have
+  $$|N[u]\cap B_{s}|\geq \frac{|B_s|-q}{k}
+  \geq\frac{k^{t-s}(2t-s+(t-s)q) -q}{k},$$
+  hence
+  $$|N[u]\cap B_{s}| \geq\frac{k^{t-s}(2t-s+(t-s-1)q)}{k} \geq k^{t-s-1}(2t-s+(t-s-1)q),$$
+  and therefore
+  $$ |N(u)\cap B_{s}| \geq |N[u]\cap B_{s}|-1 \geq k^{t-s-1}(2t-s-1+(t-s-1)q).$$
+  So we can continue the sequence $(v_1,\ldots,v_s)$ by defining
+  $v_{s+1}\coloneqq u$. In conclusion if $(v_1,\ldots,v_s)$ is a maximal
+  sequence, it contains an element of $D'$.
+%  \alex{end of the proof}
+%The statement $s<t$ is proved exactly as above. To show that
+%$D'\cap \{v_1,\ldots, v_s\}\neq
+%\emptyset$ holds, we show that in each step $i>1$ we have the
+%possibility of choosing some vertex that appears in some
+%$(\alpha,q,\ell,k)$-pseudo-cover $S\in \Tt(v_{i-1})$.
+%As $B_i\subseteq N(v_{i-1})$ and $|B_i|\geq k^{t-i}(2t-i+(t-i)q)$,
+%all but at most $q$ vertices of $B_i$ must be covered by $S$.
+%Let $X$ denote the set of vertices not covered by $S$.
+%As $S$ contains at most $k$ vertices there must exist a
+%vertex in $S$ that covers at least a $1/k$ fraction of
+%$B_i\setminus X$. Now we have
+%$(k^{t-i}(2t-i+(t-i)q)-q)/k-1\geq k^{t-i-1}(2t-i-1+(t-i-1)q)$,
+%so the recursion can continue as desired.
+\end{proof}
+
+
+The goal of this modified procedure is first to ensure that every maximal
+sequence contains an element of $D'$ and second, to make sure that there are not
+to many possible $v_s$ (which are the elements that we pick for the dominating set).
+%Intuitively, picking $v_{i+1}$ as an element in some pseudo-cover of $N(v_i)$
+%ensure that there are only few possible final picks $v_s$ (linear in $|D'|$).
+%
+This is illustrated in the following example and formalized right after that.
+
+\begin{example}\label{ex:sequence}
+  Consider the case of planar graphs. Since these graph exclude $K_{3,3}$,
+  i.e.~$t=3$, we have that every maximal sequence is of length 1 or 2.
+  For every $v$ of sufficiently large neighborhood we consider every
+  maximal $k$-dominating-sequence $(v_1,v_s)$ of $v$.
+  We then add $v_s$ to the set $D_2$. We want to show that $|D_2|$ is
+  linearly bounded by $|D'|$ and hence by $\gamma(G)$.
+
+  If $s=1$, then we have $v_s\in D'$ and we are good.
+
+  If $s=2$, we have two possibilities. If $v_2$ is in $D'$, we are good.
+  If however, $v_2$ is not in $D'$, then $v_1$ is in
+  $D'$. Additionally, $v_2$ is in some pseudo-cover $S$ of $v_1$,
+  i.e.~$v_2\in \Pp(v_1)$.
+
+  By \cref{cor:nb-dominators}, we have $|\Pp(v_1)|\le (2k)^{2k+1}$ (and
+  in fact this number is much smaller in the case of planar graphs).
+  Therefore we have  $|D_2| \le ((2k)^{2k+1}+1)|D'|$.
+\end{example}
+
+We generalize the ideas of \cref{ex:sequence}, by explaining what
+a ``few possible choices''  in the discussion before \cref{def:dom-sequence}
+means.
+
+\begin{lemma}\label{lem:shape-sequences}
+  For any maximal $k$-dominating-sequence $(v_1,\ldots,v_s)$,
+  and for any $i\le s-1$, we have that
+  \begin{itemize}
+    \item $v_{i+1}\in \Pp(v_i)$,
+    \item $|N(v_i)|\ge \ell$, and
+    \item $|\Pp(v_i)|\le (2k)^{2k+1}$.
+  \end{itemize}
+\end{lemma}
+\begin{proof}
+  By construction $v_{i+1}\in \Pp(v_i)$, furthermore, $v_i$ dominates at least
+  $B_i$, and
+  $|B_{i}|\geq k^{t-i}(2t-i+(t-i)q) \ge q >\ell$.
+  We conclude with~\cref{cor:nb-dominators}.
+\end{proof}
+
+We now for every $v\in V(G)$ compute all maximal $k$-dominating-sequences
+starting with $v$.
+Obviously, as every $v_i$ in any $k$-dominating-sequences of $v$ dominates some
+neighbors of $G$, we can locally compute these steps after having
+learned the $2$-neighborhood $N_2[v]$ of every vertex in two rounds
+in the LOCAL model of computation.
+
+For a set $W\subseteq V(G)$ we write $\Pp(W) = \bigcup_{v\in W}\Pp(v)$.
+Remember that the definition of $\Pp(v)$ requires that $|N(v)|>\ell$. We simply
+extend the notation with $\Pp(v)=\emptyset$ if $|N(v)|\le \ell$.
+We now define
+\[\Pp^{(1)}(W)\coloneqq \Pp(W)\]
+additionally, for $1<i <t$
+\[\Pp^{(i)}(W)\coloneqq \Pp(\Pp^{(i-1)}(W))\]
+and finally, for every $1\le i \le t$
+\[\Pp^{(\leq i)}(W)\coloneqq \bigcup_{1\leq j\leq i}\Pp^{(j)}(W).\]
+
+
+  % for the set of all vertices that appear in some $S\in \Tt(v)$.
+  % For a set $U\subseteq V(G)$ let \[\Tt(U)\coloneqq \bigcup_{v\in U}\Tt(v).\]
+  % For a set $\Ss$ of pseudo-covers, again with a slight
+  % abuse of notation, we define \[\Tt(\Ss)\coloneqq \Tt(\bigcup \Ss).\]
+  % We now define
+  % \[\Tt^{(1)}(U)\coloneqq \Tt(U)\]
+  % and  for $i>1$
+  % \[\Tt^{(i)}(U)\coloneqq \Tt(\Tt^{(i-1)}(U)).\]
+  % Finally, $\Tt^{(\leq k)}(U)\coloneqq \bigcup_{1\leq i\leq k}\Tt^{(i)}(U)$.
+
+
+
+Using \cref{lem:shape-sequences}, for every
+$k$-dominating-sequence $(v_1,\ldots,v_s)$ we have that
+$v_s \in \Pp^{(\le k)}(v_1)$.
+More generally, for every $i\le s$, we have that $v_s\in \Pp^{(\le t)}(v_i)$.
+
+
+\begin{tcolorbox}
+We define $D_2$ as the set of all $u\in V(G)$ such that there is some vertex
+$v\in V(G)$, and some maximal $k$-dominating-sequence $(v_1,\ldots,v_s)$ of $v$
+with $u=v_s$.
+\end{tcolorbox}
+
+
+This leads to the following lemma.
+\begin{lemma}\label{lem:inclusion-D-hat}
+  $D_2 \subseteq \Pp^{(\le t)}(D')$.
+\end{lemma}
+\begin{proof}
+  This uses the observation made above the statement of this lemma, together
+  with \cref{lem:max-dom-sequence}.
+\end{proof}
+Note that while we don't know how to compute $D'$, this section explained how
+to compute $D_2$ in 2 rounds with the LOCAL model of computation.
+
+\begin{lemma}\label{lem:small-D-hat}
+  $|D_2| \le (2k)^{t(2k+1)} \cdot|D'|$
+\end{lemma}
+\begin{proof}
+  \cref{cor:nb-dominators} gives us that $|\Pp(v)|\le 2k(2k^2)^k$ for every
+  $v\in V(G)$ with $|N(v)|> \ell$.
+  %This with \cref{lem:shape-sequences} implies that
+  As $\Pp(W) \le \sum\limits_{v\in W} |\Pp(v)|$,
+  we have $P(W)\le |W|\cdot (2k)^{2k+1}$.
+  A naive induction yields that for every $i\le t$,
+  \[ |\Pp^{(\le i)}(W)|\leq c^i|W|, \] where $c=(2k)^{2k+1}$.
+  Hence with this and \cref{lem:inclusion-D-hat} we have
+  \[|D_2| \le (2k)^{t(2k+1)} \cdot|D'|\]
+\end{proof}

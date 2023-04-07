@@ -1,0 +1,269 @@
+% !TEX root = main.tex
+
+\subsection{Domination sequences}
+
+We now turn to the use of pseudo-covers.
+%Since the biclique $K_{s,t}$ has
+%$s\cdot t$ edges and $s+t$
+%vertices we conclude that there are constants
+%$s,t\leq 2\nabla_0+1\leq 2\nabla_1+1$ such that $K_{s,t}\not\subseteq G$.
+%\begin{tcolorbox}
+%Let $s\le t$ be such that $K_{s,t}\not\subseteq G$, which implies that $s\leq t\leq 2\nabla_0+1$.
+%\pom{No, it does not imply!
+%	We should say: for example, we can let $s$ and $t$  be any positive integers with $\frac{1}{\nabla_0(G)}>\frac1s+\frac1t$ (such as $s=t=2\nabla_0+1$), or $s=t=2$ if  $G$ has girth at least $5$, or $s=t=3$ if $G$ is planar, etc.\\
+%Note that for general graphs, the best is probably to let $s=\lfloor\nabla_0(G)\rfloor+1$.
+%}
+%\end{tcolorbox}
+%
+%\smallskip
+We aim to carry out an iterative process in parallel
+for all vertices \mbox{$v\in V(G)$} with a sufficiently large
+residual neighborhood $\Nr(v)$.
+%Remember that we defined $R := V(G) \setminus N[D_1]$.
+
+\begin{definition}\label{def:dom-sequence}
+  For any vertex $v\in V(G)$, a {\em $\kappa$-dominating-sequence} of $v$ is a
+  sequence $(v_1,\ldots,v_m)$ (without repetition) for which we can define
+  sets $B_1,\ldots,B_m$ such that:
+  \begin{itemize}
+    \item $v_1=v$, $B_1 \subseteq \Nr(v_1)$,
+    \item for every $i\le m$ we have $B_{i} \subseteq (\Nr(v_{i})\cap B_{i-1})$,
+    \item $|B_{i}|\geq \kappa^{s -i}(t+s -i+(s -i)\nu)$
+    \item and for every $i\le m$ we have $v_i\in \Pp(v_{i-1})$.
+  \end{itemize}
+  A $\kappa$-dominating-sequence $(v_1,\ldots,v_m)$ is {\em maximal} if there is no
+  vertex $u$ such that $(v_1,\ldots,v_m,u)$ is a $\kappa$-dominating-sequence.
+\end{definition}
+
+% Remember $s,t$ from the excluded biclique $K_{s,t}$.
+Note that this definition requires $|\Nr(v)|\ge \kappa^{s -1}(t+s -1+(s -1)\nu)$.
+For a vertex~$v$ with a too small residual neighborhood, there are no
+$\kappa$-dominating-sequences.
+We show two main properties of these dominating-sequences.
+First, \cref{lem:max-dom-sequence} shows that a maximal dominating sequence must
+encounter $D\cup\hat{D}$ at some point. Second, with \cref{lem:shape-sequences,lem:small-D-hat,lem:inclusion-D-hat},
+we show that collecting all ``end points'' $v_m$ of all maximal dominating
+sequences results in a set $D_2$ of size linear in the size of $D$. While $D$
+cannot be computed, we can compute $D_2$.
+
+
+
+\begin{lemma}\label{lem:max-dom-sequence}
+  Let $v$ be a vertex and let
+  $(v_1,\ldots, v_m)$ be a maximal $\kappa$-dominating-sequence of $v$. Then $m<s$ and
+  $(D\cup\hat{D})\cap \{v_1,\ldots, v_m\}\neq \emptyset$.
+\end{lemma}
+\begin{proof}
+  First, assume that $v_1,v_2,\ldots,v_m$ is a maximal
+  $\kappa$-dominating-sequence with $m\ge s$.
+  By definition, every~$v_i$ with $i\le s$ is connected to every vertex of $B_s$.
+  For every $1\leq i\leq s$ we have $|B_i|\geq t$
+  and in particular
+  $|B_s|\ge t$. This shows that the two sets
+  $\{v_1,\ldots,v_s\}$ and $B_s$ form a $K_{s,t}$ as a subgraph in $N^2[v]$.
+  Since $K_{s,t}$ is excluded as a subgraph in~$G$, the process must stop
+  having performed at most $s-1$ rounds.
+
+  We now have $m<s$ and to prove the second statement we assume, in order to reach
+  a contradiction, that
+  $(D\cup\hat{D})\cap\{ v_1,\ldots, v_m\}=\emptyset$.
+  We have that $B_m \subseteq N(v_m)$, and remember that as~$v_m$ is not
+  in~$\hat{D}$, we have that $\Nr(v_m)$ can be
+  dominated by at most $\kappa$ elements of $D$.
+
+
+  By \cref{lem:cover-to-pseudo-cover},
+  we can derive a pseudo-cover $S=(u_1,\ldots,u_j)$ of
+  $\Nr(v_m)$, where $j\le \kappa$ and every $u_i$ is an element of~$D$.
+  Let $X$ denote the set (of size at most $\nu$) of vertices of $B_m$ not covered by $S$.
+  As $S$ contains at most $\kappa$ vertices there must exist a
+  vertex $u$ in~$S$ that covers at least a $1/\kappa$ fraction of
+  $B_m\setminus X$.
+  By construction, we have that $|B_m| \ge \kappa^{s-m}\cdot(t+s-m+(s-m)\nu)\ge \kappa(t+\nu)$
+  because $m<s$. Therefore $|B_m\setminus X| \ge \kappa$ and we have
+  $$|\Nr[u]\cap B_{m}|\geq \frac{|B_m|-\nu}{\kappa}
+  \geq\frac{\kappa^{s-m}(t+s-m+(s-m)\nu) -\nu}{\kappa},$$
+  hence
+  $$|\Nr[u]\cap B_{m}| \geq\frac{\kappa^{s-m}(t+s-m+(t-m-1)\nu)}{\kappa} \geq
+  \kappa^{s-m-1}(t+s-m+(t-m-1)\nu),$$
+  and therefore
+  $$ |\Nr(u)\cap B_{m}| \geq |\Nr[u]\cap B_{m}|-1 \geq \kappa^{s-m-1}(t+s-m-1+(t-m-1)\nu).$$
+  So we can continue the sequence $(v_1,\ldots,v_m)$ by defining
+  $v_{m+1}\coloneqq u$; there is no repetition since by hypothesis
+  $D\cap\{ v_1,\ldots, v_m\}=\emptyset$, and by construction
+  $u\in D$.
+
+  In conclusion if $(v_1,\ldots,v_m)$ is a maximal
+  sequence, it contains an element of $D$ or $\hat{D}$.
+\end{proof}
+
+Our next goal is to show that there are not many elements $v_m$
+(which are the elements that we pick into the set $D_2$).
+
+
+%\alex{Should we keep the example or refer to Section 6.2?}
+%This is illustrated in the following example and formalized right after that.
+%
+%\begin{example}\label{ex:sequence}
+%  Consider the case of planar graphs. Since these graph exclude $K_{3,3}$,
+%  i.e.~$t=3$, we have that every maximal sequence is of length 1 or 2.
+%  For every $v$ of sufficiently large neighborhood we consider every
+%  maximal $k$-dominating-sequence $(v_1,v_s)$ of $v$.
+%  We then add $v_s$ to the set $D_2$. We want to show that $|D_2|$ is
+%  linearly bounded by $|D'|$ and hence by $\gamma(G)$.
+%
+%  If $s=1$, then we have $v_s\in D'$ and we are good.
+%
+%  If $s=2$, we have two possibilities. If $v_2$ is in $D'$, we are good.
+%  If however, $v_2$ is not in $D'$, then $v_1$ is in
+%  $D'$. Additionally, $v_2$ is in some pseudo-cover $S$ of $v_1$,
+%  i.e.~$v_2\in \Pp(v_1)$.
+%
+%  By \cref{cor:nb-dominators}, we have $|\Pp(v_1)|\le (2k)^{2k+1}$ (and
+%  in fact this number is much smaller in the case of planar graphs).
+%  Therefore we have  $|D_2| \le ((2k)^{2k+1}+1)|D'|$.
+%\end{example}
+%
+%We generalize the ideas of \cref{ex:sequence}, by explaining what
+%a ``few possible choices''  in the discussion before \cref{def:dom-sequence}
+%means.
+
+\begin{lemma}\label{lem:shape-sequences}
+  For any maximal $\kappa$-dominating-sequence $(v_1,\ldots,v_m)$,
+  and for any $i\le m-1$, we have that
+  \begin{itemize}
+    \item $v_{i+1}\in \Pp(v_i)$, and
+    \item $|\Nr(v_i)|\ge \mu$.
+  \end{itemize}
+\end{lemma}
+\begin{proof}
+  By construction we have $v_{i+1}\in \Pp(v_i)$, furthermore
+  $|B_{i}|\geq \kappa^{t -i}(2t -i+(t -i)\nu) \ge \nu >\mu$,
+  and~$B_i\subseteq \Nr(v_i)$.
+  %We conclude with~\cref{cor:nb-dominators}.
+\end{proof}
+
+Now, for every $v\in V(G)$ we compute all maximal $\kappa$-dominating-sequences
+starting with $v$.
+Obviously, as every $v_i$ in any $\kappa$-dominating-sequences of $v$ dominates some
+neighbors of $G$, we can locally compute these steps after having
+learned the $2$-neighborhood $N^2[v]$ of every vertex in two rounds
+in the LOCAL model of computation.
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+  We define $D_2$ as the set of all $u\in V(G)$ such that there is some vertex
+  $v\in V(G)$, and some maximal $\kappa$-dominating-sequence $(v_1,\ldots,v_m)$ of
+  $v$ with $u=v_m$.
+\end{tcolorbox}
+
+We now take a look at the size of $D_2$.
+For a set $W\subseteq V(G)$ we write $\Pp(W) = \bigcup_{v\in W}\Pp(v)$.
+Remember that the definition of $\Pp(v)$ requires that $|\Nr(v)|>\mu$. We simply
+extend the notation with $\Pp(v)=\emptyset$ if $|\Nr(v)|\le \mu$.
+We then define:
+\[\Pp^{(1)}(W)\coloneqq \Pp(W)\]
+for $1<i <s$
+\[\Pp^{(i)}(W)\coloneqq \Pp(\Pp^{(i-1)}(W))\]
+and, for $1\le i \le s$
+\[\Pp^{(\leq i)}(W)\coloneqq \bigcup_{1\leq j\leq i}\Pp^{(j)}(W).\]
+
+
+  % for the set of all vertices that appear in some $S\in \Tt $.
+  % For a set $U\subseteq V(G)$ let \[\Tt(U)\coloneqq \bigcup_{v\in U}\Tt .\]
+  % For a set $\Ss$ of pseudo-covers, again with a slight
+  % abuse of notation, we define \[\Tt(\Ss)\coloneqq \Tt(\bigcup \Ss).\]
+  % We now define
+  % \[\Tt^{(1)}(U)\coloneqq \Tt(U)\]
+  % and  for $i>1$
+  % \[\Tt^{(i)}(U)\coloneqq \Tt(\Tt^{(i-1)}(U)).\]
+  % Finally, $\Tt^{(\leq k)}(U)\coloneqq \bigcup_{1\leq i\leq k}\Tt^{(i)}(U)$.
+
+We are now ready to prove that $D_2$ is small.
+
+\begin{lemma}\label{lem:inclusion-D-hat}
+  $D_2 \subseteq \Pp^{(\le s)}(D\cup\hat{D})$.
+\end{lemma}
+\begin{proof}
+  Using \cref{lem:shape-sequences} repetitively, for every
+  $\kappa$-dominating-sequence $(v_1,\ldots,v_m)$ we have that\linebreak
+  $v_m \in \Pp^{(\le s)}(v_1)$, and, more generally, for every $i\le m$, we have that
+  $v_m\in \Pp^{(\le s)}(v_i)$. Now the statement follows from \cref{lem:max-dom-sequence}.
+\end{proof}
+
+\begin{lemma}\label{lem:small-D-hat}
+  $|D_2| \le (\kappa^{2s\kappa}(\rho(G)+1)\gamma$.
+\end{lemma}
+\begin{proof}
+  \cref{cor:nb-dominators} gives us that $|\Pp(v)|\le \kappa^{2\kappa}$ for every
+  $v\in V(G)$ with $|N(v)|> \mu$.
+  %This with \cref{lem:shape-sequences} implies that
+  As $\Pp(W) \le \sum\limits_{v\in W} |\Pp(v)|$,
+  we have $P(W)\le |W|\cdot \kappa^{2\kappa}$.
+  A simple induction yields that for $i\le t$,
+  \[ |\Pp^{(\le i)}(W)|\leq c^i|W|, \] where $c=\kappa^{2\kappa}$.
+  With \cref{lem:inclusion-D-hat} we conclude
+  \[|D_2| \le \kappa^{2s\kappa} \cdot|D\cup\hat{D}|.\]
+  We conclude with \cref{lenzen-improved}, stating that
+  $|\hat{D}\setminus D|\leq \rho(G)\cdot \gamma$.
+\end{proof}
+
+We update the set $R$ of vertices that still need to be dominated
+as $V(G)\setminus N[D_1\cup D_2]$
+and the residual neighborhoods $\Nr(v)= N(v)\cap R$
+and residual degrees $\dr(v) =|\Nr(v)|$. We
+prove next that $\dr(v)$ is bounded by a constant.
+
+\begin{lemma}\label{lem:smalldegree}
+  For every vertex $v\in V(G)$ we have $\dr(v)< \kappa^{s-1}(t+s-1+(s-1)\nu)$.
+\end{lemma}
+\begin{proof}
+  Assume, for the sake of reaching a contradiction, that there is a vertex $v$
+  satisfying \linebreak$\dr(v)   \ge  \kappa^{s -1}(t+s -1+(s -1)\nu)$ and let $B_1\coloneqq \Nr(v)$. Note that $v\not\in D_1\cup D_2$, as the residual degree of vertices from this
+  set is $0$.
+  Exactly as in the proof of \cref{lem:max-dom-sequence}, since $v\not\in D_1$,
+  we have that $B_1$ can be dominated by at most $\kappa$ elements. Hence by
+  \cref{lem:cover-to-pseudo-cover}, we can derive a
+  pseudo-cover $S=(u_1,\ldots,u_j)$ of
+  $B_1$, where $j\le \kappa$. This leads to the existence of some vertex $u$ in $S$
+  that covers at least a $1/\kappa$ fraction of $B_1\setminus X$ for some $X$ of size
+  at most $\nu$. This yields a
+  vertex $v_2$, and a set~$B_2$.
+
+  We can then continue and build a maximal $k$-dominating-sequence
+  $(v_1,\ldots v_m)$ of $v$. By construction, this sequence has the property
+  that every $v_i$ dominates some elements of $B_1$. This is true in particular
+  for $v_m$, but also we have that $v_m\in D_2$, hence a contradiction.
+\end{proof}
+
+
+\begin{tcolorbox}
+  Let $\Dr\coloneqq~\kappa^{s-1}(t+s-1+(s-1)\kappa^3)$.
+\end{tcolorbox}
+
+As it remains to dominate the set $R$, let us fix a minimum dominating
+set $D_R$ of size $\gamma_R$ for $R$.
+
+\smallskip
+\begin{tcolorbox}
+\begin{itemize}
+\item Let $D_R\subseteq V(G)$ be a minimum dominating
+  set of $R$ and let $\gamma_R\coloneqq |D_R|$.
+\item Let $\eta\in [0,1]$ be such that $|(D_1 \cup D_2)\cap D| =\eta\gamma$.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{lemma}\label{lem:size-DR}
+$\gamma_R\leq (1-\eta)\gamma$.
+\end{lemma}
+\begin{proof}
+$D\setminus(D_1\cup D_2)$ is a dominating set for $R$, hence
+$|D_R|\leq |D\setminus(D_1\cup D_2)|$.
+\end{proof}
+
+
+
+As every vertex of $D_R$ can dominate at most $\Dr+1$ vertices (its $\Dr$ residual neighbors and itself), we have the following corollary.
+
+\begin{corollary}\label{cor:size-R}
+  $|R|\leq (\Dr+1)\gamma_R$.
+\end{corollary}

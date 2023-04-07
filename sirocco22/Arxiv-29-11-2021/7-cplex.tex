@@ -1,0 +1,315 @@
+% !TEX root = sirocco-main.tex
+
+\section{The linear program}\label{sec:linear-prog}
+
+In this final section we present our formulation of the constraints as a
+linear program as well as the resulting bounds on how many vertices of
+the specific residual degrees can be found in the worst case.
+We formulate the constraints of \cref{lem:total-h,lem:h1,lem:delta,lem:h2} in a
+straight forward way and remove the
+$(1-\e)\gamma$ factor, which is then added to the result.
+%
+This reasoning is correct thanks to the fact that all constraints are linear
+equations; we formally prove it below.
+
+\smallskip
+Define $r_i := \frac{|R_i|}{(1-\e)\gamma}$ and  $d_i:=\frac{|\Delta_i|}{(1-\e)\gamma}$.
+Then the constraints of \cref{lem:total-h,lem:h1,lem:delta,lem:h2} imply respectively:
+\begin{itemize}
+  \item For every $0\le i\le 30$:\quad $r_i \ge \sum\limits_{j\le i} d_j$.\\ \smallskip
+  \item For every $0\le i\le 30$:\quad $r_i \le i+1$.\\ \smallskip
+  \item For every $7\le i\le 30$:\quad $d_i \le \frac{3 r_i}{i-6}$.\\ \smallskip
+  \item For every $0\le i\le 29$:\quad $r_i \le r_{i+1} - \frac{(i-5)d_{i+1}}{3}$.
+\end{itemize}
+
+We then run the linear program with these variables; finally we provide the bound for $D_3$ using:
+\[|D_3| ~=~ \sum\limits_{i\le 30} |\Delta_i|
+~=~ \sum\limits_{i\le 30} d_i(1-\e)\gamma
+~=~ (1-\e)\gamma\sum\limits_{i\le 30}d_i.\]
+
+Before showing the code and the results, we briefly explain what we expect as a
+result for these linear programs.
+
+\subsection{Interpretation of the results}
+In all four cases, our sets of equations yield similar looking results.
+The step $3$ can roughly be decomposed into two.
+
+First, for several values of
+$i$, we have very small $d[i]$. We exactly have $d[i]$ such that
+given $r[i]=i+1$ we get $r[i-1]=i$. Intuitively, picking less element in $d[i]$
+is not the worst case as $r[i-1]$ cannot be bigger than $i$ by \cref{lem:h1}.
+So it is ``free'' to take at least that many vertices.
+It is also not the worst case if more elements are picked, because then $r[i]$
+would shrink drastically, making the forthcoming $d[j]_{j<i}$ much smaller.
+
+Second, there is a turning point. It occurs a little bit above the average
+degree of planar graphs; so the number of vertices of degree 9 for example is
+not so small. This is when \cref{lem:total-h} become predominant:
+``Overall, we do not take more dominators that there are vertices to dominate.''
+So in one round every vertex gets picked and the algorithm stops.
+This turning point is $i=9$ for planar graphs.
+
+We did not manage to formally prove this statement, but it was confirmed for
+these cases by the linear programs.
+
+
+\newpage
+\subsection{The linear program for planar graphs}
+
+\begin{verbatim}
+//the ranges i can have
+range I  = 1..30;
+range I2 = 1..29;
+range I3 = 7..30;
+
+//decision variables as arrays
+dvar float+ d[I];
+dvar float+ r[I];
+
+//maximize the sum of A_i
+maximize sum(i in I) (d[i]);
+
+// our equations
+subject to
+{
+  // By lemma 13
+  forall(i in I) r[i] >= sum(x in 1..i)d[x];
+
+  // By lemma 14
+  forall(i in I) r[i] <= i+1;
+
+  // By lemma 15
+  forall(i in I3) d[i] <= (3 * r[i])  /  ( i-6 );
+
+  // By Lemma 16
+  forall(i in I2) r[i] <=  r[i+1]  -  ((( i-5 ) * d[i+1]) / 3);
+}
+\end{verbatim}
+
+% \subsection{The degree distribution in general planar graphs}
+
+\begin{figure}
+  \begin{tikzpicture}
+    \begin{axis}[
+      ybar,
+      xmin = 0, xmax = 31,
+      ymin = 0, ymax = 12,
+      xtick distance = 2,
+      ytick distance = 1,
+      %grid = both,
+      minor tick num = 1,
+      width = \textwidth,
+      height = \textwidth*0.5,
+      xlabel = {$i$},
+      ylabel = {$d[i]$},]
+    ]
+
+    %plot the first function
+    \addplot +[
+      ybar,
+      fill=blue,
+      nodes near coords,
+      nodes near coords style = {anchor=west, rotate=90}
+    ] file[skip first] {results_normal.txt};
+
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The degree distribution in general planar graphs}
+\end{figure}
+
+\pagebreak
+\subsection{The linear program for triangle-free planar graphs}
+
+\begin{verbatim}
+//Tri-Free
+  //the ranges i can have
+  range I  = 1..18;
+  range I2 = 1..17;
+  range I3 = 5..18;
+
+  //decision variables as arrays
+  dvar float+ d[I];
+  dvar float+ r[I];
+
+  //maximize the sum of A_i
+  maximize sum(i in I) (d[i]);
+
+  // our equations
+  subject to
+  {
+    // By Adapted lemma 13
+    forall(i in I) r[i] >= sum(x in 1..i)d[x];
+
+    // By Adapted lemma 14
+    forall(i in I) r[i] <= i+1;
+
+    // By Adapted lemma 15
+    forall(i in I3) d[i] <= (2 * r[i])  /  ( i-4 );
+
+    // By Adapted lemma 16
+    forall(i in I2) r[i] <=  r[i+1]  -  ((( i-3 ) * d[i+1]) / 2);
+  }
+\end{verbatim}
+
+\begin{figure}
+  \begin{tikzpicture}
+    \begin{axis}[
+      ybar,
+      xmin = 0, xmax = 20,
+      ymin = 0, ymax = 9,
+      xtick distance = 5,
+      ytick distance = 1,
+      %grid = both,
+      minor tick num = 1,
+      width = \textwidth,
+      height = \textwidth*0.5,
+      xlabel = {$i$},
+      ylabel = {$d[i]$},]
+    ]
+
+    %plot the first function
+    \addplot +[
+      ybar,
+      fill=blue,
+      nodes near coords,
+      nodes near coords style = {anchor=west, rotate=90}
+    ] file[skip first] {results_tri-free.txt};
+
+    \end{axis}
+      \end{tikzpicture}
+  \caption{The degree distribution in triangle-free planar graphs}
+\end{figure}
+
+
+\pagebreak
+\subsection{The linear program for outerplanar graphs}
+
+\begin{verbatim}
+//outerplanar
+
+  //the ranges i can have
+  range I  = 1..9;
+  range I2 = 1..8;
+  range I3 = 5..9;
+
+  //decision variables as arrays
+  dvar float+ d[I];
+  dvar float+ r[I];
+
+  //maximize the sum of A_i
+  maximize sum(i in I) (d[i]);
+
+  // our equations
+  subject to
+  {
+    // By Adapted lemma 13
+    forall(i in I) r[i] <= i+1;
+
+    // By Adapted lemma 14
+    forall(i in I2) r[i] <=  r[i+1]  -  ((( i-3 ) * d[i+1]) / 2);
+
+    // By Adapted lemma 15
+    forall(i in I3) d[i] <= (2 * r[i])  /  ( i-4 );
+
+    // By Adapted lemma 16
+    forall(i in I) r[i] >= sum(x in 1..i)d[x];
+  }
+\end{verbatim}
+
+% \textbf{"outerplanar"}
+
+\begin{figure}
+  \begin{tikzpicture}
+
+    \begin{axis}[
+      ybar,
+      xmin = 0, xmax = 15,
+      ymin = 0, ymax = 9,
+      xtick distance = 1,
+      ytick distance = 1,
+      %grid = both,
+      minor tick num = 1,
+      width = \textwidth,
+      height = \textwidth*0.5,
+      xlabel = {$i$},
+      ylabel = {$d[i]$},]
+    ]
+
+    %plot the first function
+    \addplot +[
+      ybar,
+      fill=blue,
+      nodes near coords,
+      nodes near coords style = {anchor=west, rotate=90}
+    ] file[skip first] {results_outerplanar.txt};
+
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The degree distribution in outerplanar graphs}
+\end{figure}
+
+\pagebreak
+\subsection{The linear program for planar graphs of girth 5}
+In this case, the \cref{alem:total-H} to \ref{alem:tri-h2} can be slightly
+improved, as the edge density of planar graphs of girth 5 is at most $5/3$.
+This is however not so useful. As shown below, the linear constraints do not
+yield something better than simply picking all $4\gamma$ non dominated vertices.
+
+\begin{verbatim}
+//girth5
+  //the ranges i can have
+  range I = 1..3;
+  range I2 = 1..2;
+  range I3 = 4..3;
+
+  //decision variables as arrays
+  dvar float+ d[I];
+  dvar float+ r[I];
+
+  //maximize the sum of A_i
+  maximize sum(i in I) (d[i]);
+
+  // our equations
+  subject to
+  {
+    forall(i in I) r[i] >= sum(x in 1..i)d[x];
+
+    forall(i in I) r[i] <= i+1;
+
+    forall(i in I3) d[i] <= ((5 * r[i])  /  ( 3 * i -10 ));
+
+    forall(i in I2) r[i] <=  r[i+1]  -  ((( 3*i-7 ) /5 )* d[i+1]);
+  }
+\end{verbatim}
+
+%\textbf{"girth"}
+
+\begin{figure}
+  \begin{tikzpicture}
+
+    \begin{axis}[
+      ybar,
+      xmin = 0, xmax = 15,
+      ymin = 0, ymax = 9,
+      xtick distance = 1,
+      ytick distance = 1,
+      %grid = both,
+      minor tick num = 1,
+      width = \textwidth,
+      height = \textwidth*0.5,
+      xlabel = {$i$},
+      ylabel = {$d[i]$},]
+    ]
+
+    %plot the first function
+      \addplot +[
+      ybar,
+      fill=blue,
+      nodes near coords,
+      nodes near coords style = {anchor=west, rotate=90}
+    ] file[skip first] {results_girth.txt};
+
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The degree distribution in planar graphs of girth 5.}
+\end{figure}

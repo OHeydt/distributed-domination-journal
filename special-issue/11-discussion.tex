@@ -1,0 +1,34 @@
+% !TEX root = main.tex
+
+\section{Conclusion}
+
+We simplified the presentation and generalized the algorithm of Czygrinow et al.~\cite{czygrinow2018distributed} from graph classes that exclude
+some topological minor to graph classes~$\Cc$ where
+$\nabla_1(G)$ is bounded
+by an absolute constant for all $G\in \Cc$. This is a property
+in particular possessed by classes with bounded expansion, which include
+many commonly studied sparse graph classes. The obtained general  bounds are still large,
+but by magnitudes smaller than those obtained in the original work of
+Czygrinow et al.\cite{czygrinow2018distributed}.
+
+It is an interesting and important question to identify the most
+general graph classes on which certain algorithmic techniques work.
+The key argument of \cref{lenzen-improved} works only for classes with~$\nabla_1(G)$ bounded by an absolute constant. We need different methods
+to push towards classes with only $\nabla_0(G)$ bounded,
+which are the degenerate classes.
+
+ We then
+provided a fine-tuned LOCAL algorithm that computes an
+  ($11+\epsilon$)\hspace{1pt}-\hspace{1pt}approximation of
+  a minimum dominating set in a planar graph in a constant number of
+  rounds. Started with different parameters, the algorithm works also
+  for several restricted cases of planar graphs. We showed that
+  it computes an ($8+\epsilon$)\hspace{1pt}-\hspace{1pt}approximation for
+  triangle-free planar graphs, a ($7+\epsilon$)\hspace{1pt}-\hspace{1pt}approximation
+  for bipartite planar graphs, a 7\hspace{1pt}-\hspace{1pt}approximation
+  for planar graphs of girth 5 and \linebreak an ($8+\epsilon$)\hspace{1pt}-\hspace{1pt}approximation
+  for outerplanar graphs. In all cases except for the outerplanar case,
+  where an optimal bound of 5 was already known, our algorithm
+  improves on the previously best known approximation factors.
+  This improvement is most significant in the case of general planar
+  graphs, where the previously best known factor was 52.

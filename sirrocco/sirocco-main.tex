@@ -1,0 +1,138 @@
+% This is samplepaper.tex, a sample chapter demonstrating the
+% LLNCS macro package for Springer Computer Science proceedings;
+% Version 2.20 of 2017/10/04
+%
+\RequirePackage{amsmath}
+% \RequirePackage{amsthm}
+
+\documentclass[runningheads]{llncs}
+
+
+\usepackage[defaultlines=3,all]{nowidow}
+%\usepackage{amsthm} %for customizing the theorem numbering
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage{xcolor}
+\usepackage{amssymb}
+\usepackage{mathabx}
+\usepackage{tikz}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{dark-blue}{rgb}{0.05,0.25,1}
+\usepackage[colorlinks=true,linkcolor={blue},citecolor=blue]{hyperref}
+\usepackage[noabbrev,capitalise,nameinlink]{cleveref}
+\usepackage[english]{babel}
+\usepackage{microtype}
+\usepackage{tcolorbox}
+
+\usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+
+
+\newcommand{\Oof}{\mathcal{O}}
+\newcommand{\Cc}{\mathscr{C}}
+\newcommand{\Aa}{\mathcal{A}}
+\newcommand{\Bb}{\mathcal{B}}
+\newcommand{\Tt}{\mathcal{T}}
+\newcommand{\Nn}{\mathcal{N}}
+\newcommand{\Ss}{\mathcal{S}}
+\newcommand{\Pp}{\mathcal{P}}
+\newcommand{\Qq}{\mathcal{Q}}
+\newcommand{\Rr}{\mathcal{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\minor}{\preceq}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+% Used for displaying a sample figure. If possible, figure files should
+% be included in EPS format.
+%
+% If you use the hyperref package, please uncomment the following line
+% to display URLs in blue roman font according to Springer's eBook style:
+% \renewcommand\UrlFont{\color{blue}\rmfamily}
+
+
+% \theoremstyle{plain}
+% 	\renewtheorem{theorem}{Theorem}[section]
+
+% 	\newtheorem{lem}[theorem]{Lemma}
+% 	\newtheorem{cor}[theorem]{Corollary}
+% 	\newtheorem{cla}[theorem]{Claim}
+% 	\newtheorem{prop}[theorem]{Proposition}
+% 	\newtheorem*{exmp}{Example}
+%   \newtheorem{rem}[theorem]{Remark}
+%
+% \theoremstyle{definition}
+% 	\newtheorem{defn}[theorem]{Definition}
+%
+
+%\theoremstyle{remark}
+
+
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% % % % % % % % % % % % % % For commenting the text % % % % % % % % % % % % % %
+
+% Add your name and pick a color !
+%%% comments %%%
+\newcommand{\commentmargin}[1]{\marginpar{\tiny\textit{#1}}}
+\newcommand{\commenttext}[1]{ \begin{center} {\fbox{\begin{minipage}[h]{0.9 \linewidth}   {\textsf{ #1}} \end{minipage} }} \end{center}}
+
+% \newcommand{\alexL}[1]{{\color{green}\commenttext{Alex L.: #1}}}
+% \newcommand{\alexLmargin}[1]{{\commentmargin{\color{green}Alex L.: #1}}}
+
+\newcommand{\alex}[1]{{\color{blue}\commenttext{Alex: #1}}}
+\newcommand{\alexmargin}[1]{\commentmargin{\color{blue}Alex: #1}}
+
+
+\newcommand{\sebi}[1]{{\color{red}\commenttext{Sebastian: #1}}}
+\newcommand{\sebimargin}[1]{\commentmargin{\color{red}Sebastian: #1}}
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% % % % % % % % % % % % % % End Comments % % % % % % % % % % % % %
+
+
+
+\begin{document}
+%
+\title{Constant round distributed domination on \newline graph classes with bounded expansion}
+%
+%\titlerunning{Abbreviated paper title}
+% If the paper title is too long for the running head, you can set
+% an abbreviated paper title here
+%
+\author{Simeon Kublenz\inst{1} \and
+Sebastian Siebertz\inst{1}\orcidID{0000-0002-6347-1198} \and\\%\linebreak
+Alexandre Vigny\inst{1}\orcidID{0000-0002-4298-8876}}
+%
+\authorrunning{S.\ Kublenz, S.\ Siebertz and A.\ Vigny}
+% First names are abbreviated in the running head.
+% If there are more than two authors, 'et al.' is used.
+%
+\institute{University of Bremen, Germany\\
+\email{\{kublenz,siebertz,vigny\}@uni-bremen.de}}
+%
+\maketitle              % typeset the header of the contribution
+%
+\input{abstract}
+\input{intro}
+\input{prelims}
+\input{covers}
+\input{new-covers}
+\input{cleaning}
+%\input{greedy}
+%\input{partitions}
+\input{algorithm}
+\input{discussion}
+
+
+
+
+
+%
+% ---- Bibliography ----
+%
+% BibTeX users should specify bibliography style 'splncs04'.
+% References will then be sorted and formatted in the correct style.
+%
+ \bibliographystyle{splncs04}
+ \bibliography{ref}
+%
+\end{document}

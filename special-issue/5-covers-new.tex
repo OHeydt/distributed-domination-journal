@@ -1,0 +1,268 @@
+% !TEX root = main.tex
+
+\section{Phase 2: Reducing residual degrees -- pseudo-covers and domination sequences}\label{sec:phase2}
+
+After the first phase of the algorithm we have established the situation
+that for every vertex \mbox{$v\in V(G)\setminus D_1$} the residual neighborhood
+$\Nr(v)$ is dominated by set $A_v\subseteq V(G)\setminus\{v\}$
+of size at most $2\nabla$.  For all vertices of
+$V(G)\setminus \hat{D}$ we have chosen $A_v\subseteq D\setminus\{v\}$.
+Observe that the set $\bigcup_{v\in V(G)}A_v$ has very good
+domination properties. First, already the sets $A_v$ for $v\in D$
+dominate almost all vertices that remain to be dominated, except possibly
+the vertices of $D$ itself: We have $R\subseteq \bigcup_{v\in D} N_R[v]
+= D\cup \bigcup_{v\in D} N_R(v)=D\cup \bigcup_{v\in D} A_v$, hence
+$R\setminus D\subseteq \bigcup_{v\in D}A_v$.
+Second, $\bigcup_{v\in V(G)}A_v$ is small, as
+$|\bigcup_{v\in V(G)}A_v|\leq
+\sum_{v\in V(G)} |A_v|
+=\sum_{v\in \hat{D}}|A_v|+ \sum_{v\in V(G)\setminus\hat{D}}|A_v|$.
+So~$|\bigcup_{v\in V(G)}A_v|
+\leq (\rho(G)+1)\gamma\cdot 2\nabla+\gamma
+\in \Oof(\gamma)$.
+
+\pagebreak
+In the second phase of
+the algorithm we aim to find a good approximation of the sets $A_v$.
+We follow the approach of Czygrinow et al.~\cite{czygrinow2018distributed}
+and define \emph{pseudo-covers}, which describe candidate
+vertices for the sets $A_v$. We will then consider a selection process that
+can be carried out in parallel for all vertices, which is based on the
+definition of \emph{domination sequences}, and allows to select
+a bounded number of candidate vertices. The domination properties
+of the selected vertices are worse than that of the sets $A_v$, however,
+at the end of the second phase we will be in the situation that the
+residual degree of each vertex is bounded by an absolute constant
+depending only on the graph class under consideration.\vspace{-2mm}
+
+\subsection{Pseudo-covers}
+
+Following the presentation of~\cite{czygrinow2018distributed}, we name and fix
+the following constants for the rest of this article. The reason to choose
+the constants as given will become clear in the course of the proof.
+
+\begin{tcolorbox}
+\hfill
+\begin{tabular}{l l}
+$\kappa$       & $\coloneqq~ \max\{2\nabla_0,2\nn\}$,\\
+$\lambda$  & $\coloneqq~ 1/\kappa$,
+\vspace{-1mm}
+\end{tabular}
+\hfill
+\begin{tabular}{l l}
+$\mu$    & $\coloneqq~ 2\kappa/\lambda=2\kappa^2$,\\
+$\nu$       & $\coloneqq~ k\mu = 2\kappa^3$.
+\end{tabular}
+\hfill~
+\end{tcolorbox}
+
+
+\begin{definition}
+A vertex $z\in V(G)$ is \emph{$\lambda$-strong} for a vertex set $W\subseteq V(G)$ if $|N[z]\cap W|\geq \lambda|W|$.
+\end{definition}
+
+The following is the key definition by Czygrinow et al.~\cite{czygrinow2018distributed}.
+
+\begin{definition}
+  A \emph{pseudo-cover} (with parameters $\kappa, \lambda, \mu, \nu$)
+  of a set $W\subseteq V(G)$ is a
+  sequence $(v_1,\ldots, v_m)$ of vertices
+  such that for every $i\le m$ we have:\\[-6mm]
+  \begin{itemize}
+    \item $m\leq \kappa$,\\[-5mm]
+    \item $v_i$ is $\lambda$-strong for $W\setminus\bigcup_{j<i}N[v_j]$,\\[-5mm]
+    \item $|N[v_i]\cap (W\setminus\bigcup_{j<i} N[v_j])|\geq \mu$, and\\[-5mm]
+    \item $|W\setminus \bigcup_{j\le m}N[v_j]|\leq \nu$.
+  \end{itemize}
+\end{definition}
+Intuitively, all but at most $\nu$ elements of the set $W$ are covered by the $(v_i)_{i\le m}$.
+Additionally, each element $v_i$ of the pseudo-cover dominates both an
+$\lambda$-fraction of the part of $W$ that is not yet dominated by the $v_j$
+for $j<i$, and at least $\mu$ elements.
+Note that with our choice of constants, if there are more than $\nu$ vertices not
+covered yet, any vertex that covers a $\lambda$-fraction of what remains also
+covers at least $\mu$ elements.
+
+
+The next lemma shows how to derive the existence of pseudo-covers from
+the existence of small dominating sets.
+
+\begin{lemma}\label{lem:cover-to-pseudo-cover}
+  Let $W\subseteq V(G)$ be of size at least
+  $\nu$ and let~$Z$ be a dominating set of $W$ with~$\kappa$ elements.
+  There exists an ordering of the vertices of $Z$ as $z_1,\ldots, z_\kappa$
+  and $m\leq \kappa$ such that $(z_1,\ldots, z_m)$ is a pseudo-cover of $W$.
+\end{lemma}
+\begin{proof}
+  We build the order greedily by induction. We order the elements by neighborhood size, while removing the neighborhoods of the previously ordered vertices. More precisely, assume that $(z_1,\ldots,z_i)$ have been defined for \mbox{some~$i\ge 0$}. We then define $z_{i+1}$ as the element that maximizes $|N[z] \cap (W \setminus \bigcup_{j\le i}N[z_j])|$.
+
+  Once we have ordered all vertices of $Z$, we define $m$ as the maximal integer not larger than $\kappa$ such that for every $i \le m$ we have:
+  \begin{itemize}
+    \item $z_i$ is $\lambda$-strong for $W\setminus\bigcup_{j<i}N[z_j]$, and
+    \item $|N[z_i] \cap (W \setminus \bigcup_{j\le i}N[z_j])| \ge \mu$.
+  \end{itemize}
+
+  This ensures that $(z_1,\ldots, z_m)$ satisfies the first 3 properties of a
+  pseudo-cover of $W$. It only remains to check the last one.
+  To do so, we define $W' \coloneq W \setminus\bigcup_{i\le m}N[z_i]$. We want to prove
+  that $|W'| \le \nu$. Note that because $Z$ covers~$W$, if $m=\kappa$ we
+  have $W'=\emptyset$ and we are done. We can therefore assume
+  that $m<\kappa$ and $W'\neq \emptyset$. Since $Z$ is a dominating set of $W$,
+  we also know that $(z_{m+1},\ldots z_\kappa)$ is a dominating set of $W'$,
+  therefore there is an element in $(z_{m+1},\ldots z_\kappa)$ that
+  dominates at least a $1 / \kappa$ fraction of $W'$. Thanks to the
+  previously defined order, we know that~$z_{m+1}$ is such an element.
+  Since $\lambda = 1/\kappa$, it follows that~$z_{m+1}$ is $\lambda$-strong
+  for $W'$.
+  This, together with the definition of $m$, we have that $|N[z_i] \cap (W \setminus \bigcup_{j\le i}N[z_j])| < \mu$ meaning that $|N[z_{m+1}] \cap W'| < \mu$. This implies that $|W'|/\kappa < \mu$. And since $\mu = \nu/\kappa$, we have $|W'|<\nu$.
+  %
+  Hence, $(z_1,\ldots, z_m)$ is a pseudo-cover of $W$.
+\end{proof}
+
+%We will apply the pseudo-covers to neighborhoods
+%of vertices.
+
+While there can exist unboundedly many dominating sets for a set $W\subseteq V(G)$,
+a nice observation of Czygrinow et al.\ was that the number of
+pseudo-covers is bounded whenever the input graph excludes some
+biclique $K_{s,t}$ as a subgraph. We do not state the result in this
+generality, as it leads to enormous constants. Instead, we focus on the
+case where small dominating sets $A_v$ exist, implying that $\nabla_0(G)$,
+and therefore $\kappa$, are bounded.
+
+% \alex{Old version:}
+%
+%   \begin{lemma}\label{lem:num-high-degree-old}
+%     Let $W\subseteq V(G)$ of size at least $8\nabla_1 / \alpha^2$.
+%     Then there are less than $4\nabla_1/\alpha$ vertices that are
+%     $\alpha$-strong for $W$.
+%   \end{lemma}
+%   \begin{proof}
+%     Assume that there is such a set $W$ with at least $c\coloneq 4\nabla_1 /\alpha$ vertices that are $\alpha$-strong for~$W$.
+%     We build a $1$-shallow minor $H$ of the graph $G$ with $|W|$ branch sets.
+%     Each branch set is either a single element of $W$, or a pair $\{w,a\}$, where $w$ is in $W$ and $a$ is an $\alpha$-strong vertex for $W$, connected to $w$, and that is not in $W$. This is obtained by iteratively contracting one edge of an $\alpha$-strong vertex with a vertex of $W$. This is possible because $\alpha |W|>c$, so during the process and for any \mbox{$\alpha$-strong} vertex we can find a connected vertex in $W$ that is not part of any contraction.
+%
+%     Once this is done, we have that $|V_H|=|W|$. For the edges, each of the \mbox{$\alpha$}-strong vertices can account for $\alpha |W|$ many edges. We need to subtract~$c^2$ from the total as we do not count twice an edge between two strong vertices. Therefore $|E_H| \ge c\alpha |W| - c^2$. Note also that because $|W| \ge 8\nabla_1 / \alpha^2$, we have that $ 2\nabla_1\ge (4\nabla_1)^2 / (\alpha^2|W|)$. All of this together leads to:
+%
+%     \[\frac{|E_H|}{|V_H|} \ge \frac{c\alpha |W| - c^2}{|W|} \ge 4 \nabla_1 - \frac{(4\nabla_1)^2}{\alpha^2|W|} \ge 4\nabla_1 - 2\nabla_1 > \nabla_1.\]
+%
+%     This contradicts the definition of $\nabla_1$.
+%   \end{proof}
+
+
+% \alex{new lemma, $4\nabla_1$ got replaced by $2\nabla_0$}
+
+\begin{lemma}\label{lem:num-high-degree}
+  Let $W\subseteq V(G)$ of size at least $\mu$.
+  Then there are less than $\kappa^2$ vertices that are
+  $\lambda$-strong for $W$.
+\end{lemma}
+\begin{proof}
+  Assume that there is such a set $W$ with $|W|\ge \mu$ and
+  $c$ many vertices that are $\lambda$-strong for~$W$.
+  Let $H$ be the subgraph of $G$ induced by $W$ and the $\lambda$-strong vertices.
+  We first have that $|V_H| \le |W|+c$. Second we have that
+  $|E_H|\ge \lambda|W|c-\nabla_0c$, because there are $c$ vertices that have
+  degree at least $\lambda|W|$ and there are at most $\nabla_0c$ many vertices
+  between them.
+
+\pagebreak
+  We then have that $|E_H|\le \nabla_0|V_H|$ hence
+  $\lambda|W|c-\nabla_0c\le \nabla_0(|W|+c)$ from which we
+  derive~$c(\lambda |W|-2\nabla_0)\le \nabla_0|W|$.
+  Now, using that $|W|>\mu\ge 2k^2$ we have $\lambda|W|>2k>4\nabla_0$.
+  Hence $\lambda|W|-2\nabla_0 \ge \lambda|W|/2$.
+  We can finally deduce that $c(\lambda|W|/2)\le \nabla_0|W|$ and therefore we
+  have that $c\le 2\nabla_0/\lambda=\kappa^2$.
+\end{proof}
+
+
+This leads quickly to a bound on the number of pseudo-covers.
+
+% \alex{old version:}
+%   \begin{lemma}\label{lem:num-pseudo-covers-old}
+%     For every $W\subseteq V(G)$ of size at least $\ell$, the number of
+%     pseudo-covers is less than~$(4\nabla_1/\alpha)^k$.
+%   \end{lemma}
+%
+%   The proof of the lemma is exactly as the proof of Lemma~7 in the
+%   presentation of Czygrinow et al.~\cite{czygrinow2018distributed},
+%   we reprove it for the sake of completeness.
+%
+%
+%   \begin{proof}
+%     Let $W$ a set of size at least $\ell$. For every $i\le k$, we define $C_i$ as the
+%     set of partial pseudo-covers of~$W$ of size at most $i$, that is,
+%     all sets of at most $i$ vertices that can be extended to a pseudo-cover
+%     of~$W$.
+%     So $C_k$ is the set of pseudo-covers of $W$ while $C_1$ only contains
+%     $\alpha$-strong vertices for $W$.
+%
+%     \cref{lem:num-high-degree} implies that $|C_1|< 4\nabla_1/\alpha$.
+%     \cref{lem:num-high-degree} also implies that for every $i<k$, we have
+%     $|C_{i+1}| < |C_{i}|\cdot (4\nabla_1/\alpha)$. We therefore conclude that
+%     $|C_k| < (4\nabla_1/\alpha)^k$.
+%   \end{proof}
+
+\begin{lemma}\label{lem:num-pseudo-covers}
+  For every $W\subseteq V(G)$ of size at least $\mu$, the number of
+  pseudo-covers is less than~$\kappa^{2\kappa}$.
+\end{lemma}
+
+The proof of the lemma is exactly as the proof of Lemma~7 in the
+presentation of Czygrinow et al.~\cite{czygrinow2018distributed},
+we reprove it for the sake of completeness.
+
+
+\begin{proof}
+  Let $W$ a set of size at least $\mu$. For every $i\le \kappa$, we define $C_i$ as the
+  set of partial pseudo-covers of~$W$ of size at most $i$, that is,
+  all sets of at most $i$ vertices that can be extended to a pseudo-cover
+  of~$W$.
+  So $C_\kappa$ is the set of pseudo-covers of $W$ while $C_1$ only contains
+  $\lambda$-strong vertices for $W$.
+
+  \cref{lem:num-high-degree} implies that $|C_1|< \kappa^2$.
+  \cref{lem:num-high-degree} also implies that for every $i<\kappa$, we have
+  $|C_{i+1}| < |C_{i}|\cdot \kappa^2$. We therefore conclude that
+  $|C_k| < (\kappa^2)^\kappa$.
+\end{proof}
+
+\begin{tcolorbox}
+  We write $\Tt(v)$ for the set of all pseudo-covers
+  of $N(v)$ and $\Pp(v)$ for the set of all vertices that appear in a
+  pseudo-cover of $N(v)$.
+\end{tcolorbox}
+
+The proof of \cref{lem:num-pseudo-covers} also bounds the number $\Pp(v)$.
+\begin{corollary}\label{cor:nb-dominators}
+For every $v\in V(G)$ with $|N_R(v)|> \mu$, we have
+  % $|\Tt(v)|< k^{2k}$ and
+  $|\Pp(v)|\le \kappa^{2\kappa}$.
+\end{corollary}
+
+%We recall all fixed parameters for easy to find reference.
+%\textcolor{red}{Motivate the definition of these parameters in
+%the construction of the pseudo covers.}
+%
+%\bigskip
+%\begin{tcolorbox}
+%\begin{tabular}{l l}
+%- $G$ & :~ fixed graph. \\
+%- $\gamma$ & :~ $\gamma(G)$.\\
+%- $\nabla_1$ & :~ $\nabla_1(G)$. \\
+%- $t$ & :~ smallest integer such that $G$
+%excludes $K_{t,t}$ as a subgraph\\
+%- $D_1$ & :~ defined and computed in \cref{lem:neighborhood-dom1}.\\
+%- $D$ & :~ fixed dominating set of $G$ of size $\gamma$ (not computed).\\
+%- $\hat{D}$ & :~ defined in \cref{lem:neighborhood-dom2} (not computed).\\
+%- $D'$ & :~ $D \cup \hat{D}$ (not computed).
+%\end{tabular}
+%\end{tcolorbox}
+
+% For the rest of this article we fix
+% $\alpha\coloneqq 1/k$, $\ell=8\nabla_1/\alpha^2+1=4k^3+1$ and $q=4k^4$.
+% These constants will be needed in the following definitions of pseudo-covers
+% and domination sequences.
+% We also fix the following constants to follow the presentation
+% of~\cite{czygrinow2018distributed}.

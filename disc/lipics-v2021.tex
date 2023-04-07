@@ -1,0 +1,519 @@
+
+\documentclass[a4paper,UKenglish,cleveref, autoref, thm-restate]{lipics-v2021}
+%This is a template for producing LIPIcs articles.
+%See lipics-v2021-authors-guidelines.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+%for section-numbered lemmas etc., use "numberwithinsect"
+%for enabling cleveref support, use "cleveref"
+%for enabling autoref support, use "autoref"
+%for anonymousing the authors (e.g. for double-blind review), add "anonymous"
+%for enabling thm-restate support, use "thm-restate"
+%for enabling a two-column layout for the author/affilation part (only applicable for > 6 authors), use "authorcolumns"
+%for producing a PDF according the PDF/A standard, add "pdfa"
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+% -- Added Packages --
+\usepackage{mathtools}
+\usepackage{tikz}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{dark-blue}{rgb}{0.05,0.25,1}
+\usepackage{tcolorbox}
+\usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+
+\newcommand{\Oof}{\mathcal{O}}
+\newcommand{\Cc}{\mathscr{C}}
+\newcommand{\Aa}{\mathcal{A}}
+\newcommand{\Bb}{\mathcal{B}}
+\newcommand{\Tt}{\mathcal{T}}
+\newcommand{\Nn}{\mathcal{N}}
+\newcommand{\Ss}{\mathcal{S}}
+\newcommand{\Pp}{\mathcal{P}}
+\newcommand{\Qq}{\mathcal{Q}}
+\newcommand{\Rr}{\mathcal{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\minor}{\preceq}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+% -- End of added Packages --
+
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{Brief announcement: Local domination on planar graphs revisited} %TODO Please add
+
+\titlerunning{} %TODO optional, please use if title is longer than one line
+
+%\author{Simeon Kublenz}{University of Bremen, Germany}{kublenz@uni-bremen.de}{}{}%TODO mandatory, please use full name; only 1 author per \author macro; first two parameters are mandatory, other parameters can be empty. Please provide at least the name of the affiliation and the country. The full address is optional
+
+\author{Sebastian Siebertz}{University of Bremen, Germany}{siebertz@uni-bremen.de}{https://orcid.org/0000-0002-6347-1198}{}
+
+\author{Alexandre Vigny}{University of Bremen, Germany}{vigny@uni-bremen.de}{https://orcid.org/0000-0002-4298-8876}{}
+
+\author{Ozan Heydt}{University of Bremen, Germany}{heydt@uni-bremen.de}{}{}
+
+\authorrunning{S. Siebertz, A. Vigny and O. Heydt} %TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+\Copyright{?} %TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+\ccsdesc[500]{\textcolor{red}{Theory of computation~Self-organization}} %TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm
+
+\keywords{Dominating set, LOCAL algorithm, planar graph} %TODO mandatory; please add comma-separated list of keywords
+
+\category{} %optional, e.g. invited paper
+
+\relatedversion{} %optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\relatedversiondetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93]{Classification (e.g. Full Version, Extended Version, Previous Version}{URL to related version} %linktext and cite are optional
+
+%\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+%\supplementdetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93, subcategory={Description, Subcategory}, swhid={Software Heritage Identifier}]{General Classification (e.g. Software, Dataset, Model, ...)}{URL to related version} %linktext, cite, and subcategory are optional
+
+%\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+\acknowledgements{}%optional
+
+%\nolinenumbers %uncomment to disable line numbering
+
+\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Access}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+%TODO mandatory: add short abstract of the document
+\begin{abstract}
+A dominating set in a graph $G$ is a subset $D\subseteq V(G)$ of vertices
+such that all vertices of $G$ are in or adjacent to a vertex of $D$. Lenzen et al.\
+in 2010 presented a distributed algorithm in the LOCAL model that in a
+constant number of computes
+a $130$-approximation of a minimum dominating set on planar graphs.
+Three years later Wawrzyniak proved that in fact the algorithm computes
+a $52$-approximation. Using ideas based on a new result of Czygrinow et al.\
+and Kublenz et al.\ we present a slightly modified algorithm that computes
+a ... approximation on planar graphs.
+\end{abstract}
+
+\section{Introduction}
+
+A dominating set in an undirected and simple graph $G$ is a set
+$D\subseteq V(G)$ such that every vertex $v\in V(G)$ either belongs
+to $D$ or has a neighbor in $D$. The dominating set problem is a
+classical NP-complete problem~\cite{karp1972reducibility} with many
+applications in theory and practice. In this paper we study
+the distributed time complexity of finding
+dominating sets in the classic LOCAL model of distributed computing.
+%In this model, a distributed system is modeled by an undirected
+%graph~$G$,
+%in which every vertex represents a computational entity of the network and every edge represents a bidirectional communication channel. The vertices are equipped with unique identifiers.
+%In a distributed algorithm, initially, the nodes have no knowledge about
+%the network graph. They must then communicate and coordinate
+%their actions by passing messages to one another in order to achieve
+%a common goal, in our case, to compute a dominating set of the
+%network graph. The complexity of a distributed algorithm in the
+%LOCAL model is simply the number of communication
+%rounds it needs until it returns its answer.
+%
+The problem of approximating
+dominating sets in the LOCAL model has received considerable
+attention in the literature~\cite{akhoondian2018distributed,
+akhoondian2016local,
+alipour2020local,
+amiri2016brief,
+amiri2019distributed,
+barenboim2018fast,
+czygrinow2008fast,
+czygrinow2018distributed,
+DBLP:conf/stoc/GhaffariKM17,
+hilke2014brief,
+kublenz2020distributed,
+KuhnMW16,
+lenzen2013distributed,
+lenzen2008leveraging,
+lenzen2010minimum,
+DBLP:conf/stoc/RozhonG20,
+wawrzyniak2013brief,
+wawrzyniak2014strengthened}. Since in general graphs
+it is not possible to compute a
+constant factor approximation in a constant number of rounds~\cite{KuhnMW16},
+much effort has been invested to improve the ratio between approximation
+factor and number of rounds on special graph classes. In particular, a
+line of structural analysis of graph properties that can lead to improved
+algorithms was started by the influential paper of Lenzen et al.~\cite{lenzen2013distributed}, who in particular proved that on planar graphs
+a 130-approximation
+of a minimum dominating set can be computed in a constant number of
+rounds. A careful analysis of Wawrzyniak~\cite{wawrzyniak2014strengthened}
+later showed that the algorithm computes in fact a 52-approximation. A
+result of Alipour and Jafari~\cite{alipour2020local} shows that in $C_4$-free
+planar graphs one can compute even an 18-approximation. In terms of lower bounds, Hilke et al.~\cite{hilke2014brief} showed that there is no
+deterministic local algorithm (constant-time distributed graph algorithm) that
+finds a~$(7-\epsilon)$-approximation of a minimum dominating set on
+planar graphs, for any positive constant~$\epsilon$.
+
+In this paper we study a slight modification of the algorithm of
+Lenzen et al.~\cite{lenzen2013distributed} and prove that we can
+compute a ... approximation on planar graphs. For $C_4$-free planar
+graphs we obtain a ... approximation. Our results are based
+on an improvement of a key lemma of Lenzen et
+al.~\cite{lenzen2013distributed} and ideas inspired by
+recent work of Czygrinow et  al.~\cite{czygrinow2018distributed} and
+Kublenz et al.~\cite{kublenz2020distributed}, and finally the
+analysis of Wawrzyniak~\cite{wawrzyniak2014strengthened}.
+
+\section{Preliminaries}
+
+In this paper we work with the classic LOCAL model of distributed computing
+restricted to planar graphs.
+In this model, a distributed system is modeled by an undirected planar
+graph~$G$,
+in which every vertex represents a computational entity of the network and every edge represents a bidirectional communication channel. The vertices are equipped with unique identifiers.
+In a distributed algorithm, initially, the nodes have no knowledge about
+the network graph. They must then communicate and coordinate
+their actions by passing messages to one another in order to achieve
+a common goal, in our case, to compute a dominating set of the
+network graph. The complexity of a LOCAL algorithm is the number of communication rounds it needs until it returns its answer.
+
+By the famous theorem of Wagner, planar graphs can be characterized
+as those graphs that exclude the complete graph $K_5$ and the
+complete bipartite $K_{3,3}$ with partitions of size $3$ as a minor.
+A graph~$H$ is a minor of a graph~$G$, written~$H\minor G$, if
+there is a set \mbox{$\{G_v :v\in V(H)\}$} of pairwise vertex disjoint and
+connected subgraphs
+$G_v\subseteq G$ such that if~$\{u,v\}\in E(H)$, then there is an edge
+between a vertex of~$G_u$ and a vertex of~$G_v$. We call~$V(G_v)$ the
+\emph{branch set} of $v$ and say that it is
+\emph{contracted} to the vertex~$v$. By Euler's formula, planar graphs
+are sparse: every planar $n$-vertex graph ($n\geq 3$) has
+at most $3n-6$ edges. Minors of planar graphs are again planar graphs,
+so that this formula applies also to all minors of a planar graph. In
+the following we assume that each component of our input graph $G$
+has at least $3$ vertices. This is justified by the observation that a
+minimum dominating set of a disconnected graph is a union of
+minimum dominating sets for each component and that we can
+compute optimal dominating sets in components of bounded size
+in a constant number of rounds.
+
+For a graph $G$ and $v\in V(G)$ we write $N(v)=\{w~:~\{v,w\}\in E(G)\}$
+for the \emph{open neighborhood} of $v$ and $N[v]=N(v)\cup\{v\}$ for
+the \emph{closed neighborhood} of~$v$. For a set $A\subseteq V(G)$ let
+$N[A]=\bigcup_{v\in A}N[v]$.
+%We write $N_r[v]$ for the set
+%of vertices at distance at most $r$ from a vertex $v$.
+A dominating set in a graph~$G$ is a set
+$D\subseteq V(G)$ such that $N[D]=V(G)$. We write $\gamma(G)$ for
+the size of a minimum dominating set of $G$. For $W\subseteq V(G)$
+we say that a set $Z\subseteq V(G)$ \emph{dominates}
+ $W$ if $W\subseteq N[Z]$.
+
+ \begin{tcolorbox}
+% \fbox{
+% \begin{minipage}{0.9\linewidth}
+In the following we fix a planar graph $G$ and a minimum dominating
+set $D$ with $|D|=\gamma(G)\eqqcolon \gamma$. We assume
+that every component
+of $G$ has at least $3$ vertices.
+\end{tcolorbox}
+
+\section{Preprocessing}
+
+The algorithm of Lenzen et al.~\cite{lenzen2013distributed} works in two
+phases. The first phase is a preprocessing step that leaves us with
+only vertices whose neighborhoods can be dominated by a few other
+vertices. It is based on the following key combinatorial lemma (which
+can be generalized to more general graphs). The lemma states
+that there exist only few vertices whose neighborhood cannot be
+dominated by at most $6$ other vertices.
+
+\begin{lemma}[Lemma 6.3 of Lenzen et al.~\cite{lenzen2013distributed}]\label{lem:lenzen}
+Let $D_1\coloneqq \{v\in V(G) : $ there does not
+exist $A\subseteq V(G)\setminus \{v\}$ with $N(v)\subseteq N[A]$
+and $|A|\leq 6\}$. Then $|D_1\setminus D|< 3\gamma$.
+\end{lemma}
+
+The algorithm in the first phase selects all of vertices of $D_1$ into
+a partial dominating set of small size, which leaves only
+vertices with the property that their neighborhood can be dominated
+by at most $6$ vertices. 
+
+%The further argumentation is crucially
+%built on this fact. Our first optimization is based on the fact that
+%the size of the dominating sets $A$ of the neighborhoods $N(v)$
+%is much more significant for the second phase of the algorithm than
+%the fact that $|D_1|<3\gamma$. By optimizing the lemma in this
+%direction we can majorly improve the further argumentation.
+%
+%\begin{lemma}\label{lem:improved-lenzen}
+%Let $D_1\coloneqq \{v\in V(G) : $ there does not
+%exist $A\subseteq V(G)\setminus \{v\}$ with $N(v)\subseteq N[A]$
+%and $|A|\leq 3\}$. Then $|D_1\setminus D|< 3\gamma$.
+%\end{lemma}
+%\begin{proof}
+%Assume $D=\{d_1,\ldots, d_\gamma\}$ and assume towards a
+%contradiction that there are pairwise distinct
+%vertices $a_1,\ldots, a_{3\gamma}\in V(G)\setminus M$
+%such that there does not exist $A\subseteq V(G)\setminus \{v\}$
+%with $N(v)\subseteq N[A]$ and $|A|\leq 3$.
+%
+%We define the branch sets of a minor of $G$ as follows. For
+%$1\leq i\leq 3\gamma$ we define a branch set $A_i\coloneqq \{a_i\}$
+%and for every $1\leq i\leq \gamma$ we define a branch set
+%\[D_i\coloneqq N[d_i]\setminus\big(\{a_i,...,a_{3\gamma}\} \cup \bigcup\limits_{j<i}D_j \cup \bigcup\limits_{j>i}\{d_j\}\big).\]
+%By construction, the sets $D_i$ induce pairwise disjoint connected subgraphs
+%of $G$, hence, by contracting them we obtain a planar graph $H$. With
+%the branch sets in $G$ we associate in the obvious way the vertices
+%$a_1',\ldots, a_{3\gamma}', d_1',\ldots d_\gamma'$ of $H$.
+%
+%Since \{$d_1,...,d_\gamma\}$ is a dominating set of $G$ and by assumption
+%on $N(a_i)$, we have that in $H$, every $a'_i$ is connected to at least $4$
+%of the $d'_i$.
+%We therefore have that $|V_H| = 4\gamma$ and $|E(H)| \geq 4 \cdot 3\gamma$, hence $E(H)\geq 3|V(H)|>3|V(H)|-6$, contradicting Euler's
+%formula.
+%\end{proof}
+%
+%In the LOCAL model every vertex $v$ can learn the set of all vertices
+%at distance $2$ of $v$ and locally determine whether $N(v)$ can
+%be dominated by at most $3$ vertices, hence, compute the set
+%$D$. The algorithm removes  $D$ from the graph and marks all
+%its neighbors as dominated in one additional round.
+%By Lemma~\ref{lem:improved-lenzen}, up to this point we have selected
+%at most $3\gamma$ vertices that do not belong to $M$. We may
+%hence assume that the neighborhood of every remaining vertex can
+%be dominated by at most $3$ other vertices.
+
+
+\begin{tcolorbox}
+% \fbox{
+% \begin{minipage}{0.9\linewidth}
+In the following we assume that for all $v\in V(G)$ there exists
+$A\subseteq V(G)\setminus \{v\}$ such that $N(v)\subseteq N[A]$
+and such that $|A|\leq 6$.
+% \end{minipage}
+% }
+\end{tcolorbox}
+
+We can also prove by following the lines of the proof of the above
+lemma that almost all vertices $v$ have even better properties,
+namely that we can choose the small dominating set~$A$ for $N(v)$ as a
+subset of $D$ for almost all vertices.
+Note that since $D$ is unknown this set cannot be computed by our algorithm.
+
+\begin{lemma}\label{lem:D-hat}
+Let $\hat{D}\coloneqq \{v\in V(G) : $ there does not
+exist $A\subseteq D\setminus \{v\}$ with $N(v)\subseteq N[A]$
+and $|A|\leq 6\}$. Then $|\hat{D}\setminus D|< 3\gamma$, and
+therefore $|\hat{D}|< 4\gamma$.
+\end{lemma}
+
+
+\section{Analyzing the local dominators}
+
+By defining a notion of \emph{pseudo-covers}, Czygrinow et  al.~\cite{czygrinow2018distributed} provided tool to carry out a
+fine grained analysis of
+vertices that can potentially belong to a set $A$ used to dominate
+the neighborhood $N(v)$ of a vertex $v$. This tool can in fact
+be applied to much more general graphs than planar graphs, namely,
+to all graphs that exclude some complete bipartite graph~$K_{t,t}$.
+A refined analysis for classes of bounded expansion was provided
+by Kublenz et al.~\cite{kublenz2020distributed}.
+We provide an even finer analysis for planar graphs on which we
+base a second phase of our distributed algorithm.
+
+%\begin{lemma}
+%Let $v\in V(G)$ and let $B_v\coloneqq \{w\in V(G)\setminus \{v\}:
+%|N(v)\cap N(w)|\geq 5\}$. Then $|B_v|\leq 6$.
+%\end{lemma}
+
+%\begin{lemma}
+%Let $\mathcal{P}\coloneqq
+%\{(v,w): v\neq w, v,w\not\in M$ and $|N(v)\cap N(w)|\geq 5\}$.
+%Then $|\mathcal{P}|\leq \gamma$.
+%\end{lemma}
+
+
+\begin{lemma}\label{lem:small-intersections}
+Let $v\in V(G)$ and let $B_v\coloneqq \{w\in V(G)\setminus \{v\}:
+|N(v)\cap N[w]|\geq 20\}$. Then $|B_v|\leq 6$ and if $v\not\in \hat{D}$,
+then $B_v\subseteq D$.
+\end{lemma}
+\begin{proof}
+By assumption there exists $A\subseteq V(G)\setminus \{v\}$ such 
+that $N(v)\subseteq N[A]$ and such that $|A|\leq 6$, say 
+$A=\{v_1,\ldots, v_6\}$. We show that the vertices $v_i$ are the only ones 
+that can dominate at least $20$ vertices of $N(v)$.
+
+Assume towards a contradiction that there 
+exists a vertex $z\in V(G)\setminus \{v,v_1,\ldots, v_6\}$ 
+with $|N[z] \cap N(v)| \geq 20$,  hence $|N(z) \cap N(v)| \geq 19$. 
+As $v_1, \ldots, v_6$ dominate $N(v)$ there must be~$v_i$, $1\leq i\leq 6$, with 
+\mbox{$N(z) \cap N(v) \cap N[v_i] \geq 4$}, hence, 
+\mbox{$N(z) \cap N(v) \cap N(v_i) \geq 3$} resulting in a $K_{3,3}$. 
+This contradicts the assumption that $G$ is planar. 
+
+%
+%
+%Remember that the 10 vertices are connected to either $v_1, v_2$ or $v_3$.
+%At least 4 of them are connected to one of $v_i$ with:
+%$N(z) \cap N(v) \cap N[v_i] \geq 4$ or
+%$N(z) \cap N(v) \cap N[v_i] \geq 3$ resulting in a $K_{3,3}$.
+%Therefore $z$ has to be one of $v_i$ and $B(v) \leq 3$.
+
+If furthermore $v\not\in \hat{D}$, then we can choose the 
+the vertices $v_1,\ldots, v_6$ from $D$ and by arguing as 
+above we conclude that $B_v\subseteq D$. 
+\end{proof}
+
+We define $D_2\coloneqq \bigcup_{v\in V(G)} B_v$. 
+
+\begin{corollary}
+Let $D_2\coloneqq \bigcup_{v\in V(G)} B_v$. Then $|D_2\setminus D|\leq
+24\gamma$.
+\end{corollary}
+
+Our algorithm now proceeds as follows. Obviously, every
+vertex $v$ can locally compute the set $B_v$. The algorithm 
+adds the set $D_2=\bigcup_{v\in V(G)} B_v$ to the dominating
+set, removes~$D_2$ from the graph and marks all vertices dominated
+by $D_2$ as dominated.
+
+
+\begin{tcolorbox}
+% \fbox{
+% \begin{minipage}{0.9\linewidth}
+In the following we assume that for all $v\in V(G)$ there does not
+exist $w\in V(G)\setminus\{v\}$ with $|N(v)\cap N[w]|\geq 20$.
+In particular, every vertex has at most $6\cdot 19=114$ non-dominated 
+neighbors and $G$ has at most $115\gamma$ non-dominated vertices.
+% \end{minipage}
+% }
+\end{tcolorbox}
+
+\section{Greedy domination in degenerate graphs of maximum 
+residual degree}
+
+We define the \emph{residual degree} of a vertex $v$ as the number 
+of non-dominated vertices of $v$. 
+
+Let $X$ be the set of non-dominated vertices of $G$ and let $Y\coloneqq
+N[X]\setminus X$. For an integer $m$ let $X_{>m}$ be the set of 
+vertices of $X$ that have residual degree greater than $m$ and 
+similarly, let $Y_{>m}$ be the set of vertices of $Y$ that have residual degree greater than $m$. Let $G'$ be the graph induced by $X$ and $Y$. 
+\textcolor{red}{Clean this}
+
+\begin{lemma}\label{lem:num-high-degree}
+Let $G'$ be $d$-degenerate and let $m\geq 2d$. Then $|X_{>m}|< ... $
+and $|Y_>m|< ...$ and $|X_{>m}\cup Y_{>m}|<2d/(m-d)|X|$.
+\end{lemma}
+\begin{proof}
+The number of edges in $G[X]$ would be greater than $m|X_{>m}|-d|X_{>m}|$. 
+This implies $|X_{>m}|<2d/(m-d)|X|$. The number of edges between 
+$X$ and $Y$ would be greater than $m|Y_{>m}|$, which implies 
+$|Y_{>m}|<2d/m|X|$. The maximum is attained when all edges are hidden
+in $X$, so the final inequality follows. 
+\end{proof}
+
+\textcolor{red}{Idea: 
+We now proceed in $115$ rounds $i=115,114,\ldots, 6$. Let $G_{116}\coloneqq
+G$ and let $G_i$ for $6\leq i\leq 115$ be the graph that is obtained
+by handling the vertices of residual degree $i$. We get from $G_{i+1}$ to
+$G_i$ by picking all vertices of residual degree $i$. Assume that in 
+this step we pick $k_i$ vertices of residual degree $i$. Denote by $n_i$
+the number of vertices of $G_i$. Then $n_i\leq n_{i+1}-k_i(i-3)/6$. By the 
+lemma we have $0\leq k_i\leq 2d/(i-3)n_{i+1}$. The algorithm performs
+best when $k_i$ for large $i$ is maximal. 
+There is a break-even point for the algorithm where picking $k_i$ 
+vertices of degree $i$ has still more effect (by dominating $k_i(i-3)/6$
+vertices) than leaving us with vertices of degree $i$ and hence
+having a graph with at most $i\gamma$ vertices. }
+
+
+
+For planar graphs we want to minimize the function 
+$m+6\cdot 115/(m-3)$. This minimum is attained at $m=29$. 
+Let $D_3$ be the set of all vertices of residual degree at least $29$. 
+Then by Lemma~\ref{lem:num-high-degree} we have $|D_3|\leq 27\gamma$. 
+
+
+%
+%\begin{lemma}
+%Let $G$ be a $d$-degenerate graph and let $i$ be a positive integer. 
+%Then there are at most
+%$n/i$ vertices of degree at least $2di$. 
+%\end{lemma}
+%\begin{proof}
+%Otherwise $G$ has more than $\frac{1}{2}\sum_{v\in V(G)}d(v) \geq
+%\frac{1}{2}(n/i)\cdot 2di = dn$ of edges, a contradiction. 
+%\end{proof}
+%
+%We define the auxiliary graph $G'$ from $G$. Let $X$ denote 
+%the set of non-dominated vertices and let $Y\coloneqq N[X]\setminus X$. 
+%For an integer $m$ let $Y_{>m}$ be the set of vertices of $Y$ that have
+%residual degree greater than $m$, that is, with $|N(v)\cap X|> m$. 
+%
+%\begin{lemma}
+%Let $G$ be a $d$-degenerate graph and let $m\geq 2d$. Then 
+%$|Y_{>m}|\leq 2d|X|/m$.
+%\end{lemma}
+%\begin{proof}
+%Otherwise we have more than $2d|X|/m\cdot m=2d|X|$ edges between 
+%$X$ and $Y$ and therefore the average degree is too high. 
+%\end{proof}
+%
+%
+%\textcolor{red}{Actually we need: Let $G'$ be the graph containing the set $X$ of 
+%non-dominated vertices and $Y\coloneqq N[X]\setminus X$. 
+%It contains all edges between vertices of $X$, all edges between 
+%vertices of $X$ and $Y$ and not between vertices of $Y$. }
+%
+%\begin{lemma}
+%Let $G'$ be a $d$-degenerate graph and let $m\geq 4d$ be an 
+%integer. Then there are at most 
+%$2d|X|/m$ of degree at least $m$. 
+%\end{lemma}
+%\begin{proof}
+%Let $X_{>m}$ be the vertices of degree greater than $m$ 
+%\end{proof}
+%
+%\begin{corollary}
+%\end{corollary}
+
+\section{Graphs without $4$-cycles}
+\input{4-cycles.tex}
+
+\section{Cleaning up and concluding}
+
+In particular, all remaining vertices of $D$ have at most $30$ non-dominated
+neighbors. We conclude that the remaining graph has at most $31\gamma$
+vertices. We define the set $D_3$ as the set of all remaining non-dominated
+vertices. Then $|D_3\setminus D|\leq 30\gamma$ and $D_1\cup D_2\cup D_3$
+is a dominating set of $G$.
+
+\begin{theorem}
+There exists a distributed LOCAL algorithm that for every planar graph
+$G$ computes in a constant number of rounds a dominating set
+of size at most $46\gamma(G)$.
+\end{theorem}
+
+%%
+%% Bibliography
+%%
+
+%% Please use bibtex,
+
+\bibliography{ref}
+
+\appendix
+
+\end{document}

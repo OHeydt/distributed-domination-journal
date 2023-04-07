@@ -1,0 +1,22 @@
+% !TEX root = sirocco-main.tex
+\section{Conclusion}
+
+We simplified the presentation and generalized the algorithm of Czygrinow et al.~\cite{czygrinow2018distributed} from graph classes that exclude
+some topological minor to graph classes~$\mathcal{C}$ where
+$\nabla_1(G)$ is bounded
+by an absolute constant for all $G\in \mathcal{C}$. This is a property
+in particular possessed by classes with bounded expansion, which include
+many commonly studied sparse graph classes.
+
+It is an interesting and important question to identify the most
+general graph classes on which certain algorithmic techniques work.
+The key arguments of \cref{lem:neighborhood-dom1} and \cref{lem:neighborhood-dom2} work only for classes with~$\nabla_1(G)$ bounded by an absolute constant. We need different methods
+to push towards classes with only $\nabla_0(G)$ bounded,
+which are the degenerate classes.
+
+The obtained bounds are still large,
+but by magnitudes smaller than those obtained in the original work of
+Czygrinow et al.\cite{czygrinow2018distributed}. It will also be
+interesting to optimize the algorithm for planar graphs, where additional
+topological arguments can help to strongly optimize constants and
+potentially beat the currently best known bound of 52~\cite{lenzen2013distributed,wawrzyniak2014strengthened}.

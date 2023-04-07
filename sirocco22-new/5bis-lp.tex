@@ -1,0 +1,283 @@
+% !TEX root = sirocco-main.tex
+
+\section{Phase 3: LP-based approximation}\label{sec:LP}
+
+\subsection{LP-based approximation}
+In the light of \cref{lem:res-degree}, we could now simply choose
+$D_3$ as the set of elements not in $N[D_1\cup D_2]$.  We would get a
+constant factor approximation, but not a very good one. Instead,
+we now proceed with an LP-based approximation. The dominating
+set problem can be formulated as an integer linear program~(ILP).
+Note that it remains to dominate the set $R$, which leads to the
+following ILP.
+
+\[
+  \begin{array}{l l l}
+    \text{Minimize }    & \sum_{v\in V}x_v &\\
+    \text{Subject to }\quad & \sum_{u\in N[v]}x_u \ge 1 \quad &\forall v\in R \\
+                            & x_v\in \{0,1\}                   &\forall v \in V\\
+  \end{array}
+\]
+
+By relaxing the condition that $x_v\in \{0,1\}$ to $x_v\in [0,1]\subseteq \mathbb{R}$,
+we obtain the corresponding linear program (LP). By a result of
+Bansal and Umboh~\cite{bansal2017tight} one can obtain a constant
+factor approximation of a dominating set from a solution to the LP.
+The proof can easily be adapted to the problem of approximating a
+dominating set of the set $R$.
+
+\begin{lemma}
+  Let $G$ be a graph that has an orientation with maximum out-degree $d$
+  and let $R\subseteq V(G)$. Let $D_R\subseteq V(G)$ be a minimum dominating
+  set of $R$.
+  Let $\big(x_v\big)_{v\in V(G)}$ be a solution to the
+  $R$-dominating set~LP. Let $H:=\{v\in V(G) : x_v\ge 1/(2d+1)\}$ and
+  let $U:=\{v\in R : v\not\in N[H]\}$. Then $H\cup U$ dominates~$R$
+  and has size at most $(2d+1)\cdot |D_R|$.
+\end{lemma}
+
+Observe that when given the solution $\big(x_v\big)_{v\in V(G)}$ to the
+$R$-dominating set~LP the lemma gives rise to a simple LOCAL algorithm.
+First select all vertices $v$ with $x_v\geq 1/(2d+1)$ into a dominating set
+and mark all their neighbors as dominated. Then select all non-dominated
+vertices of $R$ into the dominating set. Clearly, $H\cup U$ is a dominating
+set of $R$. The rest of this section is devoted to the proof of the claimed
+approximation factor. The proof follows the presentation of Bansal and
+Umboh~\cite{bansal2017tight} with the improved bounds of Dvo\v{r}\'ak~\cite{dvovrak2019distance}. As every solution to the ILP is also a solution
+to the LP we have $\sum_{v\in V(G)}x_v\leq |D_R|$.
+
+Consider an orientation of $G$ such that the neighborhood of each vertex
+$v$ is decomposed into $N^{in}(v)$ and $N^{out}(v)$, where $|N^{out}(v)|\le d$.
+
+\begin{claim}
+  For every vertex $v\in U$, we have
+  $\big(\sum_{u\in N^{in}(v)}x_u \big)\ge d/(2d+1)$.
+\end{claim}
+\begin{proof}
+  As $v$ is not in $H$, $x_v<1/(2d+1)$. As $v$ is not in $N(H)$, for every
+  vertex $u\in N^{out}(v)$ we have $x_u<1/(2d+1)$. As $|N^{out}(v)|\le d$,
+  and by the first LP condition
+  $\big(\sum_{u\in N^{in}(v)}x_u \big)\ge 1- \frac{1}{2d+1} - \frac{d}{2d+1}
+  \ge \frac{d}{2d+1}$.
+\end{proof}
+
+We can now bound the size of $U$ and $H$
+\begin{claim}
+  $|H\cup U| \le (2d+1)\sum_{v\in V}x_v$.
+\end{claim}
+\begin{proof}
+  First, observe that
+  $|H|\le (2d+1)\sum_{v\in H}\frac{1}{2d+1}
+  \le (2d+1)\sum_{v\in H}(x_v)$.
+  %
+  Then observe that\linebreak
+  %
+  $|U|\le \frac{2d+1}{d}\cdot\sum_{v\in U} \frac{d}{2d+1}
+  \le \frac{2d+1}{d}\sum_{v\in U}\sum_{u\in N^{in}(v)}x_u
+  \le \frac{2d+1}{d}\sum_{u\in N^{in}(U)} (d\cdot x_u)
+  \le (2d+1) \sum_{u\in N^{in}(U)} x_u$.
+
+  By definition of $U$, we have that $N(U)$ and $H$ are disjoint, this also
+  holds for~$H$ and $N^{in}(U)$ hence $|H\cup U| \le (2d+1)\sum_{v\in V}x_v\leq (2d+1)|D_R|$.
+\end{proof}
+
+\subsection{Solving LPs locally}
+
+As shown by Kuhn et al.~\cite{kuhn2006price} we can locally approximate
+general covering LPs, in particular the above $R$-dominating set LP,
+when the maximum
+degree of the graph is bounded. More precisely, they show how to compute
+a $\Delta^{1/k}$-approximation in $\Oof(k^2)$ rounds. Assuming for a
+moment that $\Delta$ is bounded by an absolute constant we can
+choose $k$ such that $\Delta^{1/k}=1+\e$,
+hence $k=(\log \Delta)/(\log (1+\e))$, which is a constant depending
+only on $\Delta$ and $\e$ in order to compute a
+$(1+\e)$-approximation. Hence, it remains to establish the situation
+that not only the residual degrees are bounded but that $\Delta$ is
+bounded by an absolute constant and to choose $\e$ appropriately.
+
+\smallskip
+Recall that we chose $\rho$ such that $|(D_1 \cup D_2)\cap D| =\rho\gamma$.
+When $\rho\gamma$ vertices of $D$ were already chosen into
+the partial dominating set $D_1\cup D_2$ we have $|D_R|\leq (1-\rho)\gamma$.
+With \cref{cor:planar-orientations} we conclude the following corollary.
+
+\begin{cor}\label{cor:LP-approx}
+Let $G$ be a graph that has an orientation with maximum out-degree~$d$, let $R\subseteq V(G)$, let~$D_R$ be a
+minimum dominating set of $R$, and let $\e>0$. Then we can
+compute a set $D'$ of size at most~$(2d+1)(1+\e)|D_R|$ that dominates~$R$ in $\Oof(\log \Delta/(\log (1+\e))$ rounds in the LOCAL
+model.
+
+\vspace{1mm}
+In particular, for our algorithm when
+
+\vspace{-2mm}
+\begin{enumerate}
+\item $G$ is planar, then $|D'|\leq 7(1+\e)|D_R|
+  \leq 7(1+\e)(1-\rho)\gamma$ and when \smallskip
+\item $G$ is planar and triangle-free or outerplanar, then
+  $|D'|\leq 5(1+\e)|D_R|\leq 5(1+\e)(1-\rho)\gamma$.
+\end{enumerate}
+\end{cor}
+
+\subsection{From bounded residual degree to bounded degree}
+
+It remains to establish the situation that the maximum degree $\Delta$
+of our graph is bounded. As argued, we have $|R|\leq 31(1-\rho)\gamma$.
+As only
+the vertices of $R$ need to be
+dominated it suffices to keep only the vertices that have a
+neighbor in $R$; other vertices are not useful as dominators.
+Also, when two vertices $u,v\in V(G)\setminus R$ have exactly
+the same neighbors in $R$, that is, $N_R(u)=N_R(v)$,
+it suffices to keep one of $u$ and $v$.
+Note that we can locally decide whether $N_R(u)=N_R(v)$.
+For every set $N\subseteq R$ such that there is a vertex $v$
+with $N_R(v)=N$ we choose the one with the lowest identifier
+as a representative. We construct the graph $G'$ consisting
+of~$R$ and all edges between vertices in $R$ as well as the
+set of all representatives and a minimal set of edges such that
+$N_R(v)$ is equal in $G$ and $G'$ for all representatives~$v$.
+Hence in $G'$ we have $N_R(u)\neq N_R(v)$ for all $u\neq v\in V(G')\setminus R$.
+As argued above, every $R$-dominating set in $G$ can
+be transformed into an $R$-dominating set of the same size
+in $G'$ (by choosing the appropriate representative) and
+every $R$-dominating set in $G'$ is an $R$-dominating set in~$G$.
+We can hence continue to work with the graph $G'$. In order to
+avoid complicated notation we simply assume that $G=G'$.
+
+Note that in general we could have $|V(G)|\in \Omega(2^{|R|})$,
+in a planar graph however, $|V(G)|$ is linear in~$|R|$, which is
+crucial for our further argumentation.
+
+\begin{lemma}\label{lem:smallX}
+  $|V(G)|\le 12|R|$.
+\end{lemma}
+We follow the presentation of \cite[Lemma~4.3]{gajarsky2017kernelization}.
+The presented construction is not build by our algorithm, it simply shows that
+our graph $G$ satisfies the above property.
+\begin{proof}
+  Consider a sequence of graphs $G_0, G_1, \ldots, G_\ell$ such that
+  $G_i$ is a $1$-shallow minor of $G$ for all $0 \le i \le \ell$ as follows.
+  Set $G_0 = G$, and for $0 \le i\le\ell-1$ define $G_{i+1}$ from $G_i$ by
+  choosing a vertex $v\in V (G_i ) \setminus R$ such that $N_R(v)$
+  contains two non-adjacent vertices $u, w$ in $G_i$ and contract $\{u,v\}$ into
+  the vertex $u$ to obtain~$G_{i+1}$.
+  Note that contracting $\{u,v\}$ into $u$ is equivalent to deleting vertex $v$ and
+  adding edges between each vertex in $N(v) \setminus u$ and $u$. Note that this
+  contraction will only add edges to $R$ and remove vertices from $V(G)\setminus R$.
+  Hence, for $0\le i\le\ell$, we maintain $R \subseteq V(G_i)$.
+
+  This process clearly terminates, and $G_{i+1}$ has at least one more edge
+  between vertices of $R$ than $G_i$ does. Note that $G_i$ is a $1$-shallow minor
+  of $G$ for $0 \le i \le \ell$, as the edges $e_1, \ldots, e_{i-1}$ that were
+  contracted to vertices in $R$ in order to construct~d$G_i$ had one endpoint
+  each in $R$ and $V(G)\setminus R$, the endpoint in $V(G)\setminus R$
+  being deleted after each contraction.
+  Thus, $e_1, \ldots, e_{i-1}$ induce a set of stars in $V(G)$, and $G_i$ is
+  obtained from $G$ by contracting these stars. We therefore conclude that
+  $G_i$ is a $1$-shallow minor of $G$. In particular, this implies that
+  $G$ is planar and has at most $3|R|-6$ edges between vertices of $R$.
+
+  Since there are at most $3|R|-6$ edges between vertices of $R$, we have that
+  $\ell \le 3|R|-6$.
+  Since the iterative process stopped, we have that
+  for every vertex $v\in V(G_\ell)\setminus R$, $N_R(v)$ is a clique in $G_\ell$.
+
+  We conclude with a result of Wood~\cite[Corollary~2]{wood2007maximum}
+  showing that in an $n$-vertex planar graph there can be at most $8(n-2)$
+  many cliques. At most $3|R|-6$ vertices $u$ with a possibly unique
+  neighborhood $N_R(u)$ were contracted and at most $8(|R|-2)$
+  vertices $v$ with different $N_R(v)$ that induce a clique in $G_\ell$ remain.
+  We add the vertices of $|R|$ to conclude that $|V(G)|\leq 12|R|$.
+\end{proof}
+
+By \cref{lem:res-degree} we have $|R|\le 31(1-\rho)\gamma$, which immediately
+implies the following corollary.
+
+\begin{cor}\label{cor:size-g}
+  $|V(G)| \le 372(1-\rho)\gamma$.
+\end{cor}
+
+
+\subsection{Conclusion of the algorithm}
+
+
+We now pick an arbitrary $\e>0$ and select all vertices with high degree
+$\Gamma$ into our
+dominating set, where $\Gamma$ is chosen such that there exist at
+most $(\e/8)(1-\rho)\gamma$ vertices of degree at least $\Gamma$.
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+  Let $\e>0$, $\e':= \e/8$,
+  $\Gamma\coloneqq 6\frac{372}{\e'}$, and \quad
+  $D_3^1\coloneqq \{v\in V(G) ~:~ d(v)>\Gamma\}$.
+\end{tcolorbox}
+
+\begin{lemma}\label{lem:size-D31}
+  $|D_3^1|\le \e'(1-\rho)\gamma$.
+\end{lemma}
+\begin{proof}
+  We assume the opposite and count the number of edges and vertices of~$G$.
+  When we sum the degree of the vertices, we get twice the number of
+  edges. Hence $2\cdot |E(G)|\ge 6\frac{372}{\e'} \cdot \e'(1-\rho)\gamma$.
+  Therefore, with \cref{cor:size-g},
+  $|E(G)|\ge 3\cdot 372(1-\rho)\gamma\geq 3|V(G)|$. This
+  contradict the fact the graph is planar.
+\end{proof}
+
+After picking $D_3^1$ into the dominating set, marking the neighbors of
+$D_3^1$ as dominated and updating the set $R$, we can delete the
+vertices of $D_3^1$. We are left with a graph of maximum degree $\Gamma$.
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+  Let $D_3^2$ be the set computed by the LOCAL algorithm of \cref{cor:LP-approx}
+  with parameter $\e'$.
+\end{tcolorbox}
+
+Let $D_3=D_3^1 \cup D_3^2$. We already noted that the definition of $D_3$ implies that
+$D_1\cup D_2\cup D_3$ is a dominating set of $G$. We now conclude the
+analysis of the size of this computed set.
+
+\begin{lemma}\label{lem:D3-LP}
+  We have that $|D_3| \le (7+\e)(1-\rho)\gamma$
+\end{lemma}
+\begin{proof}
+  By \cref{cor:LP-approx} and \cref{lem:size-D31} we have
+  $|D_3^2|\leq 7(1+\e')(1-\rho)\gamma$, and $|D_3^1|\le \e'(1-\rho)\gamma$.
+  This with,~$\e'=\e/8$ conclude the proof.
+\end{proof}
+
+% Let $D_3=D_3^1 \cup D_3^2$. We already noted that the definition of $D_3$ implies that
+% $D_1\cup D_2\cup D_3$ is a dominating set of $G$. We now conclude the
+% analysis of the size of this computed set.
+%
+% First, by
+% \cref{lem:size-D12} we have $|D_1\cup D_2|<4\gamma+4\rho\gamma$.  Then,
+% by \cref{lem:size-D31} we have $|D_3^1|\le \e'(1-\rho)\gamma$
+% and by \cref{cor:LP-approx} we have $|D_3^2|\leq 7(1+\e')(1-\rho)\gamma$.
+%
+% Therefore $|D_1 \cup D_2 \cup D_3|\leq \gamma(4+4\rho +\e'(1-\rho)+7(1+\e')(1-\rho))
+% \leq \gamma(11+8\e'-3\rho -8\e'\rho)$.\linebreak
+% As $\rho\in[0,1]$, this is maximized when $\rho=0$. Hence
+% $|D_1 \cup D_2 \cup D_3| < \gamma(11+8\e') \le \gamma(11+\e)$.
+
+We can now conclude the proof of our main result.
+\begin{theorem}\label{thm:planar}
+  There exists a distributed LOCAL algorithm that, for every $\e>0$, and every
+  planar graph~$G$, computes in a constant number of rounds a dominating set
+  of size at most $(11+\e)\gamma(G)$.
+\end{theorem}
+\begin{proof}
+  First, $D_1,D_2$, and $D_3$ are computed locally, in a bounded number of
+  rounds, and $D_1 \cup D_2 \cup D_3$ dominates $G$.
+%
+  Second, by \cref{lem:size-D12} we have $|D_1\cup D_2|<4\gamma+4\rho\gamma$.
+  And, by \cref{lem:D3-LP} we have $|D_3|\leq (7+\e)(1-\rho)\gamma$.
+
+  Therefore $|D_1 \cup D_2 \cup D_3|\leq \gamma(4+4\rho +7 - 7\rho +\e - \e\rho)
+  \leq \gamma(11+\e-3\rho -\e\rho)$.
+  As $\rho\in[0,1]$, this is maximized when $\rho=0$. Hence
+  $|D_1 \cup D_2 \cup D_3| \le \gamma(11+\e)$.
+
+\end{proof}

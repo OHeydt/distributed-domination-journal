@@ -1,0 +1,224 @@
+% !TEX root = main.tex
+
+\section{Phase 3: LP-based approximation in graphs of bounded maximum degree}\label{sec:LP}
+
+
+\subsection{LP-based approximation}
+In the light of \cref{cor:size-R}, we could now simply choose
+$R$ as the set $D_3$ to get a
+constant factor approximation. We can improve the bounds however, by
+proceeding with an LP-based approximation. The dominating
+set problem can be formulated as an integer linear program~(ILP).
+Note that it remains to dominate the set $R$, which leads to the
+following ILP.
+
+\[
+  \begin{array}{l l l}
+    \text{Minimize }    & \sum_{v\in V}x_v &\\
+    \text{Subject to }\quad & \sum_{u\in N[v]}x_u \ge 1 \quad &\forall v\in R \\
+                            & x_v\in \{0,1\}                   &\forall v \in V\\
+  \end{array}
+\]
+
+By relaxing the condition that $x_v\in \{0,1\}$ to $x_v\in [0,1]\subseteq \mathbb{R}$,
+we obtain the corresponding linear program (LP). By a result of
+Bansal and Umboh~\cite{bansal2017tight} one can obtain a constant
+factor approximation of a dominating set from a solution to the LP.
+The proof can easily be adapted to the problem of approximating a
+dominating set of the set $R$.
+
+\begin{lemma}\label{lem:ds-factor}
+  Assume $G$ has an orientation with maximum out-degree $d$.
+  Let $\big(x_v\big)_{v\in V(G)}$ be a solution to the
+  $R$-dominating set~LP. Let $H:=\{v\in V(G) : x_v\ge 1/(2d+1)\}$ and
+  let $U:=\{v\in R : v\not\in N[H]\}$. Then $H\cup U$ dominates~$R$
+  and has size at most $(2d+1)\cdot \gamma_R$.
+\end{lemma}
+
+Observe that when given the solution $\big(x_v\big)_{v\in V(G)}$ to the
+$R$-dominating set~LP the lemma gives rise to a simple LOCAL algorithm.
+First select all vertices $v$ with $x_v\geq 1/(2d+1)$ into a dominating set
+and mark all their neighbors as dominated. Then select all non-dominated
+vertices of $R$ into the dominating set. Clearly, $H\cup U$ is a dominating
+set of $R$. The rest of this section is devoted to the proof of the claimed
+approximation factor. The proof follows the presentation of Bansal and
+Umboh~\cite{bansal2017tight} with the improved bounds of Dvo\v{r}\'ak~\cite{dvovrak2019distance} (presented in \cref{lem:ds-factor}).
+As every solution to the ILP is also a solution
+to the LP we have $\sum_{v\in V(G)}x_v\leq \gamma_R$.
+
+Consider an orientation of $G$ such that the neighborhood of each vertex
+$v$ is decomposed into $N^{in}(v)$ and $N^{out}(v)$, where $|N^{out}(v)|\le d$.
+
+\begin{claim}
+  For every vertex $v\in U$, we have
+  $\big(\sum_{u\in N^{in}(v)}x_u \big)\ge d/(2d+1)$.
+\end{claim}
+\begin{proof}
+  As $v$ is not in $H$, $x_v<1/(2d+1)$. As $v$ is not in $N(H)$, for every
+  vertex $u\in N^{out}(v)$ we have $x_u<1/(2d+1)$. As $|N^{out}(v)|\le d$,
+  and by the first LP condition
+  $\big(\sum_{u\in N^{in}(v)}x_u \big)\ge 1- \frac{1}{2d+1} - \frac{d}{2d+1}
+  \ge \frac{d}{2d+1}$.
+\end{proof}
+
+We can now bound the size of $U$ and $H$
+\begin{claim}
+  $|H\cup U| \le (2d+1)\sum_{v\in V}x_v$.
+\end{claim}
+\begin{proof}
+  First, observe that
+  $|H|\le (2d+1)\sum_{v\in H}\frac{1}{2d+1}
+  \le (2d+1)\sum_{v\in H}(x_v)$.
+  %
+  Then observe that\linebreak
+  %
+  $|U|\le \frac{2d+1}{d}\cdot\sum_{v\in U} \frac{d}{2d+1}
+  \le \frac{2d+1}{d}\sum_{v\in U}\sum_{u\in N^{in}(v)}x_u
+  \le \frac{2d+1}{d}\sum_{u\in N^{in}(U)} (d\cdot x_u)$.
+  Form which we conclude
+  $|U|
+  \le (2d+1) \sum_{u\in N^{in}(U)} x_u$.
+
+  By definition of $U$, we have that $N(U)$ and $H$ are disjoint, this also
+  holds for $H$ and $N^{in}(U)$, hence $|H\cup U| \le (2d+1)\sum_{v\in V}x_v\leq (2d+1)\gamma_R$.
+\end{proof}
+
+\subsection{Solving LPs locally}
+
+As shown by Kuhn et al.~\cite{kuhn2006price} we can locally approximate
+general covering LPs, in particular the above $R$-dominating set LP,
+when the maximum
+degree of the graph is bounded. More precisely, they show how to compute
+a $\Delta^{1/r}$-approximation in $\Oof(r^2)$ rounds. Assuming for a
+moment that $\Delta$ is bounded by an absolute constant we can
+choose $r$ such that $\Delta^{1/r}=1+\e$,
+hence $r=(\log \Delta)/(\log (1+\e))$, which is a constant depending
+only on $\Delta$ and $\e$ in order to compute a
+$(1+\e)$-approximation for the $R$-dominating set LP.
+
+\begin{corollary}\label{cor:LP-approx-general}
+  Assume $G$ has an orientation with maximum out-degree
+  $d$. For every $\e>0$ we can
+  compute a set $D'$ of size at most~$(2d+1)(1+\e)\gamma_R$ that dominates
+  $R$ in $\Oof(\log \Delta/(\log (1+\e))$ rounds in the LOCAL
+  model.
+\end{corollary}
+
+\subsection{From bounded residual degree to bounded degree}
+
+It remains to establish the situation that the maximum degree $\Delta$
+of our graph is bounded. As argued, we have $|R|\leq (\Dr+1)\gamma_R$.
+As only
+the vertices of $R$ need to be
+dominated it suffices to keep only the vertices that have a
+neighbor in $R$; other vertices are not useful as dominators.
+Also, when two vertices $u,v\in V(G)\setminus R$ have exactly
+the same neighbors in $R$, that is, $\Nr(u)=\Nr(v)$,
+it suffices to keep one of $u$ and $v$.
+Note that we can locally decide whether $\Nr(u)=\Nr(v)$.
+For every set $N\subseteq R$ such that there is a vertex $v$
+with $\Nr(v)=N$ we choose the one with the lowest identifier
+as a representative. We construct the graph $G'$ consisting
+of $R$ and all edges between vertices in $R$ as well as the
+set of all representatives and a minimal set of edges such that
+$\Nr(v)$ is equal in $G$ and $G'$ for all representatives $v$.
+Hence in $G'$ we have $\Nr(u)\neq \Nr(v)$ for all $u\neq v\in V(G')\setminus R$.
+As argued above, every $R$-dominating set in $G$ can
+be transformed into an $R$-dominating set of the same size
+in $G'$ (by choosing appropriate representatives) and
+every $R$-dominating set in $G'$ is an $R$-dominating set in~$G$.
+We can hence continue to work with the graph $G'$. In order to
+avoid complicated notation we simply assume that $G=G'$.
+
+Note that in general we could have $|V(G)|\in \Omega(2^{|R|})$.
+When $\nabla_1(G)$ bounded, however,  it follows from Lemma 4.3 of \cite{gajarsky2017kernelization} that $|V(G)|\leq (4^{\nabla_1}+2\nabla_1)|R|$,
+which is is linear
+in~$|R|$. This is crucial for our further argumentation.
+
+%\begin{lemma}\label{lem:smallX-general}
+%  $|V(G)|\le (4^{\nabla_1}+2\nabla_1)|R|$.
+%\end{lemma}
+%
+%We will provide an improved lemma with a proof for the planar case below.
+
+
+\begin{corollary}\label{cor:size-g-general}
+  $|V(G)| \le (4^{\nabla_1}+2\nabla_1)(\Dr+1)\gamma_R$.
+\end{corollary}
+
+
+\subsection{Conclusion of the algorithm}
+
+
+Given any $\epsilon>0$ we now select all vertices with high degree
+$\Gamma=\Gamma(\epsilon)$ into our
+dominating set, where $\Gamma$ is chosen such that there exist at
+most $\epsilon\gamma$ vertices of degree at least $\Gamma$.
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+  Let $\Gamma\coloneqq 4\nabla_1(4^{\nabla_1}+2\nabla_1)(\Dr+1)/\epsilon$ \quad and \quad
+  $D_3^1\coloneqq \{v\in V(G) ~:~ d(v)>\Gamma\}$.
+\end{tcolorbox}
+
+\begin{lemma}\label{lem:size-D31}
+  $|D_3^1|\le (\epsilon/2)\gamma_R$.
+\end{lemma}
+\begin{proof}
+  We assume the opposite and count the number of edges of $G$.
+  When we sum the degree of the vertices, we get twice the number of
+  edges. Hence $2\cdot |E(G)| > 2\nabla_1(4^{\nabla_1}+2\nabla_1)(\Dr+1)\gamma_R$.
+  Therefore, with \cref{cor:size-g-general},
+  $|E(G)|> \nabla_1|V(G)|$, a contradiction.
+\end{proof}
+
+After picking $D_3^1$ into the dominating set, marking the neighbors of
+$D_3^1$ as dominated and updating the set $R$, we can delete the
+vertices of $D_3^1$. We are left with a graph of maximum degree~$\Gamma$.
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+  Given $\epsilon>0$, let $D_3^2$ be the set computed by the LOCAL algorithm of \cref{cor:LP-approx-general} with parameter $\epsilon/2$.
+\end{tcolorbox}
+
+Let $D_3=D_3^1 \cup D_3^2$. We already noted that the definition of $D_3$ implies that
+$D_1\cup D_2\cup D_3$ is a dominating set of $G$. We now conclude the
+analysis of the size of this computed set.
+
+\begin{lemma}\label{lem:D3-LP}
+  We have that $|D_3| \le (2\nabla_0+1)(1+\e)\gamma_R$.
+\end{lemma}
+\begin{proof}
+By \cref{lem:orientations} $G$ has an orientation with
+out-degree $d\leq \nabla_0$. By
+\cref{cor:LP-approx-general} and \cref{lem:size-D31} we have
+  $|D_3^2|\leq (2\nabla_0+1)(1+\e/2)\gamma_R$, and $|D_3^1|\le (\epsilon/2)\gamma_R$.
+\end{proof}
+
+Now our main theorem, \cref{thm:main-general}, follows by summing the sizes of
+$D_1$, $D_2$ and $D_3$.
+
+\begin{lemma}
+$|D_1\cup D_2\cup D_3|\le 2(\nabla_0+1)(\kappa^{2s\kappa}+2)\gamma$.
+Hence, putting  $c=2(\nabla_1+1)$, we have
+\[
+|D_1\cup D_2\cup D_3|\le \bigl(c^{2c^2}+c\bigr)\gamma.
+\]
+%$in \Oof\hspace{1pt}((4c)^{16c^2}\gamma)$
+\end{lemma}
+\begin{proof}
+We have
+\begin{align*}
+	\rho(G)&\leq 2\nabla_0(G)+1&\text{(by \cref{lem:bounds})}\\
+	|D_1|&\leq \rho(G)\gamma\leq (2\nabla_0+1)\gamma&\text{(by \cref{lem:size-D1})}\\
+	|D_2| &\le \kappa^{2s\kappa}(\rho(G)+1)\gamma\leq \kappa^{2s\kappa}(2\nabla_0+2)\gamma&\text{(by \cref{lem:small-D-hat})}\\
+	\intertext{Last, by setting $\epsilon=1$ in \cref{lem:D3-LP} we have}
+	|D_3|&\leq (2\nabla_0+1)(1+\e)\gamma_R\leq 2(2\nabla_0+1)\gamma.
+\end{align*}
+We conclude, as  $\kappa\le 2\nabla_1+2$ and $s\leq 2\nabla_1+1$.
+%By \cref{lem:bounds} we have $\rho(G)\leq 2\nabla_0(G)+1$.
+%By \cref{lem:size-D1} we we have $|D_1|\leq \rho(G)\gamma\leq (2\nabla_0+1)\gamma$.
+%According to \cref{lem:small-D-hat} we have $|D_2| \le \kappa^{2s\kappa}(\rho(G)+1)\gamma\leq \kappa^{2s\kappa}(2\nabla_0+2)\gamma$. Finally, by setting $\epsilon=1/2$ in
+%\cref{lem:D3-LP} we have $|D_3|\leq (2\nabla_0+1)(1+2\e)\gamma_R\leq
+%2(2\nabla_0+1)\gamma$.
+
+%By  we conclude $|D|\leq (2\nabla_0+1)$
+\end{proof}

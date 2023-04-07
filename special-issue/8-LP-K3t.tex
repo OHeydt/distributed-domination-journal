@@ -1,0 +1,78 @@
+% !TEX root = main.tex
+
+\subsection{Phase 3: LP-based approximation}\label{sec:LP-planar}
+%
+%\sebi{Update the general case such that we can work
+%with arbitrary $\epsilon$.}
+%
+%Recall that we chose $\rho$ such that $|(D_1 \cup D_2)\cap D| =\rho\gamma$.
+%When $\rho\gamma$ vertices of $D$ were already chosen into
+%the partial dominating set $D_1\cup D_2$ we have $|D_R|\leq (1-\rho)\gamma$.
+%With \cref{cor:planar-orientations} we conclude the following corollary.
+%
+%\sebi{Put this to the general case.}
+%
+%\begin{corollary}\label{cor:LP-approx}
+%  Let $G$ be a graph that has an orientation with maximum out-degree
+%  $d$, let $R\subseteq V(G)$, let~$D_R$ be a
+%  minimum dominating set of $R$, and let $\e>0$. Then we can
+%  compute a set $D'$ of size at most~$(2d+1)(1+\e)|D_R|$ that dominates
+%  $R$ in $\Oof(\log \Delta/(\log (1+\e))$ rounds in the LOCAL
+%  model.
+%
+%  In particular, for our algorithm when
+%
+%  \vspace{-2mm}
+%  \begin{enumerate}
+%    \item $G$ is planar, then $|D'|\leq 7(1+\e)|D_R|
+%      \leq 7(1+\e)(1-\rho)\gamma$, and when
+%    \item $G$ is planar and triangle-free or outerplanar, then
+%      $|D'|\leq 5(1+\e)|D_R|\leq 5(1+\e)(1-\rho)\gamma$.
+%  \end{enumerate}
+%\end{corollary}
+
+We now proceed with the LP-based approximation as in the general case
+presented in \cref{sec:LP}. Recall that for any desired $\epsilon>0$
+we defined $\Gamma$ as an high degree and defined
+$D_3^1$ as the set of all vertices with degree greater than $\Gamma$.
+We added $D_3^1$ to the dominating set and were able to call the
+LP-based approximation algorithm of \cref{cor:LP-approx-general}. We finally
+obtained a set $D_3$ dominating the remaining vertices with
+$|D_3|\leq (2\nabla_0+1)(1+\epsilon)\gamma_R$ according to \cref{lem:D3-LP}.
+
+
+We now conclude our main theorem, \cref{thm:K3t-free-total}, stating
+that the algorithm on $K_{3,t}$-free graphs computes a dominating
+set of size at most $(6\nabla_1+3)\gamma$.
+
+\begin{proof}[Proof of \cref{thm:K3t-free-total}]
+First, $D_1,D_2$, and $D_3$ are computed locally, in a bounded number of
+  rounds, and additionally the set $D_1 \cup D_2 \cup D_3$ dominates $G$. Then,
+  \begin{align*}
+  	|D_1\cup D_2|&<\rho(G)\gamma+2\nabla\eta\gamma&\text{(by \cref{lem:size-D12})}\\
+  	&\leq (2\nabla_1+1)\gamma+2\nabla_1\eta\gamma&\text{(as $\rho(G)\leq 2\nabla_1+1$ and $\nabla\leq \nabla_1$)}
+	\intertext{and}
+  	|D_3|&\leq (2\nabla_0+1)(1+\epsilon)(1-\eta)\gamma&\text{(by \cref{lem:D3-LP})}\\
+	&\leq (2\nabla_1+1)(1+\epsilon)(1-\eta)\gamma&\text{(as $\nabla_0\leq \nabla_1$)}
+  	\intertext{ By choosing $\epsilon=1$,}
+  	|D_1 \cup D_2 \cup D_3|  &\leq (2\nabla_1+1+2\nabla_1\eta+(4\nabla_1+2)(1-\eta))\gamma\\
+  	&\leq  (6\nabla_1+3)\gamma&\text{(maximized when $\eta=0$)}
+  \end{align*}
+\end{proof}
+
+\subsection{Planar graphs}
+
+Finally, we complete the analysis of our algorithm for planar graphs,
+showing that it computes an $(11+\epsilon)$-approximation. In the
+following we fix a planar graph $G$.
+
+\begin{proof}[Proof of \cref{thm:planar}]
+We revisit the proof of \cref{thm:K3t-free-total} and plug in the
+numbers for planar graphs. For planar graphs we have
+$K_{3,3}\not\subseteq G$, $\nabla_0=3$, $\nabla=2$ and
+$\rho=4$, as stated in \cref{lem:bounds}.
+Therefore, by \cref{lem:size-D12} we have $|D_1\cup D_2|<4\gamma+4\eta\gamma$   and by \cref{lem:D3-LP} we have \linebreak $|D_3|\leq (7+\e)(1-\eta)\gamma$. Hence, $|D_1 \cup D_2 \cup D_3|\leq \gamma(4+4\eta +7 - 7\eta +\e - \e\eta)
+  \leq \gamma(11+\e-3\eta -\e\eta)$.
+  As $\eta\in[0,1]$, this is maximized when $\eta=0$. Hence
+  $|D_1 \cup D_2 \cup D_3| \le \gamma(11+\e)$.
+\end{proof}

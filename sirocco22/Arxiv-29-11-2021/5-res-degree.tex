@@ -1,0 +1,216 @@
+% !TEX root = sirocco-main.tex
+
+\section{Greedy domination in planar graphs of maximum
+residual degree}\label{sec:greedy}
+
+We will show next that after the first two phases of the algorithm we
+are in the very nice situation where all residual degrees are
+small. This will allow us to proceed in a greedy manner.
+
+  \begin{lemma}\label{lem:res-degree}
+    For all $v\in V(G)$ we have $\delta_R(v)\leq 30$.
+  \end{lemma}
+  \begin{proof}
+    First, every vertex of $D_1\cup D_2$ has residual degree $0$.
+    Assume that there is a vertex $v$ of residual degree at least $31$.
+    As $v$ is not in $D_1$, its $31$ non-dominated neighbors are
+    dominated by a set $A_v$ of at most 3 vertices. Hence there is a
+    vertex~$z$ (not in $D_1$ nor $D_2$) with $|N_R(v)\cap N_R[z]|\geq
+    \lceil 31/3\rceil = 11$, hence, $|N_R(v)\cap N_R(z)|\geq 10$.
+	This contradicts that $v$ is not in~$D_2$.
+  \end{proof}
+
+In the light of \cref{lem:res-degree}, we could now simply choose
+$D_3$ as the set of elements not in $N[D_1\cup D_2]$.  We would get a
+constant factor approximation, but not a very good one. Instead, we
+now start to simulate the classical greedy algorithm, which in each
+round selects a vertex of maximum residual degree. Here, we let all
+non-dominated vertices that have a neighbor of maximum residual degree
+choose such a neighbor as its dominator (or if they have maximum
+residual degree themselves, they may choose themselves). In general
+this is not possible for a LOCAL algorithm, however, as we established
+a bound on the maximum degree we can proceed as follows.  We let
+$i=30$. Every red vertex that has at least one neighbor of residual
+degree $30$ arbitrarily picks one of them and elects it to the
+dominating set. Then every vertex recomputes its residual degree and
+$i$ is set to $29$. We continue until $i$ reaches $0$ when all
+vertices are dominated. More formally, we define several sets as
+follows.
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+  For $30\geq i\geq 0$,  for every $v\in R$ in parallel:\\[2mm]
+  if there is some $u$ with $\dd_R(u)=i$ and ($\{u,v\}\in E(G)$ or $u=v$), then\\
+  \mbox{ } $\dom_i(v)\coloneqq \{u\}$ (pick one such $u$ arbitrarily),\\
+  \mbox{ } $\dom_i(v)\coloneqq \emptyset$ otherwise.
+  \begin{itemize}
+    \item $R_i \coloneqq R$ \hfill \textit{\small What currently remains to be dominated}
+    \item $\Delta_i \coloneqq \bigcup\limits_{v\in R} \dom_i(v)$ \hfill \textit{\small What we pick in this step}
+    \item $R \coloneqq R \setminus N[\Delta_{i}]$ \hfill \textit{\small Update red vertices}
+  \end{itemize}
+  Finally, $D_3:=  \bigcup\limits_{1\le i\le 30} \Delta_i$.
+\end{tcolorbox}
+
+\smallskip
+Let us first prove that the algorithm in fact computes a dominating set.
+\begin{lemma}\label{lem:correctness}
+  When the algorithm has finished the iteration with parameter
+  $i\geq 1$, then all vertices have residual degree at most $i-1$.
+\end{lemma}
+
+In particular, after finishing the iteration with parameter $1$, there
+is no vertex with residual degree $1$ left and in the final round all
+non-dominated vertices choose themselves into the dominating
+set. Hence, the algorithm computes a dominating set of $G$.
+
+\begin{proof}
+  By induction, before the iteration with parameter $i$, all vertices
+  have residual at most $i$. Assume $v$ has residual degree $i$ before
+  the iteration with parameter $i$.  In that iteration, all
+  non-dominated neighbors of $v$ choose a dominator (possibly $v$, then
+  the statement is trivial),
+  hence, are removed from $R$. It follows that the residual degree of $v$ after
+  the iteration is $0$. Hence, after this iteration and before the
+  iteration with parameter $i-1$, we are left with vertices of
+  residual degree at most $i-1$.
+\end{proof}
+
+We now analyze the sizes of the sets $\Delta_i$ and $R_i$. The first
+lemma follows from the fact that every vertex chooses at most one
+dominator.
+
+\begin{lemma}\label{lem:total-h}
+  For every $i\le 30$, $\sum\limits_{j\le i}|\Delta_j| \le |R_i|$.
+\end{lemma}
+\begin{proof}
+  The vertices of $R_i$ are those that remain to be dominated in the
+  last $i$ rounds of the algorithm. As every vertex that remains to be
+  dominated chooses at most one dominator in one of the rounds
+  $j\leq i$, the statement follows.
+\end{proof}
+
+\pagebreak
+As the vertices of $D$ that still dominate non-dominated vertices also
+have bounded residual degree, we can conclude that not too many
+vertices remain to be dominated.
+\begin{lemma}\label{lem:h1}
+  For every $i\le 30$, $|R_i| \le (i+1)(1-\e)\gamma$.
+\end{lemma}
+\begin{proof}
+  First note that for every $i$,
+  $D\setminus (D_1\cup D_2\cup \bigcup_{j>i}\Delta_j)$ is a dominating
+  set for $R_i$; additionally each vertex in this set has residual
+  degree at most $i$.  And finally, this set is a subset of
+  $D\setminus (D_1\cup D_2)$. Hence by the definition of $\e$, we get
+  that
+  $|D\setminus (D_1\cup D_2\cup \bigcup_{j>i}\Delta_j)|\le
+  (1-\e)\gamma$. As every vertex dominates its residual neighbors and
+  itself, we conclude $|R_i|\le (i+1)(1-\e)\gamma$.
+\end{proof}
+
+The next lemma shows that we cannot pick too many vertices of high
+residual degree. This follows from the fact that planar graphs have
+bounded edge density.
+
+\begin{lemma}\label{lem:delta}
+  For every $7\le i\le 30$, $|\Delta_i| \le \frac{3|R_i|}{i-6}$.
+\end{lemma}
+\begin{proof}
+  Let $7\le i\le 30$ be an integer. We bound the size of $\Delta_i$
+  by a counting argument, using that $G$ (as well as each of its
+  subgraphs) is planar, and can therefore not have to many edges.
+
+  Let $J := G[\Delta_i]$ be the subgraph of $G$ induced by the
+  vertices of $\Delta_i$, which all have residual degree~$i$. Let
+  $K := G[\Delta_i \cup (N[\Delta_i]\cap R_i)]$ be the subgraph of $G$
+  induced by the vertices of $\Delta_i$ together with the red
+  neighbors that these vertices dominate.
+
+  As $J$ is planar, $|E(J)| < 3|V(J)| = 3|\Delta_i|$. As every
+  vertex of $J$ has residual degree exactly $i$, we get
+  $|E(K)| \geq i\Delta_i - |E(J)| > (i-3)|\Delta_i|$ (we have to
+  subtract $|E(J)|$ to not count twice the edges of $K$ that are
+  between two vertices of $J$).  We also have that
+  $|V(K)| \le |V(J)| + |R_i|$. We finally apply Euler's formula again
+  to $K$ and get that $|E_K| < 3|V_K|$ hence
+  $(i-3)|\Delta_i| < 3|\Delta_i| + 3|R_i|$. Therefore
+  $|\Delta_i|< \frac{3|R_i|}{i-6}$.
+\end{proof}
+
+Finally, we can give a lower bound on how many elements are newly
+dominated by the chosen elements of high residual degree.
+
+\begin{lemma}\label{lem:h2}
+  For every $1\leq i\leq 29$, $|R_i| \le |R_{i+1}| - \frac{(i-5)|\Delta_{i+1}|}{3}$.
+\end{lemma}
+
+% Intuitively, these lemmas follows simple reasoning.
+% \cref{lem:total-h} holds because we make sure to never take more
+% than what there is left to dominate. Then \cref{lem:h1} holds
+% because the elements of $D$ that have not been selected in $D_1$ nor
+% $D_2$ form a dominating set for every $R_i$. Additionally, these
+% dominators have bounded residual degree.  \cref{lem:delta} holds
+% thank to an argument similar to the one of \cref{lem:lenzen}: the
+% edge density of the graph induced by $R_i$ and $\Delta_i$ is at most
+% 3, and every vertices of $\Delta_i$ has high degree.  And finally,
+% \cref{lem:h2} is prooved with a similar argument: once $\Delta_i$ is
+% fixed, its neighborhood cannot be too small (this would create a
+% dense subgraph). Therefore we can give a lower bound to the number
+% of elements that are newly dominated.
+
+\begin{proof}
+  Similarly to the proof of \cref{lem:delta} (by replacing $i$ by
+  $i+1$), we define $J := G[\Delta_{i+1}]$ and
+  $K:= G[\Delta_{i+1} \cup (N[\Delta_{i+1}]\cap R_{i+1})]$.
+
+  We then
+  replace the bound $|V(K)| \le |V(J)| + |R_{i+1}|$ by
+  $|V(K)| \le |V(J)| + |N[\Delta_{i+1}]\cap R_{i+1}|$.
+
+  We then get:
+  \[|E_K| \leq 3 |V_K|, \]
+  \[(i+1)|\Delta_{i+1}| - 3|\Delta_{i+1}| \leq 3(|\Delta_{i+1}| +
+    |N[\Delta_{i+1}]\cap R_{i+1}|)\text{, and}\]
+  \[ |N[\Delta_{i+1}]\cap R_{i+1}| \geq \frac{(i+1-6)|\Delta_{i+1}|}{3}.\]
+
+  Now, as $R_i = R_{i+1} \setminus N[\Delta_{i+1}]$, we have
+  $|R_i| \le |R_{i+1}| - |N[\Delta_{i+1}]\cap R_{i+1}|\leq |R_{i+1}| -
+  \frac{(i+1-6)|\Delta_{i+1}|}{3}$.
+\end{proof}
+
+We now formulate (and present in \cref{sec:linear-prog}) a linear program to
+maximize $|D_3|$ under these constraints. As a result we conclude the
+following lemma.
+
+\begin{lemma}\label{lem:size-D3}
+  $|D_3|\le 15.9(1-\e)\gamma$.
+\end{lemma}
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Summarizing the planar case}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We already noted that the definition of $D_3$ implies that
+$D_1\cup D_2\cup D_3$ is a dominating set of $G$. We now conclude the
+analysis of the size of this computed set.  First, by
+\cref{lem:size-D12} we have $|D_1\cup D_2|<4\gamma+4\e\gamma$.  Then,
+by \cref{lem:size-D3} we have $|D_3|\le 15.9(1-\e)\gamma$.
+%
+Therefore $|D_1 \cup D_2 \cup D_3| < 19.9\gamma -11.9\e\gamma$.
+%
+As $\e\in[0,1]$, this is maximized when $\e=0$. Hence
+\mbox{$|D_1 \cup D_2 \cup D_3|< 19.9 \gamma$}.
+
+\begin{theorem}\label{thm:planar}
+  There exists a distributed LOCAL algorithm that, for every planar
+  graph $G$, computes in a constant number of rounds a dominating set
+  of size at most $20\gamma(G)$.
+\end{theorem}

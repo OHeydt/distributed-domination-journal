@@ -1,0 +1,34 @@
+% !TEX root = sirocco-main.tex
+\section{The algorithm}
+
+In this final section we summarize the algorithm.
+
+\begin{enumerate}
+\item Compute the set $D_1$ of all $v$ such that $N(v)$ cannot be
+dominated by $2\nabla_1(G)$ vertices different from $v$.
+Remove $D_1$ from $G$ and mark all its neighbors as dominated.
+\item In parallel for every vertex $v=v_1$ compute all $k$-domination
+sequences $v_1,\ldots, v_s$. Add all vertices $v_s$ to the set
+$D_2$. Remove $D_2$ from $G$ and mark its neighbors as
+dominated. This is done as follows.
+
+We can learn the
+neighborhood $N_2[v]$ for every vertex $v$ in $2$ rounds.
+In the LOCAL model we can then compute the pseudo-covers
+without further communication. In two additional rounds can
+compute the domination sequences from the pseudo-covers
+(as we need to consider only elements from $N_2[v_1]$).
+We report in $2$ additional rounds that $v_s$ belongs to $D_2$
+and one more round to mark the neighbors of~$D_2$ as
+dominated.
+\item In the final round we add all non-dominated vertices to a set $D_3$
+and return the set $D_1\cup D_2\cup D_3$.
+\end{enumerate}
+
+According to \cref{lem:neighborhood-dom1},
+\cref{lem:small-D-hat}
+  and \cref{crl:d3}
+  the algorithm computes a $2+  3(2k)^{t(2k+1)}+k^{t-1}(2t-1+(t-1)q)$
+  approximation. This is an absolute constant in
+  $\mathcal{O}(\nabla_1^{4t\nabla_1+t})$ depending only on $\nabla_1(G)$,
+  as also $t<2\nabla_1$.

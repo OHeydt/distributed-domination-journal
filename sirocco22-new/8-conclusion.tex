@@ -1,0 +1,40 @@
+% !TEX root = sirocco-main.tex
+
+\section{Conclusion}
+We provided a new LOCAL algorithm that computes an
+($11+\e$)\hspace{1pt}-\hspace{1pt}approximation of
+a minimum dominating set in a planar graph in a constant number of
+rounds. Started with different parameters, the algorithm works also
+for several restricted cases of planar graphs. We showed that
+it computes an ($8+\e$)\hspace{1pt}-\hspace{1pt}approximation for
+triangle-free planar graphs, a ($7+\e$)\hspace{1pt}-\hspace{1pt}approximation
+for bipartite planar graphs, a 7\hspace{1pt}-\hspace{1pt}approximation
+for planar graphs of girth 5 and an
+($8+\e$)\hspace{1pt}-\hspace{1pt}approximation
+for outerplanar graphs. In all cases except for the outerplanar case,
+where an optimal bound of 5 was already known, our algorithm
+improves on the previously best known approximation factors.
+This improvement is most significant in the case of general planar
+graphs, where the previously best known factor was 52.
+While we could tighten the gap between the best known lower bound of 7
+and upper bound of 12, there is still some room for improvement. We
+believe that the optimum approximation rate is closer to $7$ than
+to $11+\e$.
+\todoA{talk about randomized LP approx?}
+
+\alex{random approach needs an improvement of \cref{lem:smallX}.
+  We can improve a bit the degree constrain to have at most $X$ element of degree
+  $3V/X +3$ instead of $6V/X$ as it is now.
+  remember that we can have $|D_3^2| \le (1+\e)(1+\ln(\Delta+1))$. With that:
+  \begin{itemize}
+    \item if we pick only $1\gamma$ vertices in $D_3^1$, the degree is $\approx 1119$ and $|D_3| \approx (1+8,02)\gamma$.
+    \item if we pick only $2\gamma$ vertices in $D_3^1$, the degree is $\approx 561$ and $|D_3| \approx (2+7,33)\gamma$.
+    \item if we pick only $3\gamma$ vertices in $D_3^1$, the degree is $\approx 375$ and $|D_3| \approx (3+6,93)\gamma$.
+    \item if we pick only $4\gamma$ vertices in $D_3^1$, the degree is $\approx 282$ and $|D_3| \approx (4+6,65)\gamma$.
+    \item finally, if we want some improvement we need
+    $|D_3^2|\lessapprox 7\gamma$. This
+    requires max degree at most $e^{7-1}-1 \approx 402$.
+    To get that degree bound, we need (currently) to select
+    $\gtrapprox 3V/402\approx 2.8\gamma$ so here again a 9ish approx for $D_3$.
+  \end{itemize}
+}

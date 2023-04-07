@@ -1,0 +1,220 @@
+% !TEX root = sirocco-main.tex
+
+\section{Phase 1: Preprocessing}\label{sec:step1}
+
+As outlined in the introduction, our algorithm works in three phases.
+In phase~$i$ for $1\leq i\leq 3$ we select a partial dominating set
+$D_i$ and estimate its size in comparison to $D$. In the end we will
+return $D_1\cup D_2\cup D_3$. We will call vertices that have been selected
+into a set $D_i$ \emph{green}, vertices that are dominated by a green
+vertex but are not green themselves are called \emph{yellow} and all
+vertices that still need to be dominated are called \emph{red}. In the
+beginning, all vertices are marked red.
+
+The first phase of our algorithm is similar to the first phase of the
+algorithm of Lenzen et al.~\cite{lenzen2013distributed}. It is a
+preprocessing step that leaves us with only vertices whose
+neighborhoods can be dominated by a few other vertices. Lenzen et al.\
+proved that there exist less than $3\gamma$
+many vertices $v$ such
+that the open neighborhood~$N(v)$ of $v$ cannot be dominated by $6$
+vertices of $V(G)\setminus \{v\}$~\cite[Lemma
+6.3]{lenzen2013distributed}. The lemma can be generalized to more
+general graphs, see~\cite{amiri2019distributed}). We prove the
+following lemma, which is stronger in the sense that the number of
+vertices required to dominate the open neighborhoods is smaller than
+$6$, at the cost of having slightly more vertices with that property.
+
+\smallskip We define $D_1$ as the set of all vertices whose
+neighborhood cannot be dominated by $3$ other vertices.
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+\vspace{-4mm}
+  \begin{align*}
+  D_1\coloneqq & \{v\in V(G) : \text{ for all sets } A\subseteq V(G)\setminus \{v\}
+   \text{ with $N(v)\subseteq N[A]$}\\ 
+  & \hspace{7.5cm}\text{we have $|A|> 3\}$.}
+  \end{align*}
+\end{tcolorbox}
+
+\smallskip
+
+We prove a very general lemma that can be applied also for more
+general graph classes, even though we will apply it only for planar
+graphs.  Hence, in the following lemma, $G$ can be an arbitrary graph,
+while in the following lemmas $G$ will again be the planar graph that
+we fixed in the beginning.
+
+
+\begin{lemma}\label{lenzen-improved}
+  Let $G$ be a graph, let $D$ be a minimum dominating set of $G$ of
+  size $\gamma$ and let $\nn$ be an integer strictly larger than the
+  edge density of a densest bipartite $1$-shallow minor of $G$. Let
+  $\hat{D}$ be the set of vertices $v\in V(G)$ whose neighborhood
+  cannot be dominated by $(2\nn-1)$ vertices of $D$ other than $v$,
+  that is,
+  \begin{align*}
+    \hat{D}\coloneqq & \{v\in V(G) : \text{ for all sets }
+      A\subseteq D\setminus \{v\} \text{ with } N(v)\subseteq N[A] \\
+      & \hspace{6.5cm}\text{we have }|A|> (2\nn-1)\}.
+  \end{align*}
+  Then $|\hat{D}\setminus D| < \chi(G)\cdot\gamma$.
+\end{lemma}
+
+Recall that minors of planar graphs are again planar, hence, the
+maximum edge density of a bipartite $1$-shallow minor of a planar
+graph is smaller than $2$ and hence we can choose $\nn=2$ for the case
+of planar graphs and we note the following corollary.
+\begin{cor}\label{lenzen-improved-planar}\hspace{-1.7mm}\textbf{.}
+  Let $\hat{D}$ be the set of vertices $v$ whose neighborhood cannot
+  be dominated by $3$ vertices of $D$ other than $v$, that is,
+  \[
+    \text{ $\hat{D}\coloneqq \{v\in V(G) :$ for all sets
+      $A\subseteq D\setminus \{v\}$ with $N(v)\subseteq N[A]$ we have
+      $|A|>3\}$.}
+  \]
+  Then $|\hat{D}\setminus D| < 4\gamma$.
+\end{cor}
+%\begin{proof}[Direct proof of \cref{lenzen-improved-planar}]
+%  Assume $D=\{b_1,\ldots,b_\gamma\}$.  Assume that there are
+%  $4\gamma$ vertices $a_1,\ldots,a_{4\gamma}\not\in D$ satisfying the
+%  above condition. As the subgraph induced by the $a_is$ is also
+%  planar, it is $4$-colorable and we find a subset of the $a_is$ of
+%  size $\gamma$ that is independent. We can hence assume that
+%  $a_1,\ldots,a_{\gamma}$ are not connected by an edge. We proceed
+%  towards a contradiction.
+%
+%  We first build a bipartite $1$-shallow minor $H$ of the graph $G$
+%  with the following \mbox{$2\gamma$} branch sets. For every
+%  \mbox{$i\le \gamma$} we have a branch set $A_i=\{a_i\}$ and a
+%  branch set
+%  \mbox{$B_i=N[b_i]\setminus (\{a_1,\ldots, a_{\gamma}\}\cup
+%  \bigcup_{j<i}N[b_j]\cup \{b_{i+1},\ldots, b_\gamma\})$}. Note that
+%  the $B_i$ are vertex disjoint and hence we define proper branch
+%  sets.  Denote by $a_1',\ldots, a_{\gamma}',b_1',\ldots, b_\gamma'$
+%  the associated vertices of $H$. Denote by $A$ the set of the
+%  $a_i's$ and by $B$ the set of the $b_j's$.  We delete all edges
+%  between vertices of $B$. The vertices of $A$ are independent by
+%  construction.  Hence, $H$ is a bipartite $1$-shallow minor of $G'$.
+%
+%  Since $\{b_1,\ldots, b_\gamma\}$ is a dominating set of $G'$ and by
+%  assumption on $N(a_i)$, we have that in $H$, every $a'_i$ has at
+%  least $4$ neighbors in $B$. Note that we use here that $A$ is an
+%  independent set. Hence, $|E(H)| \ge 4|V(A)| = 4\gamma$. As
+%  $|V(H)|=2\gamma$ we conclude $|E(H)|\ge 2|V(H)|$. This however is a
+%  contradiction: as $H$ is a bipartite planar graph, we have
+%  $|E(H)|<2|V(H)|$.
+%\end{proof}
+
+\begin{proof}[of~\cref{lenzen-improved}]
+  Assume $D=\{b_1,\ldots,b_\gamma\}$.  Assume that there are
+  $\chi(G)\cdot\gamma$ vertices
+  $a_1,\ldots,a_{\chi(G)\gamma}\not\in D$ satisfying the above
+  condition. As the chromatic number is monotone over subgraphs, the
+  subgraph induced by the $a_is$ is also $\chi(G)$-chromatic, so we
+  find an independent subset of the $a_is$ of size $\gamma$. We can
+  hence assume that $a_1,\ldots,a_{\gamma}$ are not connected by an
+  edge. We proceed towards a contradiction.
+
+  We construct a bipartite $1$-shallow minor $H$ of $G$ with the
+  following \mbox{$2\gamma$} branch sets. For every
+  \mbox{$i\le \gamma$} we have a branch set $A_i=\{a_i\}$ and a branch
+  set
+  \mbox{$B_i=N[b_i]\setminus (\{a_1,\ldots, a_{\gamma}\}\cup
+    \bigcup_{j<i}N[b_j]\cup \{b_{i+1},\ldots, b_\gamma\})$}. Note that
+  the $B_i$ are vertex disjoint and hence we define proper branch
+  sets. Intuitively, for each vertex $v\in N(a_i)$ we mark the
+  smallest $b_j$ that dominates $v$ as its dominator. We then contract
+  the vertices that mark $b_j$ as a dominator together with $b_j$ into
+  a single vertex. Note that because the $a_i$ are independent, the
+  vertices $a_i$ themselves are not associated to a dominator as no
+  $a_j$ lies in $N(a_i)$ for~$i\neq j$.  Denote by
+  $a_1',\ldots, a_{\gamma}',b_1',\ldots, b_\gamma'$ the associated
+  vertices of $H$. Denote by $A$ the set of the $a_i's$ and by $B$ the
+  set of the~$b_j's$.  We delete all edges between vertices of
+  $B$. The vertices of $A$ are independent by construction. Hence, $H$
+  is a bipartite $1$-shallow minor of $G$.  By the assumption that
+  $N(a_i)$ cannot be dominated by $2\nabla-1$ elements of $D$, we
+  associate at least $2\nn$ different dominators with the vertices of
+  $N(a_i)$. Note that this would not necessarily be true if $A$ was
+  not an independent set, as all $a_j\in N(a_i)$ would not be
+  associated a dominator.
+
+  Since $\{b_1,\ldots, b_\gamma\}$ is a dominating set of $G$ and by
+  assumption on $N(a_i)$, we have that in $H$, every~$a'_i$ has at
+  least $2\nn$ neighbors in $B$. Hence,
+  $|E(H)| \ge 2\nn|V(A)| = 2\nn\gamma$. As $|V(H)|=2\gamma$ we
+  conclude $|E(H)|\ge \nn|V(H)|$. This however is a contradiction,
+  as~$\nn$ is strictly larger than the edge density of a densest
+  bipartite $1$-shallow minor of $G$.
+\end{proof}
+
+\bigskip
+
+Let us fix the set $\hat{D}$ for our graph $G$.
+\begin{tcolorbox}
+\vspace{-4mm}
+    \begin{align*}
+      \hat D\coloneqq & \{v\in V(G) : \text{ for all sets } A\subseteq D\setminus \{v\}
+       \text{ with $N(v)\subseteq N[A]$}\\ 
+  & \hspace{7.5cm}\text{we have $|A|> 3\}$.}
+  \end{align*}
+\end{tcolorbox}
+\smallskip
+
+Note that $\hat{D}$ cannot be computed by a local algorithm as we do
+not know the set $D$. It will only serve as an auxiliary set in our
+analysis.
+
+\smallskip The first phase of the algorithm is to compute the set
+$D_1$, which can be done in 2 rounds of communication. Obviously, if
+the open neighborhood of a vertex $v$ cannot be dominated by $3$
+vertices from $V(G)\setminus\{v\}$, then in particular it cannot be
+dominated by $3$ vertices from $D\setminus\{v\}$.  Hence
+$D_1\subseteq \hat{D}$ and we can bound the size of $D_1$ by that of
+$\hat{D}$.
+
+\smallskip
+\begin{lemma}\label{lem:D-hat}
+  We have $D_1\subseteq \hat D$, $|\hat{D}\setminus D|< 4\gamma$, and
+  $|\hat{D}|< 5\gamma$.
+\end{lemma}
+\begin{proof}
+  \cref{lem:D-hat} follows the observation above together with
+  \cref{lenzen-improved-planar}.
+\end{proof}
+
+From \cref{lem:D-hat} we can conclude that $|D_1|< 5\gamma$. However,
+it is intuitively clear that every vertex that we pick from the
+minimum dominating set~$D$ is optimal progress towards dominating the
+whole graph. We will later show that this intuition is indeed true for
+our algorithm, that is, our algorithm performs worst when
+$D_1\cap D=\emptyset$, which will later in fact allow us to
+estimate~$|D_1|<4\gamma$.
+
+\smallskip
+
+We mark the vertices of $D_1$ that we add to the dominating set in the
+first phase of the algorithm as green, the neighbors of $D_1$ as
+yellow and leave all other vertices red. Denote the set of red
+vertices by~$R$, that is, $R=V(G)\setminus N[D_1]$.  For $v\in V(G)$
+let $N_R(v)\coloneqq N(v)\cap R$ and $\delta_R(v)\coloneqq |N_R(v)|$
+be the \emph{residual degree} of~$v$, that is, the number of neighbors
+of $v$ that still need to be dominated.
+
+\smallskip By definition of $D_1$, the neighborhood of every non-green
+vertex can be dominated by at most $3$ other vertices. This holds true
+as well for the subset $N_R(v)$ of neighbors that still need to be
+dominated.  Let us fix such a small dominating set for the red
+neighborhood of every non-green vertex.
+
+\begin{tcolorbox}
+  For every $v\in V(G)\setminus D_1$, we fix
+  $A_v\subseteq V(G)\setminus \{v\}$ such that: \center
+  $N_R(v)\subseteq N[A_v]$ and $|A_v|\leq 3$.
+\end{tcolorbox}
+
+There are potentially many such sets $A_v$ -- we fix one such set
+arbitrarily.  Let us stress that even though we could compute the sets
+$A_v$ in a local algorithm (making decisions based on vertex ids), we
+only use these sets for our further argumentation and do not need to
+compute them.

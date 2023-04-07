@@ -1,0 +1,229 @@
+% !TEX root = sirocco-main.tex
+
+
+\section{Phase 2: Analyzing the local dominators}\label{sec:D2}
+
+The second phase of our algorithm is inspired by results of Czygrinow
+et al.~\cite{czygrinow2018distributed} and the greedy domination
+algorithm for biclique-free graphs of~\cite{siebertz2019greedy}.
+Czygrinow et al.~\cite{czygrinow2018distributed} defined the notion of
+\emph{pseudo-covers}, which provide a tool to carry out a fine grained
+analysis of vertices that can potentially belong to the sets $A_v$
+used to dominate the red neighborhood~$N_R(v)$ of a vertex $v$. This
+tool can in fact be applied to much more general graphs than planar
+graphs, namely, to all graphs that exclude some complete bipartite
+graph~$K_{t,t}$.  A refined analysis for classes of bounded expansion
+was provided by Kublenz et al.~\cite{kublenz2020distributed}.  We
+provide an even finer analysis for planar graphs on which we base a
+second phase of our distributed algorithm.
+
+We first describe what our algorithm computes, and then provide bounds
+on the number of selected vertices. Intuitively, we select every pair
+of vertices with sufficiently many neighbors in common.
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+\begin{itemize}
+\item For $v\in V(G)$ let
+  $B_v\coloneqq \{z\in V(G)\setminus \{v\}: |N_R(v)\cap N_R(z)|\geq
+  10\}$.\smallskip
+\item Let $W$ be the set of vertices $v\in V(G)$ such that
+  $B_v \neq \emptyset$.\smallskip
+\item Let $D_2\coloneqq \bigcup\limits_{v\in W} (\{v\}\cup B_v)$.
+\end{itemize}
+\end{tcolorbox}
+
+Once $D_1$ has been computed in the previous phase, 2 more rounds of
+communication are enough to compute the sets $B_v$ and $D_2$.
+%
+Before we update the residual degrees, let us analyze the sets $B_v$
+and~$D_2$.  First note that the definition is symmetric: since
+$N_R(v)\cap N_R(z)=N_R(z)\cap N_R(v)$ we have for all $v,z\in V(G)$ if
+$z\in B_v$, then $v\in B_z$. In particular, if $v\in D_1$ or
+$z\in D_1$, then $N_R(v)\cap N_R(z)=\emptyset$, which immediately
+implies the following lemma.
+
+% \begin{restatable}{lemma}{recapLemWAndD}\label{lem:WcapD1}
+%   We have $W\cap D_1=\emptyset$ and for every $v\in V(G)$ we have
+%   $B_v\cap D_1=\emptyset$.
+% \end{restatable}
+
+\begin{lemma}\label{lem:WcapD1}
+  We have $W\cap D_1=\emptyset$ and for every $v\in V(G)$ we have
+  $B_v\cap D_1=\emptyset$.
+\end{lemma}
+
+%\begin{proof}
+%  Let $v,z\in V(G)$. If $v\in D_1$, then
+%  $N_R(v)=\emptyset$. Similarly if $z\in D_1$, then
+%  $N_R(v)\cap N(z)=N(v)\cap N_R(z) =\emptyset$.
+%\end{proof}
+
+Now we prove that for every $v\in W$, the set $B_v$ cannot be too big,
+and has nice properties.
+\begin{lemma}\label{lem:dominating-dominators}
+  For all vertices $v\in W$ we have
+
+  \vspace{-5pt}
+  \begin{itemize}
+  \item $B_v \subseteq A_v$ (hence $|B_v|\le 3$), and \smallskip
+  \item if $v\not\in \hat{D}$, then $B_v\subseteq D$.
+  \end{itemize}
+\end{lemma}
+
+\begin{proof}
+  Assume $A_v=\{v_1,v_2,v_3\}$ (a set of possibly not distinct
+  vertices) and assume there exists
+  $z\in V(G)\setminus \{v,v_1,v_2, v_3\}$ with
+  $|N_R(v) \cap N_R(z)| \geq 10$.  As $v_1, v_2, v_3$ dominate $N_R(v)$,
+  and hence also \mbox{$N_R(v)\cap N_R(z)$}, there must be some~$v_i$,
+  $1\leq i\leq 3$, with
+  \mbox{$|N_R(v) \cap N_R(z) \cap N[v_i]| \geq \lceil 10/3\rceil \geq
+    4$}.  Therefore, $|N_R(v) \cap N_R(z) \cap N(v_i)| \geq 3$,
+  which shows that $K_{3,3}$ is a subgraph of~$G$, contradicting the
+  assumption that $G$ is planar.
+
+  If furthermore $v\not\in \hat{D}$, by definition of $\hat{D}$, we
+  can find $w_1,w_2, w_3$ from $D$ that dominate $N(v)$, and in
+  particular $N_R(v)$.  If $z\in V(G)\setminus \{v,w_1,w_2, w_3\}$
+  with $|N_R(v) \cap N_R(z)| \geq 10$ we can argue as above to obtain
+  a contradiction.
+\end{proof}
+
+% In the light of \cref{lem:dominating-dominators}, we select all
+% paires of nodes with sufficiently large intersecting neighborhood.
+%
+% \begin{tcolorbox}
+%   For $v\in V(G)$ let $B_v\coloneqq \{z\in V(G)\setminus \{v\}:
+%   |N(v)\cap N(z)|\geq 19\}$.
+% \end{tcolorbox}
+
+% \begin{corollary}\label{cor:dominating-dominators}
+%   For every vertex $v$, $B_v\subseteq A_v$, in particular,
+%  $|B_v|\leq 6$ and if $v\not\in \hat{D}$, then $B_v\subseteq D$.
+% \end{corollary}
+%
+% \begin{tcolorbox}
+%   We define $W$ as the set of vertices $v\in V(G)$ such
+%   that $B_v\neq \emptyset$. We define \[D_2\coloneqq \bigcup_{v\in W}
+%   (\{v\}\cup B_v).\]
+% \end{tcolorbox}
+% \vspace{0mm}
+
+% Our algorithm now proceeds as follows. Obviously, every vertex $v$
+% can locally compute the set $B_v$. The algorithm adds the set $D_2$
+% to the dominating set, removes~$D_2$ from the graph and marks all
+% vertices dominated by $D_2$ as dominated.  \alex{here again 'remove'
+% vertices?}
+
+Let us now analyze the size of $D_2$. For this we refine the set $D_2$
+and define
+\begin{tcolorbox}
+  \begin{enumerate}
+    \item $D_2^1\coloneqq \bigcup_{v\in W\cap D}
+    (\{v\}\cup B_v)$, \smallskip
+    \item $D_2^2\coloneqq \bigcup_{v\in W\cap (\hat{D}\setminus D)}
+    (\{v\}\cup B_v)$, and \smallskip
+    \item $D_2^3\coloneqq \bigcup_{v\in W\setminus (D\cup \hat{D})}
+    (\{v\}\cup B_v)$.
+  \end{enumerate}
+\end{tcolorbox}
+
+\smallskip
+Obviously $D_2=D_2^1\cup D_2^2\cup D_2^3$. We now bound the size of the
+refined sets $D_2^1,D_2^2$ and $D_2^3$.
+
+\begin{lemma}\label{lem:size-D21}
+  $|D_2^1\setminus D|\leq 3\gamma$.
+\end{lemma}
+\begin{proof}
+  We have
+  \[|D_2^1\setminus D|= |\bigcup_{v\in W\cap D} (\{v\}\cup
+    B_v)\setminus D|\leq |\bigcup_{v\in W\cap D}B_v|\leq \sum_{v\in
+      W\cap D}|B_v|.\] By \cref{lem:dominating-dominators} we have
+  $|B_v|\leq 3$ for all $v\in W$ and as we sum over $v\in W\cap D$ we
+  conclude that the last term has order at most $3\gamma$.
+\end{proof}
+
+\begin{lemma}\label{lem:size-D22}
+  $D_2^2 \subseteq \hat D$ and therefore
+  $|D_2^2\setminus D|< 4\gamma$.
+\end{lemma}
+\begin{proof}
+  Let $v\in \hat{D}\setminus D$ and let $z\in B_v$. By symmetry,
+  $v\in B_z$ and according to \cref{lem:dominating-dominators}, if
+  $z\not\in \hat{D}$, then~$v\in D$.  Since this is not the case, we
+  conclude that $z\in\hat{D}$.  Hence $B_v\subseteq \hat{D}$ and, more
+  generally, $D_2^2\subseteq \hat{D}$.  Finally, according to
+  \cref{lem:D-hat} we have $|\hat{D}\setminus D|<4\gamma$.
+\end{proof}
+
+Finally, the set $D_2^3$, which appears largest at first glance, was
+actually already counted, as shown in the next lemma.
+\begin{lemma}\label{lem:size-D23}
+  $D_2^3\subseteq D_2^1$.
+\end{lemma}
+\begin{proof}
+  If $v\not\in \hat{D}$, then $B_v\subseteq D$ by
+  \cref{lem:dominating-dominators}.  Hence $v\in B_z$ for some
+  $z\in D$, and $v\in D_2^1$.
+\end{proof}
+
+Again, it is intuitively clear that the situation when the sets
+$D_2^i$ are large does not lead to the worst case for the overall
+algorithm. For example, when $D_2^1$ is large we have added many
+vertices of the optimum dominating set $D$. For a formal analysis, we
+analyze the number of vertices of $D$ that have been selected so far.
+
+\begin{tcolorbox}
+  Let $\rho\in [0,1]$ be such that $|(D_1 \cup D_2)\cap D| =\rho\gamma$.
+\end{tcolorbox}
+% \alex{$\rho$ instead of $\e$ for the LP approx, and $\delta$ for the residual degree}
+
+\smallskip
+\begin{lemma}\label{lem:size-D12}
+  We have $|D_1\cup D_2| < 4\gamma+4\rho\gamma$.
+\end{lemma}
+\begin{proof}
+  By \cref{lem:size-D23} we have $D_2^3\subseteq D_2^1$, hence,
+  $D_1\cup D_2=D_1\cup D_2^1\cup D_2^2$. By \cref{lem:D-hat} we have
+  $D_1 \subseteq \hat D$ and by \cref{lem:size-D22} we also have
+  $D_2^2 \subseteq \hat D$, hence $D_1\cup D_2^2\subseteq \hat D$.
+  Again by \cref{lem:D-hat}, $|\hat D \setminus D|<4\gamma$ and
+  therefore $|(D_1 \cup D_2^2 )\setminus D| < 4 \gamma$.
+
+  We have $W\cap D\subseteq D_2^1\cap D$, hence with
+  \cref{lem:dominating-dominators} we conclude that
+  \[
+    \big\vert D_2^1 \setminus D \big\vert \leq
+    \Big\vert\bigcup\limits_{v\in D \cap D_2^1}B_v\Big\vert \leq
+    \sum\limits_{v\in D \cap D_2^1} |B_v| \leq 3\rho\gamma,
+  \]
+  hence $(D_1\cup D_2)\setminus D<4\gamma+3\rho\gamma$. Finally,
+  $D_1\cup D_2=(D_1\cup D_2)\setminus D\cup ((D_1\cup D_2)\cap D)$ and
+  with the definition of $\rho$ we conclude
+  $|D_1\cup D_2|<4\gamma + 4\rho\gamma$.
+\end{proof}
+
+The analysis of the next and final step of the algorithm will actually
+show that the worst case is obtained when $\rho=0$.
+
+We now update the residual degrees, that is, we update $R$ as
+$V(G)\setminus N[D_1\cup D_2]$ and for every vertex the number
+$\delta_R(v)=N(v)\cap R$ accordingly.
+%
+We finally show that after the first two phases of the algorithm we
+are in the very nice situation where all residual degrees are
+small. %This will allow us to proceed in a greedy manner.
+
+  \begin{lemma}\label{lem:res-degree}
+    For all $v\in V(G)$ we have $\delta_R(v)\leq 30$.
+  \end{lemma}
+  \begin{proof}
+    First, every vertex of $D_1\cup D_2$ has residual degree $0$.
+    Assume that there is a vertex $v$ of residual degree at least $31$.
+    As $v$ is not in $D_1$, its $31$ non-dominated neighbors are
+    dominated by a set $A_v$ of at most 3 vertices. Hence there is a
+    vertex~$z$ (not in $D_1$ nor $D_2$) with $|N_R(v)\cap N_R[z]|\geq
+    \lceil 31/3\rceil = 11$, hence, $|N_R(v)\cap N_R(z)|\geq 10$.
+	This contradicts that $v$ is not in~$D_2$.
+  \end{proof}

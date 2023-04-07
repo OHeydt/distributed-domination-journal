@@ -1,0 +1,1016 @@
+% !TEX root = sirocco-main.tex
+
+
+\section{Restricted classes of planar graphs}
+In this section we further restrict the input graphs, requiring e.g.\ planarity
+together with a lower bound on the girth. Our algorithm works exactly as before, however,
+using different parameters. From the different edge densities and
+chromatic numbers of
+the restricted graphs we will then derive different constants and
+as a result a better approximation factor. Throughout this section
+we use the same notation as in the first part of the paper and state
+in the adapted lemmas with the same numbers as in the first part
+the adapted sizes of the respective sets.
+
+As in the general case in the first phase we begin by computing
+the set $D_1$ and analyzing it in terms of the auxiliary set $\hat{D}$.
+
+%The proofs of most lemmas
+%can be easily adapted from the general case and we will only go into
+%detail when needed. In \cref{sec:triangle-free} we prove that on
+%triangle-free planar graphs we can compute a 16-approximation, improving
+%the currently best known bound of 32. In \cref{sec:girth} we prove
+%that on planar graphs of girth 5 we can compute a 9-approximation,
+%improving the best known bound of 18, and finally in \cref{sec:outer}
+%we prove that on outerplanar graphs our algorithm computes a 13-approximation. This does not improve the tight known bound
+%of 5, however, it demonstrates that our algorithm works robustly
+%on this interesting subclass.
+
+
+% \setcounter{lemma}{4}
+
+% \begin{acor}\label{a-lenzen-improved-planar}\hspace{-1.7mm}\textbf{.}
+%
+%   \vspace{-6mm}
+%   \textit{\begin{enumerate}
+%     \item If $G$ is bipartite, then $|\hat{D}\setminus D| < 2\gamma$.\smallskip
+%     \item If $G$ is triangle-free, outerplanar, or has girth 5,
+%       then $|\hat{D}\setminus D| < 3\gamma$.
+%   \end{enumerate}}
+% \end{acor}
+\begin{adapted}{lenzen-improved-planar}{a-lenzen-improved-planar}
+
+  \vspace{-6mm}
+  \textit{\begin{enumerate}
+    \item If $G$ is bipartite, then $|\hat{D}\setminus D| < 2\gamma$.\smallskip
+    \item If $G$ is triangle-free, outerplanar, or has girth 5,
+      then $|\hat{D}\setminus D| < 3\gamma$.
+  \end{enumerate}}
+\end{adapted}
+
+\begin{proof}
+This is immediate from \cref{lem:densities} and \cref{lenzen-improved}.
+\end{proof}
+
+The inclusion $D_1\subseteq \hat D$ continues to hold and the bound
+on the sizes as stated in the next lemma is again a direct consequence of the corollary.
+
+\smallskip
+% \begin{alemma}\label{alem:D-hat}\hspace{-1.7mm}\textbf{.}
+%     We have $D_1\subseteq \hat D$, and
+%   \textit{\begin{enumerate}
+%     \item if $G$ is bipartite,
+%       then $|\hat{D}\setminus D| < 2\gamma$ and $|\hat{D}|< 3\gamma$.\smallskip
+%     \item if $G$ is triangle-free, outerplanar, or has girth 5,
+%       then $|\hat{D}\setminus D| < 3\gamma$ and $|\hat{D}|< 4\gamma$.
+%   \end{enumerate}}
+% \end{alemma}
+\begin{adapted}{lem:D-hat}{alem:D-hat}
+    We have $D_1\subseteq \hat D$, and
+  \textit{\begin{enumerate}
+    \item if $G$ is bipartite,
+      then $|\hat{D}\setminus D| < 2\gamma$ and $|\hat{D}|< 3\gamma$.\smallskip
+    \item if $G$ is triangle-free, outerplanar, or has girth 5,
+      then $|\hat{D}\setminus D| < 3\gamma$ and $|\hat{D}|< 4\gamma$.
+  \end{enumerate}}
+\end{adapted}
+
+
+In case of triangle-free planar graphs (in particular in the case of bipartite
+planar graphs) we proceed with the second phase exactly as in the second phase of
+the general algorithm (\cref{sec:D2}), however, the parameter 10 is replaced by
+the parameter $7$. In  case of planar graphs of girth at least five or outerplanar
+graphs, we simply set $D_2=\emptyset$.
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+  If $G$ is triangle-free:
+
+  \begin{itemize}
+    \item For $v\in V(G)$ let $B_v\coloneqq \{z\in V(G)\setminus
+      \{v\}: |N_R(v)\cap N_R(z)|\geq 7\}$.\smallskip
+    \item Let $W$ be the set of vertices $v\in V(G)$ such
+      that $B_v \neq \emptyset$.\smallskip
+    \item Let $D_2\coloneqq \bigcup\limits_{v\in W} (\{v\}\cup B_v)$.
+  \end{itemize}
+
+  If $G$ has girth at least $5$ or $G$ is outerplanar, let $D_2=\emptyset$.
+\end{tcolorbox}
+
+\cref{lem:WcapD1} is based only on the definition of $B_v$ and $W$ and
+does not use particular properties of planar graphs, hence, it also holds
+in the restricted case and we recall it for convenience.
+
+% \recapLemWAndD
+
+% \ref*{lem:WcapD1}
+\setcounter{lemma}{7-1}
+\begin{lemma}\label{alem:WcapD1}
+  We have $W\cap D_1=\emptyset$ and for every $v\in V(G)$ we have
+  $B_v\cap D_1=\emptyset$.
+\end{lemma}
+
+The next lemma uses the triangle-free property.
+
+% \begin{alemma}\label{alem:dominating-dominators}\hspace{-1.7mm}\textbf{.}
+%   If $G$ is triangle-free, then for all vertices $v\in W$ we have
+%
+%   \vspace{-5pt}
+%   \begin{itemize}
+%   \item $B_v \subseteq A_v$ (hence $|B_v|\le 3$), and \smallskip
+%   \item if $v\not\in \hat{D}$, then $B_v\subseteq D$.
+%   \end{itemize}
+% \end{alemma}
+\begin{adapted}{lem:dominating-dominators}{alem:dominating-dominators}
+  If $G$ is triangle-free, then for all vertices $v\in W$ we have
+
+  \vspace{-5pt}
+  \begin{itemize}
+  \item $B_v \subseteq A_v$ (hence $|B_v|\le 3$), and \smallskip
+  \item if $v\not\in \hat{D}$, then $B_v\subseteq D$.
+  \end{itemize}
+\end{adapted}
+\begin{proof}
+  Assume $A_v=\{v_1,v_2, v_3\}$ and assume there is $z\in V(G)\setminus \{v,v_1,v_2, v_3\}$
+  with $|N_R(v) \cap N_R(z)| \geq 7$.
+  As the vertices $v_1, v_2, v_3$ dominate $N_R(v)$, and hence $N_R(v)\cap N_R(z)$,
+  there must be some~$v_i$, $1\leq i\leq 3$, with
+  \mbox{$|N_R(v) \cap N_R(z) \cap N[v_i]| \geq \lceil 7/3\rceil \geq 3$}.
+  Then one of the following holds: either
+  \mbox{$|N_R(v) \cap N_R(z) \cap N(v_i)| \geq 3$},  or
+  \mbox{$|N_R(v) \cap N_R(z) \cap N(v_i)| =2$}.
+  The first case shows that $K_{3,3}$ is a subgraph of~$G$
+  contradicting the assumption that $G$ is planar.
+  The second case implies that $v_i\in N_R(v)$. In this situation, by picking
+  $w \in N_R(v) \cap N_R(z) \cap N(v_i)$, we get that $(v,v_i,w)$ is a triangle,
+  hence we also reach a contradiction.
+
+  If furthermore $v\not\in \hat{D}$, by definition of $\hat{D}$,
+  we can find $w_1,w_2, w_3$ from $D$
+  that dominate $N(v)$, and in particular $N_R(v)$.
+  If $z\in V(G)\setminus \{v,w_1,w_2, w_3\}$
+  with $|N_R(v) \cap N_R(z)| \geq 7$ we can argue as above to obtain
+  a contradiction.
+\end{proof}
+
+
+For our analysis we again split $D_2$ into three sets $D_2^1, D_2^2$ and
+$D_2^3$. The next lemmas hold also for the restricted cases. We repeat
+them for convenience.
+
+% \begin{alemma}\label{alem:size-D21}
+%   If $G$ is triangle-free, then $|D_2^1\setminus D|\leq 3\gamma$.
+% \end{alemma}
+\begin{adapted}{lem:size-D21}{alem:size-D21}
+  If $G$ is triangle-free, then $|D_2^1\setminus D|\leq 3\gamma$.
+\end{adapted}
+
+% \begin{alemma}\label{alem:size-D22}
+%   If $G$ is triangle-free, then $D_2^2 \subseteq \hat D$ and therefore
+%   $|D_2^2\setminus D|< 3\gamma$.
+% \end{alemma}
+\begin{adapted}{lem:size-D22}{alem:size-D22}
+  If $G$ is triangle-free, then $D_2^2 \subseteq \hat D$ and therefore
+  $|D_2^2\setminus D|< 3\gamma$.
+\end{adapted}
+
+% \begin{alemma}\label{alem:size-D23}
+%   If $G$ is triangle-free, then $D_2^3\subseteq D_2^1$.
+% \end{alemma}
+\begin{adapted}{lem:size-D23}{alem:size-D23}
+  If $G$ is triangle-free, then $D_2^3\subseteq D_2^1$.
+\end{adapted}
+
+Again, for a fine analysis, we
+analyze the number of vertices of $D$ that have been selected
+so far and let $\rho\in [0,1]$ be such that $|(D_1\cup D_2)\cap D| =\rho\gamma$.
+
+% \begin{alemma}\label{alem:size-D12}
+% \mbox{ }
+% \vspace{-1mm}
+% \begin{enumerate}
+% \item If $G$ is bipartite, then $|D_1\cup D_2| < 2\gamma+4\e\gamma$.\smallskip
+% \item If $G$ is triangle-free, then $|D_1\cup D_2| < 3\gamma+4\e\gamma$.\smallskip
+% \item If $G$ has girth at least $5$ or is outerplanar, then $|D_1\cup D_2| < 3\gamma+\e\gamma$.
+% \end{enumerate}
+% \end{alemma}
+\begin{adapted}{lem:size-D12}{alem:size-D12}
+  \begin{enumerate}
+    \item If $G$ is bipartite, then $|D_1\cup D_2| < 2\gamma+4\rho\gamma$.\smallskip
+    \item If $G$ is triangle-free, then $|D_1\cup D_2| < 3\gamma+4\rho\gamma$.\smallskip
+    \item If $G$ has girth at least $5$ or is outerplanar, then $|D_1\cup D_2| < 3\gamma+\rho\gamma$.
+  \end{enumerate}
+\end{adapted}
+\begin{proof}
+If $G$ is outerplanar or $G$ has girth at least $5$, then $D_2=\emptyset$.
+By \ref{alem:D-hat} we have $D_1\subseteq \hat{D}$ and
+$|\hat{D}\setminus D|<3\gamma$, hence $(D_1\cup D_2)\setminus D<3\gamma$.
+
+If $G$ is triangle-free, by \ref{alem:size-D23} we have $D_2^3\subseteq D_2^1$, hence,
+  $D_1\cup D_2=D_1\cup D_2^1\cup D_2^2$. By \ref{alem:D-hat} we have
+  $D_1 \subseteq \hat D$ and by \ref{alem:size-D22} we also have
+  $D_2^2 \subseteq \hat D$, hence $D_1\cup D_2^2\subseteq \hat D$.
+  Again by \ref{alem:D-hat}, if $G$ is bipartite, then
+  $|\hat D \setminus D|<2\gamma$, therefore $|(D_1 \cup D_2^2 )\setminus D| < 2\gamma$, and if $G$ is triangle-free,
+  then $|\hat D \setminus D|<3\gamma$,
+  therefore $|(D_1 \cup D_2^2 )\setminus D| < 3\gamma$.
+  We have $W\cap D\subseteq D_2^1\cap D$, hence with
+  \ref{alem:dominating-dominators} we conclude that
+  \[
+    \big\vert D_2^1 \setminus D \big\vert \leq
+    \Big\vert\bigcup\limits_{v\in D \cap D_2^1}B_v\Big\vert \leq
+    \sum\limits_{v\in D \cap D_2^1} |B_v| \leq 3\rho\gamma,
+  \]
+  hence $(D_1\cup D_2)\setminus D<2\gamma+3\rho\gamma$ if
+  $G$ is bipartite and $(D_1\cup D_2)\setminus D<3\gamma+3\rho\gamma$
+  if $G$ is triangle-free.
+
+  Finally,
+  $D_1\cup D_2=(D_1\cup D_2)\setminus D\cup (D_1\cup D_2)\cap D$ and
+  with the definition of $\rho$ we conclude
+
+  \vspace{-2mm}
+  \begin{enumerate}
+  \item $|D_1\cup D_2|<2\gamma + 4\rho\gamma$ if $G$ is bipartite, \smallskip
+  \item $|D_1\cup D_2|<3\gamma + 4\rho\gamma$ if $G$ is triangle-free, \smallskip
+  \item $|D_1\cup D_2|<3\gamma + \rho\gamma$ if $G$ has girth at least
+  $5$ or is outerplanar.
+  \end{enumerate}
+
+\end{proof}
+
+Again, we now update the residual degrees, that is, we update
+$R$ as $V(G)\setminus N[D_1\cup D_2]$ and for every vertex the
+number $\delta_R(v)=N(v)\cap R$ accordingly and proceed with
+the third phase.
+
+% \begin{alemma}\label{alem:res-degree}\hspace{-1.7mm}\textbf{.}
+%
+% \vspace{-6mm}
+% \textit{\begin{enumerate}
+% \item If $G$ is triangle-free, then for all $v\in V(G)$ we have $\delta_R(v)\leq 18$.\smallskip
+% \item If $G$ has girth at least $5$, then for all $v\in V(G)$ we have $\delta_R(v)\leq 3$.\smallskip
+% \item If $G$ is outerplanar, then for all $v\in V(G)$ we have $\delta_R(v)\leq 9$.
+% \end{enumerate}}
+% \end{alemma}
+\begin{adapted}{lem:res-degree}{alem:res-degree}
+  \textit{\begin{enumerate}
+    \item If $G$ is triangle-free, then for all $v\in V(G)$ we have $\delta_R(v)\leq 18$.\smallskip
+    \item If $G$ has girth at least $5$, then for all $v\in V(G)$ we have $\delta_R(v)\leq 3$.\smallskip
+    \item If $G$ is outerplanar, then for all $v\in V(G)$ we have $\delta_R(v)\leq 9$.
+  \end{enumerate}}
+\end{adapted}
+\begin{proof}
+  Every vertex of $D_1\cup D_2$ has residual degree $0$, hence, we
+  need to consider only vertices that are not in $D_1$ or $D_2$.
+
+  First assume that the graph is triangle-free and
+  assume that there is a vertex $v$ of residual degree at least $19$.
+  As $v$ is not in $D_1$, its $19$ non-dominated
+  neighbors are dominated by a
+  set $A_v$ of at most~3 vertices. Hence, there is vertex $z$ (not in $D_1$
+  nor $D_2$) dominating at least $\lceil 19/3\rceil = 7$ of them.
+  Here, $z$ cannot be one of these 7 vertices, otherwise it would be connected
+  to $v$ and there would be a triangle in the graph.
+  Therefore we
+  have $|N_R(v)\cap N_R(z)|\geq 7$, contradicting that $v$ is not in~$D_2$.
+
+  Now assume that $G$ has girth at least $5$ and
+  assume that there is a vertex $v$ of residual degree at least~$4$.
+  As $v$ is not in $D_1$, its $4$ non-dominated
+  neighbors are dominated by a
+  set $A_v$ of at most~3 vertices. Hence, there is vertex $z$ (not in $D_1$
+  nor $D_2$) dominating at least $\lceil 4/3\rceil = 2$ of them.
+  Here, $z$ cannot be one of these 2 vertices, otherwise it would be connected
+  to $v$ and there would be a triangle in the graph. However, $z$ can
+  also not be any other vertex, as otherwise we find a cycle of length $4$,
+  contradicting that~$G$ has girth at least $5$.
+
+  Finally, assume that $G$ is outerplanar and
+  assume that there is a vertex $v$ of residual degree at least $10$.
+  As $v$ is not in $D_1$, its $10$ non-dominated
+  neighbors are dominated by a
+  set $A_v$ of at most~3 vertices. Hence, there is vertex $z$ (not in $D_1$
+  nor $D_2$) dominating at least $\lceil 10/3\rceil = 4$ of them.
+  Therefore $|N(v)\cap N(z)|\geq 3$, and we find a $K_{2,3}$ as a
+  subgraph, contradicting that $G$ is outerplanar.
+\end{proof}
+
+\subsection{LP-based approximation}
+
+When proceeding with the LP-based approximation as in \cref{sec:LP}
+we conclude with \cref{cor:LP-approx} and \cref{lem:size-D31} to obtain the
+following statement:
+\begin{adapted}{lem:D3-LP}{alem:D3-LP}
+  When $G$ is triangle free of bipartite, $|D_3|\le (5+\e)(1-\rho)\gamma$.
+\end{adapted}
+We can then conclude each individual case.
+
+
+
+% \todoA{check the number of the additive gain}
+% \alex{use adapted version of \cref{lem:D3-LP} to gain ($1-\e$) additive factor}
+
+\begin{theorem}\label{thm:tri}
+  There exists a distributed LOCAL algorithm that, for every $\e>0$ and every
+  triangle free planar graph $G$, computes in a constant number of rounds a
+  dominating set of size at most $(8+\e)\gamma(G)$.
+\end{theorem}
+\begin{proof}
+  By \ref{alem:size-D12} we have $|D_1\cup D_2|<3\gamma+4\rho\gamma$ and
+  by \ref{alem:D3-LP} we have that~$|D_3|\le (5+\e)(1-\rho)\gamma$.
+  %
+  Hence $|D_1 \cup D_2 \cup D_3| < (8+\e -\rho-\e\rho)\gamma$.
+  %
+  As $\rho\in[0,1]$, this is maximized when $\rho=0$. Hence
+  \mbox{$|D_1 \cup D_2 \cup D_3|< (8+\e) \gamma$}.
+\end{proof}
+
+\begin{theorem}\label{thm:bip}
+  There exists a distributed LOCAL algorithm that, for every $\e>0$ and
+  every bipartite planar graph
+  $G$, computes in a constant number of rounds a
+  dominating set of size at most $(7+\e)\gamma(G)$.
+\end{theorem}
+\begin{proof}
+  By \ref{alem:size-D12} we have $|D_1\cup D_2|<2\gamma+4\rho\gamma$ and
+  by \ref{alem:D3-LP} we have that~$|D_3|\le (5+\e)(1-\rho)\gamma$.
+  %
+  Hence $|D_1 \cup D_2 \cup D_3| < (7+\e-\rho-\e\rho)\gamma$.
+  %
+  As $\rho\in[0,1]$, this is maximized when $\rho=0$. Hence
+  \mbox{$|D_1 \cup D_2 \cup D_3|< (7+\e) \gamma$}.
+\end{proof}
+
+As we will see, the greedy approach can improve the following theorem.
+
+\begin{theorem}\label{thm:girth}
+  There exists a distributed LOCAL algorithm that, for every $\e>0$ and
+  every planar graph
+  $G$ of girth at least~$5$, computes in a constant number of rounds a
+  dominating set of size at most $(8+\e)\gamma(G)$.
+\end{theorem}
+\begin{proof}
+  By \ref{alem:size-D12} we have $|D_1\cup D_2|<3\gamma+\rho\gamma$ and
+  by \ref{alem:D3-LP} we have that~$|D_3|\le (5+\e)(1-\rho)\gamma$.
+  %
+  Hence $|D_1 \cup D_2 \cup D_3| < (8+\e-4\rho-\e\rho)\gamma$.
+  %
+  As $\rho\in[0,1]$, this is maximized when $\rho=0$. Hence
+  \mbox{$|D_1 \cup D_2 \cup D_3|< (8+\e) \gamma$}.
+\end{proof}
+
+Also the following theorem is not optimal by the results of Bonamy et al.~\cite{bonamy2021tight}.
+
+\begin{theorem}\label{thm:outer}
+  There exists a distributed LOCAL algorithm that, for every $\e>0$ and
+  every outerplanar graph
+  $G$, computes in a constant number of rounds a
+  dominating set of size at most $(8+\e)\gamma(G)$.
+\end{theorem}
+\begin{proof}
+  By \ref{alem:size-D12} we have $|D_1\cup D_2|<3\gamma+\rho\gamma$ and
+  by \ref{alem:D3-LP} we have that~$|D_3|\le (5+\e)(1-\rho)\gamma$.
+  %
+  Hence $|D_1 \cup D_2 \cup D_3| < (8+\e-4\rho-\e\rho)\gamma$.
+  %
+  As $\rho\in[0,1]$, this is maximized when $\rho=0$. Hence
+  \mbox{$|D_1 \cup D_2 \cup D_3|< (8+\e) \gamma$}.
+\end{proof}
+
+\subsection{Greedy approximation}
+
+When proceeding by computing a dominating set $D_3$ with the
+greedy algorithm presented in~\cref{sec:greedy}
+in the respective number of rounds we get the following
+results.
+
+\setcounter{lemma}{12} % this is to match the non-adapted lemmas
+% This is now irrelevant with the adapted environment
+
+% \begin{alemma}\label{alem:total-H}
+%   If $G$ is triangle-free or outerplanar,
+%   for every $1\le i$, $\sum\limits_{j\le i}|\Delta_j| \le |R_i|$.
+% \end{alemma}
+\begin{adapted}{lem:total-h}{alem:total-H}
+  If $G$ is triangle-free or outerplanar,
+  for every $1\le i$, $\sum\limits_{j\le i}|\Delta_j| \le |R_i|$.
+\end{adapted}
+
+% \begin{alemma}\label{alem:tri-h1}
+%   If $G$ is triangle-free or outerplanar,
+%   for every $1\le i$, $|R_i| \le (i+1)(1-\e)\gamma$.
+% \end{alemma}
+\begin{adapted}{lem:h1}{alem:tri-h1}
+  If $G$ is triangle-free or outerplanar,
+  for every $1\le i$, $|R_i| \le (i+1)(1-\rho)\gamma$.
+\end{adapted}
+
+% \begin{alemma}\label{alem:tri-delta}
+%   If $G$ is triangle-free or outerplanar,
+%   for every $5\le i$, $|\Delta_i| \le \frac{2|R_i|}{i-4}$.
+% \end{alemma}
+\begin{adapted}{lem:delta}{alem:tri-delta}
+  If $G$ is triangle-free or outerplanar,
+  for every $5\le i$, $|\Delta_i| \le \frac{2|R_i|}{i-4}$.
+\end{adapted}
+
+% \begin{alemma}\label{alem:tri-h2}
+%   If $G$ is triangle-free or outerplanar,
+%   for every $1\le i$, $|R_i| \le |R_{i+1}| - \frac{(i-3)|\Delta_{i+1}|}{2}$.
+% \end{alemma}
+\begin{adapted}{lem:h2}{alem:tri-h2}
+  If $G$ is triangle-free or outerplanar,
+  for every $1\le i$, $|R_i| \le |R_{i+1}| - \frac{(i-3)|\Delta_{i+1}|}{2}$.
+\end{adapted}
+
+The proofs of \ref{alem:total-H} to \ref{alem:tri-h2} are copies of the ones
+for \cref{lem:total-h,lem:h1,lem:delta,lem:h2}, with the execption that the edge
+density of $3$ for planar graphs if now replaced by $2$ for triangle-free and
+outerplanar.
+%
+Similarly to \cref{lem:size-D3} we formulate (and present in
+\cref{sec:linear-prog}) a linear program to maximize $|D_3|$ under these
+constraints, yielding the following lemma.
+
+% \begin{alemma}\label{alem:size-D3}\hspace{-1.7mm}\textbf{.}
+%
+% \vspace{-4mm}
+% \textit{\begin{enumerate}
+% \item If $G$ is triangle-free, then  $|D_3|\le 10.5(1-\e)\gamma$.\smallskip
+% \item If $G$ has girth at least $5$, then $|D_3|\le 4(1-\e)\gamma$.\smallskip
+% \item If $G$ is outerplanar, then $|D_3|\le 8.6(1-\e)\gamma$.
+% \end{enumerate}}
+% \end{alemma}
+\begin{adapted}{lem:size-D3}{alem:size-D3}
+  \begin{enumerate}
+    \item If $G$ is triangle-free, then  $|D_3|\le 10.5(1-\rho)\gamma$.\smallskip
+    \item If $G$ has girth at least $5$, then $|D_3|\le 4(1-\rho)\gamma$.\smallskip
+    \item If $G$ is outerplanar, then $|D_3|\le 8.6(1-\rho)\gamma$.
+  \end{enumerate}
+\end{adapted}
+
+The following theorems are derived from \cref{thm:planar-greedy} just as before.
+
+\begin{theorem}\label{thm:tri-2}
+  There exists a distributed LOCAL algorithm that, for every triangle free planar
+  graph $G$, computes in a constant number of rounds a dominating set
+  of size at most $14\gamma(G)$.
+\end{theorem}
+%\begin{proof}
+%By
+%\cref{alem:size-D12} we have $|D_1\cup D_2|<3\gamma+4\e\gamma$.  Then,
+%by \cref{alem:size-D3} we have $|D_3|\le 10.5(1-\e)\gamma$.
+%%
+%Therefore $|D_1 \cup D_2 \cup D_3| < 13.5\gamma -6.5\e\gamma$.
+%%
+%As $\e\in[0,1]$, this is maximized when $\e=0$. Hence
+%\mbox{$|D_1 \cup D_2 \cup D_3|< 13.5 \gamma$}.
+%\end{proof}
+
+\begin{theorem}\label{thm:bip-2}
+  There exists a distributed LOCAL algorithm that, for every bipartite planar graph
+  $G$, computes in a constant number of rounds a
+  dominating set of size at most $13\gamma(G)$.
+\end{theorem}
+%\begin{proof}
+%By
+%\cref{alem:size-D12} we have $|D_1\cup D_2|<2\gamma+4\e\gamma$.  Then,
+%by \cref{alem:size-D3} we have $|D_3|\le 10.5(1-\e)\gamma$.
+%%
+%Therefore $|D_1 \cup D_2 \cup D_3| < 12.5\gamma -6.5\e\gamma$.
+%%
+%As $\e\in[0,1]$, this is maximized when $\e=0$. Hence
+%\mbox{$|D_1 \cup D_2 \cup D_3|< 12.5 \gamma$}.
+%\end{proof}
+
+In the case of high girth graphs the greedy algorithm outperforms the
+LP-based algorithm.
+
+\begin{theorem}\label{thm:girth-2}
+  There exists a distributed LOCAL algorithm that, for every planar graph
+  $G$ of girth at least~$5$, computes in a constant number of rounds a
+  dominating set of size at most $7\gamma(G)$.
+\end{theorem}
+%\begin{proof}
+%By
+%\cref{alem:size-D12} we have $|D_1\cup D_2|<3\gamma+\e\gamma$.  Then,
+%by \cref{alem:size-D3} we have $|D_3|\le 4(1-\e)\gamma$.
+%%
+%Therefore $|D_1 \cup D_2 \cup D_3| < 7\gamma -3\e\gamma$.
+%%
+%As $\e\in[0,1]$, this is maximized when $\e=0$. Hence
+%\mbox{$|D_1 \cup D_2 \cup D_3|< 7 \gamma$}.
+%\end{proof}
+
+\begin{theorem}\label{thm:outer-2}
+  There exists a distributed LOCAL algorithm that, for every outerplanar graph
+  $G$, computes in a constant number of rounds a
+  dominating set of size at most $12\gamma(G)$.
+\end{theorem}
+%\begin{proof}
+%By
+%\cref{alem:size-D12} we have $|D_1\cup D_2|<3\gamma+\e\gamma$.  Then,
+%by \cref{alem:size-D3} we have $|D_3|\le 8.6(1-\e)\gamma$.
+%%
+%Therefore $|D_1 \cup D_2 \cup D_3| < 11.6\gamma -7.6\e\gamma$.
+%%
+%As $\e\in[0,1]$, this is maximized when $\e=0$. Hence
+%\mbox{$|D_1 \cup D_2 \cup D_3|< 11.6 \gamma$}.
+%\end{proof}
+
+
+% \subsection{Triangle-free planar graphs}\label{sec:triangle-free}
+% We first consider classes of planar graphs that have no triangles (equivalently, that have girth at least $4$.) The first phase of the algorithm parallels
+% the first phase of the general algorithm (\cref{sec:step1}), however
+% the numbers $\nn_0$ and $\nn_1$ are now smaller. We will use
+% the following well-known lemma.
+% \idea{We should have:
+%   \begin{itemize}
+%     \item 3-col hence so smaller $D_1$.
+%     \item $|A_v|\le 3$.
+%     \item $\ge 7$ in the def of $B_v$ (instead of 11).
+%     \item red-degree 18 and not 50 for the beginning of step 3.
+%   \end{itemize}
+% }
+% \begin{lemma}\label{lem:tri-euler}
+% Every $n$-vertex triangle-free planar graph $G$ $(n\geq 3)$ has at
+% most $2n-4$ edges. Therefore $\nn_0(G)<2$ and $\nn_1(G)<3$
+% \end{lemma}
+% %\begin{proof}
+% %  We use Euler's formula which states that on a connected planar graph $v-e+f=2$,
+% %  where $f$ is the number of phases of $G$. We then use the fact that every edge
+% %  lies between 2 phases and that every phase is surrounded by at least 4 edges.
+% %  Hence $2e\ge 4f$, and therefore $e\le 2\cdot v-4$.
+% %  Unfortunately, a $1$-shallow minor of a triangle-free graph might contain a
+% %  triangle. The only bound that we have for $\nn_1(G)$ is therefore the same
+% %  as for planar graphs in general.
+% %\end{proof}
+%
+% Just as in the general case, the first phase of the algorithm is
+% to compute the following set $D_1$, which can be done in only
+% 2 rounds of communication.
+% %The following lemma states that there exist only few such vertices.
+% \begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+%   \vspace{-4mm}
+%   \begin{align*}
+%     D_1\coloneqq \{v\in V(G) : \text{ for all sets } A\subseteq V(G)\setminus \{v\}
+%     & \text{ with $N(v)\subseteq N[A]$} \text{ we have $|A|> 5\}$.}
+%   \end{align*}
+% \end{tcolorbox}
+%
+% The bounds given by~\cref{lem:tri-euler} when used in \cref{lem:lenzen-generic} yield the following result.
+% \begin{lemma}[Corollary of \cref{lem:lenzen-generic}]\label{lem:tri-lenzen}
+%   We have $|D_1\setminus D|< 3\gamma$.
+% \end{lemma}
+%
+% \begin{tcolorbox}
+%   For every $v\in V(G)\setminus D_1$, we fix $A_v\subseteq V(G)\setminus \{v\}$
+%   such that: \center $N_R(v)\subseteq N[A_v]$ and $|A_v|\leq 5$.
+% \end{tcolorbox}
+% The fact that here $|A_v|\leq 5$ (instead of $6$ in the general planar case)
+% helps to make the second step more efficient.
+%
+%
+% \begin{tcolorbox}
+% \vspace{-4mm}
+%     \begin{align*}
+%   \hat D\coloneqq \{v\in V(G) : \text{ for all sets } A\subseteq D\setminus \{v\}
+%   & \text{ with $N(v)\subseteq N[A]$} \text{ we have $|A|> 5\}$.}
+%   \end{align*}
+% \end{tcolorbox}
+%
+% \cref{lem:lenzen-generic} also provides better bounds for $\hat D$ than in general.
+% \begin{lemma}\label{lem:tri-D-hat}
+%   We have that $D_1\subseteq \hat D$, $|\hat{D}\setminus D|< 3\gamma$, and
+%   $|\hat{D}|< 4\gamma$.
+% \end{lemma}
+%
+%
+% We proceed with the second phase exactly as in the second phase of
+% the general algorithm (\cref{sec:D2}), however, the parameter 19 is replaced by 11.
+%
+%
+% \begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+%   \begin{itemize}
+%     \item For $v\in V(G)$ let $B_v\coloneqq \{z\in V(G)\setminus
+%       \{v\}: |N_R(v)\cap N_R(z)|\geq 11\}$.\smallskip
+%     \item Let $W$ be the set of vertices $v\in V(G)$ such
+%       that $B_v \neq \emptyset$.\smallskip
+%     \item Let $D_2\coloneqq \bigcup\limits_{v\in W} (\{v\}\cup B_v)$.
+%   \end{itemize}
+% \end{tcolorbox}
+%
+% For our analysis we again split $D_2$ into three sets.
+%
+% \begin{tcolorbox}
+%   \begin{enumerate}
+%     \item $D_2^1\coloneqq \bigcup_{v\in W\cap D}
+%     (\{v\}\cup B_v)$, \smallskip
+%     \item $D_2^2\coloneqq \bigcup_{v\in W\cap (\hat{D}\setminus D)}
+%     (\{v\}\cup B_v)$, and \smallskip
+%     \item $D_2^3\coloneqq \bigcup_{v\in W\setminus (D\cup \hat{D})}
+%     (\{v\}\cup B_v)$.
+%   \end{enumerate}
+% \end{tcolorbox}
+%
+% \begin{lemma}\label{lem:tri-dominating-dominators}
+%   For all vertices $v\in W$, we have:
+%   \begin{itemize}
+%     \item $B_v \subseteq A_v$ (hence $|B_v|\le 5$), and
+%     \item if $v\not\in \hat{D}$, then $B_v\subseteq D$.
+%   \end{itemize}
+% \end{lemma}
+%
+% This is the only lemma that uses the triangle-free property, and is therefore the only one that we prove again.
+% \begin{proof}
+%   Assume $A_v=\{v_1,\ldots, v_5\}$ and assume there is $z\in V(G)\setminus \{v,v_1,\ldots, v_5\}$
+%   with $|N_R(v) \cap N_R(z)| \geq 11$.
+%   As the vertices $v_1, \ldots, v_5$ dominate $N_R(v)$, and hence $N_R(v)\cap N_R(z)$,
+%   there must be some~$v_i$, $1\leq i\leq 5$, with
+%   \mbox{$|N_R(v) \cap N_R(z) \cap N[v_i]| \geq \lceil 11/5\rceil \geq 3$}.
+%   Then either
+%   \mbox{$|N_R(v) \cap N_R(z) \cap N(v_i)| \geq 3$},  or
+%   \mbox{$|N_R(v) \cap N_R(z) \cap N(v_i)| =2$}.
+%   The first case shows that $K_{3,3}$ is a subgraph of~$G$
+%   contradicting the assumption that $G$ is planar.
+%   The second case implies that $v_i\in N_R(v)$, hence by picking
+%   $w \in N_R(v) \cap N_R(z) \cap N(v_i)$, we get that $(v,v_i,w)$ is a triangle,
+%   hence we also reach a contradiction.
+%
+%   If furthermore $v\not\in \hat{D}$, by definition of $\hat{D}$,
+%   we can find $w_1,\ldots, w_5$ from $D$
+%   that dominate $N(v)$, and in particular $N_R(v)$.
+%   If $z\in V(G)\setminus \{v,w_1,\ldots, w_5\}$
+%   with $|N_R(v) \cap N_R(z)| \geq 11$ we can argue as above to obtain
+%   a contradiction.
+% \end{proof}
+%
+% The following lemmas are straightforward adaptations of
+% \cref{lem:size-D21,lem:size-D22,lem:size-D23}.
+% \begin{lemma}\label{lem:tri-size-D21}
+%   $|D_2^1\setminus D|\leq 5\gamma$.
+% \end{lemma}
+% \begin{lemma}\label{lem:tri-size-D22}
+%   $D_2^2 \subseteq \hat D$ and therefore $|D_2^2\setminus D|< 3\gamma$.
+% \end{lemma}
+% \begin{lemma}\label{lem:tri-size-D23}
+%   $D_2^3\subseteq D_2^1$.
+% \end{lemma}
+%
+% W then apply the same reasoning by counting how many elements of $D$ have been
+% picked so far.
+% \begin{tcolorbox}
+%   Let $\e\in [0,1]$ be such that $|(D_1 \cup D_2)\cap D| =\e\gamma$.
+% \end{tcolorbox}
+%
+% The following is a straightforward adaptation of \cref{lem:size-D12}.
+% \begin{lemma}\label{lem:tri-size-D12}
+%   We have that $|D_1\cup D_2| < 3\gamma+6\e\gamma$
+% \end{lemma}
+%
+% We now update the residual degrees, that is, we update
+% $R$ as $V(G)\setminus N[D_1\cup D_2]$ and for every vertex the
+% number $\delta_R(v)=N(v)\cap R$ accordingly.
+% For the final phase we observe that
+% every vertex has residual degree at most 50.
+%
+% \begin{lemma}\label{lem:tri-res-degree}
+% For all $v\in V(G)$ we have $\delta_R(v)\leq 50$.
+% \end{lemma}
+% \begin{proof}
+%   First, every vertex of $D_1\cup D_2$ has residual degree $0$.
+%   Assume that there is a vertex $v$ of residual degree at least $51$.
+%   As $v$ is not in $D_1$ its $51$ non-dominated
+%   neighbors are dominated by a
+%   set $A_v$ of at most~5 vertices. Hence, there is be vertex $z$ (not in $D_1$
+%   nor $D_2$) dominating at least $\lceil 51/5\rceil = 11$ of them.
+%   Here, $z$ cannot be one of these 11 vertices, otherwise it would be connected
+%   to $v$ and there will be a triangle in the graph.
+%   Therefore we
+%   have $|N_R(v)\cap N_R(z)|\geq 11$, contradicting that $v$ is not in~$D_2$.
+% \end{proof}
+%
+% We proceed to compute a dominating set of the remaining vertices
+% as before, but this time in 50 rounds.
+%
+% \begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+%   For $50\geq i\geq 0$,  for every $v\in R$ in parallel:\\[2mm]
+%   if there is some $u$ with $\dd_R(u)=i$ and ($\{u,v\}\in E(G)$ or $u=v$), then\\
+%   \mbox{ } $\dom_i(v)\coloneqq \{u\}$ (pick one such $u$ arbitrarily),\\
+%   \mbox{ } $\dom_i(v)\coloneqq \emptyset$ otherwise.
+%   \begin{itemize}
+%     \item $R_i \coloneqq R$ \hfill \textit{\small What currently remains to be dominated}
+%     \item $\Delta_i \coloneqq \bigcup\limits_{v\in R} \dom_i(v)$ \hfill \textit{\small What we pick in this step}
+%     \item $R \coloneqq R \setminus N[\Delta_{i}]$ \hfill \textit{\small Update red vertices}
+%   \end{itemize}
+%   Finally, $D_3:=  \bigcup\limits_{1\le i\le 50} \Delta_i$.
+% \end{tcolorbox}
+%
+% The following analysis follows exactly the same lines as the analysis in
+% \cref{sec:greedy}, which we carried out with \cref{lem:correctness} to \cref{lem:size-D3}.
+%
+% \begin{lemma}
+% When the algorithm has finished the iteration with parameter $i\geq 1$, then all vertices have residual degree at most $i-1$. In particular,
+% the algorithm computes a dominating set of $G$.
+% \end{lemma}
+%
+% \begin{lemma}\label{lem:tri-total-H}
+%   For every $i\le 50$, $\sum\limits_{j\le i}|\Delta_j| \le |R_i|$.
+% \end{lemma}
+%
+% \begin{lemma}\label{lem:tri-h1}
+%   For every $i\le 50$, $|R_i| \le (i+1)(1-\e)\gamma$.
+% \end{lemma}
+%
+% \begin{lemma}\label{lem:tri-delta}
+%   For every $5\le i\le 50$, $|\Delta_i| \le \frac{2|R_i|}{i-4}$.
+% \end{lemma}
+%
+% \begin{lemma}\label{lem:tri-h2}
+%   For every $i\le 50$, $|R_i| \le |R_{i+1}| - \frac{(i-3)|\Delta_{i+1}|}{2}$.
+% \end{lemma}
+%
+% % Intuitively, these lemmas follows simple reasonings. \cref{lem:h1} holds because
+% % the elements of $D$ that have not been selected yet form a dominating set for
+% % every $R_i$. Additionally, these dominators have bounded residual degree.
+% % \cref{lem:delta} holds thank to an argument similar to the one of
+% % \cref{lem:lenzen}: the edge density of the graph induced by $R_i$ and $\Delta_i$
+% % is at most 3, and every vertices of $\Delta_i$ has high degree.
+% % And finally, \cref{lem:h2} is prooved with a similar argument:
+% % once $\Delta_i$ is fixed, its neighborhood cannot
+% % be too small (this would create a dense subgraph). Therefore we can give a lower
+% % bound to the number of elements that are newly dominated.
+%
+% \begin{lemma}\label{lem:tri-size-D3}
+%   $|D_3|\le 12.8(1-\e)\gamma$.
+% \end{lemma}
+%
+% Again, the proof for the last lemma is done by formulating the
+% constraints as a linear program, which can be found in the appendix.
+%
+% \smallskip
+% We are ready to summarize. The definition of $D_3$ implies that
+% $D_1\cup D_2\cup D_3$ is a dominating set of $G$. We conclude the
+% analysis of the size of the computed set.
+% First, \cref{lem:tri-size-D12} states that $|D_1\cup D_2|<3\gamma+6\e\gamma$.
+% Then, by \cref{lem:tri-size-D3}, we have that $|D_3|\le 12.8(1-\e)\gamma$.
+% %
+% Therefore $|D_1 \cup D_2 \cup D_3|
+% % \le 3\gamma +8\e\gamma + 20.3(1-\e)\gamma
+% \le 15.8\gamma -6.8\e\gamma$.
+% As $\e\in[0,1]$, this is maximized when $\e=0$. Hence
+% \mbox{$|D_1 \cup D_2 \cup D_3|< 15.8 \gamma$}.
+%
+% \begin{theorem}\label{thm:tri}
+% There exists a distributed LOCAL algorithm that, for every triangle free planar
+% graph $G$, computes in a constant number of rounds a dominating set
+% of size at most $16\gamma(G)$.
+% \end{theorem}
+%
+%
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \subsection{Planar graphs of girth 5}\label{sec:girth}
+% We now consider the case of planar graphs of girth at least $5$.
+% The first phase of the algorithm again parallels
+% the first phase of the general algorithm (\cref{sec:step1}). We will use
+% the following lemma.
+%
+% \idea{We should have:
+%   \begin{itemize}
+%     \item 3-col hence so smaller $D_1$.
+%     \item $|A_v|\le 3$.
+%     \item $B_v$ still empty.
+%     \item red-degree 3 instead of 5.
+%     \item total 7 approx.
+%   \end{itemize}
+% }
+%
+% \begin{lemma}\label{lem:girth-euler}
+% Every $n$-vertex planar graph $G$ ($n\geq 3$) of girth at least $5$ has
+% at most $\frac{5}{3}n-\frac{10}{3}$ edges. Therefore $\nn_0(G)<\frac{5}{3}$ and $\nn_1(G)<3$.
+% \end{lemma}
+% \begin{proof}
+%   We use Euler's formula, which states that a connected planar graph
+%   satisfies $n-m+f=2$, where~$n$ is the number of vertices, $m$
+%   is the number of edges and $f$ is the number of faces of $G$. We
+%   then use the fact that every edge lies on $2$ faces and that the
+%   boundary of every face consists of at least $5$ edges.
+%   Hence $2m\ge 5f$.
+%   We then have $5n-5m+5f=10$, hence $5n-5m+2e\ge 10$ and therefore
+%   $m\le \frac{5}{3}\cdot n-\frac{10}{3}$. This remains true if the
+%   graph is not connected as we may apply the same reasoning to every
+%   connected component.
+% \end{proof}
+%
+% Just as in the general case, the first phase of the algorithm is
+% to compute the following set $D_1$.
+% %The following lemma states that there exist only few such vertices.
+% \begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+%   \vspace{-4mm}
+%   \begin{align*}
+%     D_1\coloneqq \{v\in V(G) : \text{ for all sets } A\subseteq V(G)\setminus \{v\}
+%     & \text{ with $N(v)\subseteq N[A]$} \text{ we have $|A|> 5\}$.}
+%   \end{align*}
+% \end{tcolorbox}
+%
+% \begin{lemma}[Adaptation of \cref{lem:lenzen}]\label{lem:girth-lenzen}
+%   We have $|D_1\setminus D|< (2+1/4)\gamma$.
+% \end{lemma}
+%
+%
+% \alex{add "same" proof. Careful, for the 1-minor, the edge density can still be 3.}
+%
+% Note that the residual degree is already bounded.
+% \begin{lemma}\label{lem:girth-degree}
+%   Every vertex of $G$ of degree at least $6$ belongs to $D_1$.
+% \end{lemma}
+% \begin{proof}
+%   Let $v$ be a vertices of degree at least $6$ and $v_1,\ldots,v_5$
+%   vertices (other than $v$) such that $N(v)\subseteq \bigcup_{i\le 5}N[v_i]$.
+%   Hence there is a $v_i$ with $|N(v)\cap N[v_i]|\ge 2$.
+%   Observe that if $v_i$ is one of these two vertices, we have a triangle, and
+%   that otherwise we have a circle of length 4. In both case this contradicts the
+%   fact that the graph has girth at least 5.
+% \end{proof}
+%
+% \subsubsection{Step 2}
+% Observe now that the second sept of the algorithm is trivial. It is impossible
+% to find different vertices $v,z$ such that $|N(v)\cap N(z)|\ge 2$.
+%
+% \begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+%     $D_2\coloneqq \emptyset$.
+% \end{tcolorbox}
+%
+% We then define $\e$ like we did in \cref{sec:D2}.
+% \begin{tcolorbox}
+%   Let $\e\in [0,1]$ be such that $|D_1\cap D| =\e\gamma$.
+% \end{tcolorbox}
+%
+% \subsubsection{Step 3}
+% And finally, we pick all vertices that where not dominated yet.
+%
+% \begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+%   Let $D_3\coloneqq \{v\in V(G) : v\not\in N[D_1]\}$.
+% \end{tcolorbox}
+%
+% \begin{lemma}\label{lem:degree-girth}
+%   We have $|D_3|\le 6(1-\e)\gamma$.
+% \end{lemma}
+%
+% \begin{proof}
+%   First note that $D\setminus D_1$ dominates all vertices of $G\setminus N[D_1]$.
+%   Then every vertex of $D\setminus D_1$ has residual degree at most $5$.
+%   Finally, the definition of $\e$ implies that $|D\setminus D_1|= (1-\e)\gamma$.
+%   All together, we get that $|D_3|\le 6(1-\e)\gamma$
+% \end{proof}
+%
+% We conclude with the fact that $D_1\cup D_3$ is a dominating set of $G$, and
+% that $|D_1\cup D_3|< (2+1/4)\gamma + \e\gamma + 6(1-\e)\gamma$.
+% %
+% Hence $|D_1\cup D_3|< (8+1/4)\gamma - 5\e\gamma \le  (8+1/4)\gamma$.
+%
+% \begin{theorem}\label{thm:girth}
+%   There exists a distributed LOCAL algorithm that, for every planar graph
+%   $G$ of girth at least $5$, computes in a constant number of rounds a
+%   dominating set of size at most $(8+1/4)\gamma(G)$.
+% \end{theorem}
+%
+% \alex{I don't think that CPLEX helps here, but we can look.}
+% \alex{Cplex also leads to 6 for $D_3$, we might still put it in the appendix}
+%
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \subsection{Outerplanar graphs}\label{sec:outer}
+%
+% Outerplanar graphs are exactly the graphs excluding $K_4$ and $K_{2,3}$.
+% Therefore a minor of an outerplanar graph is again outerplanar. Additionally,
+% outerplanar graphs are 2-degenerate and hence for every outerplanar graphs $G$,
+% we have $|E_G|\le 2V_G$. Although an optimal bound of $5$ is already known for
+% outerplanar graphs (see \cite[Theorem 1]{bonamy2021tight}), we investigate
+% how our algorithm performs there.
+%
+% \idea{We should have:
+%   \begin{itemize}
+%     \item 3-col hence so same size for $D_1$, but better property.
+%     \item $|A_v|\le 3$.
+%     \item $B_v$ still empty.
+%     \item red-degree 12 instead of 17.
+%     \item Same equation unless new improvement.
+%   \end{itemize}
+% }
+%
+% \begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+%   \vspace{-4mm}
+%   \begin{align*}
+%     D_1\coloneqq \{v\in V(G) : \text{ for all sets } A\subseteq V(G)\setminus \{v\}
+%     & \text{ with $N(v)\subseteq N[A]$} \\ & \hspace{9mm} \text{we have $|A|> 4\}$.}
+%   \end{align*}
+% \end{tcolorbox}
+%
+% The first phase of the algorithm is to compute this set $D_1$ which can be done
+% in only 2 rounds of communication.
+% The following lemma states that there exist only few such vertices.
+%
+% \begin{lemma}[Adaptation of \cref{lem:lenzen}]\label{lem:outer-lenzen}
+%   We have $|D_1\setminus D|< 2\gamma$.
+% \end{lemma}
+% \alex{add "same" proof. the edge density is 2.}
+%
+%
+%
+% \subsubsection{Step 2}
+% Observe now that the second sept of the algorithm is trivial. It is impossible
+% to find different vertices $v,z$ such that $|N(v)\cap N(z)|\ge 3$.
+%
+% \begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+%     $D_2\coloneqq \emptyset$.
+% \end{tcolorbox}
+%
+% We then define $\e$ like we did in \cref{sec:D2}.
+% \begin{tcolorbox}
+%   Let $\e\in [0,1]$ be such that $|D_1\cap D| =\e\gamma$.
+% \end{tcolorbox}
+%
+% \subsubsection{Step 3}
+% As in previous case, the residual degree is bounded.
+% \begin{lemma}\label{lem:outer-degree}
+%   Every vertex of $G$ of degree at least $17$ belongs to $D_1$.
+% \end{lemma}
+% \begin{proof}
+%   Let $v$ be a vertices of degree at least $17$ and $v_1,\ldots ,v_4$
+%   vertices (other than $v$) such that $N(v)\subseteq \bigcup_{i\le 4}N[v_i]$.
+%   Hence there is a $v_i$ with $|N(v)\cap N[v_i]|\geq \lceil 17/4\rceil \geq 4$.
+%   Therefore $|N(v)\cap N(v_i)|\geq 3$, and we have a $K_{2,3}$.
+% \end{proof}
+%
+% \begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+%   For $16\geq i\geq 0$,  for every $v\in R$ in parallel:\\
+%   If there is some $u$ with $\dd_R(u)=i$ and $(u,v)\in E(G)$, then\\
+%   $\dom_i(v)\coloneqq \{u\}$ (pick one arbitrarily),\\
+%   $\dom_i(v)\coloneqq \emptyset$ otherwise.
+%   \begin{itemize}
+%     \item $R_i \coloneqq R$ \hfill \textit{\small What currently remains to be dominated}
+%     \item $\Delta_i \coloneqq \bigcup\limits_{v\in R} \dom_i(v)$ \hfill \textit{\small What we pick this step}
+%     \item $R \coloneqq R \setminus N[\Delta_{i}]$ \hfill \textit{\small Update red vertices}
+%   \end{itemize}
+%   And finally, $D_3:=  \bigcup\limits_{1\le i\le 50} \Delta_i $
+% \end{tcolorbox}
+%
+% \alex{add why it is a dom set, and why the residual degree shrinks (remove whats below)}
+%
+% As the last step consist of picking $R_9$ i.e.\ all non-dominated vertices, it
+% is clear that $D_1\cup D_2\cup D_3$ is a dominating set, and is computed in a
+% bounded number of communication rounds. We now turn to bounding the size of $D_3$.
+%
+%
+% \alex{The idea is that now we carry one to the end. We have the same equations,
+% with one new one:}
+% With this algorithm, we make sure to never take more than what there is left to dominate.
+% \begin{lemma}\label{lem:outer-total-H}
+%   For every $i\le 16$, $\sum\limits_{j\le i}|\Delta_j| \le |R_i|$.
+% \end{lemma}
+%
+%
+%
+% \begin{lemma}\label{lem:outer-h1}
+%   For every $i\le 16$, $|R_i| \le (i+1)(1-\e)\gamma$.
+% \end{lemma}
+%
+% \begin{lemma}\label{lem:outer-delta}
+%   For every $5\le i\le 16$, $|\Delta_i| \le \frac{2|R_i|}{i-4}$.
+% \end{lemma}
+%
+% \begin{lemma}\label{lem:outer-h2}
+%   For every $i\le 16$, $|R_i| \le |R_{i+1}| - \frac{(i-3)|\Delta_{i+1}|}{2}$.
+% \end{lemma}
+%
+%
+%
+%
+%
+% \alex{changed from 17 to 16. see with Ozan and update result}
+% \begin{lemma}\label{lem:outer-size-D3}
+%   $|D_3|\le 10.4(1-\e)\gamma$.
+% \end{lemma}
+% \alex{ref to cplex in appendix}
+%
+%
+%
+% \subsubsection{Cleaning up}
+% We conclude with the fact that $D_1\cup D_3$ is a dominating set of $G$, and
+% that $|D_1\cup D_3|< 2\gamma + \e\gamma + 10.4(1-\e)\gamma$.
+% %
+% Hence $|D_1\cup D_3|< 12.4\gamma - 8.4\e\gamma \le  12.4\gamma$.
+%
+% \begin{theorem}\label{thm:outer}
+%   There exists a distributed LOCAL algorithm that, for every outerplanar graph
+%   $G$, computes in a constant number of rounds a
+%   dominating set of size at most $13\gamma(G)$.
+% \end{theorem}

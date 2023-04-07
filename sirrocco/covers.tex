@@ -1,0 +1,190 @@
+% !TEX root = sirocco-main.tex
+
+\section{Covers and pseudo-covers}
+
+Intuitively, the vertices from a cover of a set $W$ can
+take different roles. A few vertices of a cover may cover almost the
+complete set $W$, while a few others are only there to cover what was
+left over. The key observation of Czygrinow et al.\ is that in classes that
+exclude some~$K_{t,t}$ as a subgraph, there can only be few of such
+high degree covering vertices, while there can be arbitrarily many vertices
+that cover at most $t-1$ vertices of~$W$ (the same vertices can be covered
+over and over again). This observation can be applied recursively and is
+distilled into the following two definitions. Recall that by the processing
+carried out in the first phase of the algorithm
+we know that every neighborhood $N(v)$ can be covered by $k=2\nabla_1$ vertices different from $v$.
+% For the rest of this article we fix
+% $\alpha\coloneqq 1/k$, $\ell=8\nabla_1/\alpha^2+1=4k^3+1$ and $q=4k^4$.
+% These constants will be needed in the following definitions of pseudo-covers
+% and domination sequences.
+We recall all fixed parameters for easy to find reference.
+
+\bigskip
+\begin{tcolorbox}
+\begin{tabular}{l l}
+- $G$ & :~ fixed graph. \\
+- $\gamma$ & :~ $\gamma(G)$.\\
+- $\nabla_1$ & :~ $\nabla_1(G)$. \\
+- $t$ & :~ smallest integer such that $G$
+excludes $K_{t,t}$ as a subgraph\\
+- $D_1$ & :~ defined and computed in \cref{lem:neighborhood-dom1}.\\
+- $D$ & :~ fixed dominating set of $G$ of size $\gamma$ (not computed).\\
+- $\hat{D}$ & :~ defined in \cref{lem:neighborhood-dom2} (not computed).\\
+- $D'$ & :~ $D \cup \hat{D}$ (not computed).
+\end{tabular}
+\end{tcolorbox}
+
+% For the rest of this article we fix
+% $\alpha\coloneqq 1/k$, $\ell=8\nabla_1/\alpha^2+1=4k^3+1$ and $q=4k^4$.
+% These constants will be needed in the following definitions of pseudo-covers
+% and domination sequences.
+% We also fix the following constants to follow the presentation
+% of~\cite{czygrinow2018distributed}.
+
+Following the presentation of~\cite{czygrinow2018distributed}, we name and fix
+these constants for the rest of this article.
+
+\begin{tcolorbox}
+\begin{tabular}{l l}
+- $k$       & $\coloneqq~ 2\nabla_1$.\\
+- $\alpha$  & $\coloneqq~ 1/k$.\\
+- $\ell$    & $\coloneqq~ 8\nabla_1/\alpha^2+1=4k^3+1$.\\
+- $q$       & $\coloneqq~ 4k^4$.
+\end{tabular}
+\end{tcolorbox}
+
+
+\begin{definition}
+A vertex $z\in V(G)$ is \emph{$\alpha$-strong} for a vertex set $W\subseteq V(G)$ if $|N[z]\cap W|\geq \alpha|W|$.
+\end{definition}
+
+The following is the key definition by Czygrinow et al.~\cite{czygrinow2018distributed}.
+
+\begin{definition}
+A \emph{pseudo-cover} (with parameters $\alpha, \ell, q, k$)
+of a set $W\subseteq V(G)$ is a
+sequence $(v_1,\ldots, v_m)$ of vertices
+such that  for every $i$ we have
+\begin{itemize}
+\item $|W\setminus \bigcup_{j\le m}N[v_j]|\leq q$,
+\item $v_i$ is $\alpha$-strong for $W\setminus\bigcup_{j<i}N[v_j]$,
+\item $|N[v_i]\cap (W\setminus\bigcup_{j<i} N[v_j])|\geq \ell$,
+\item $m\leq k$.
+\end{itemize}
+\end{definition}
+Intuitively, all but at most $q$ elements of the set $W$ are covered by the $(v_i)_{i\le m}$.
+Additionally, each element of the pseudo-cover dominates both an
+$\alpha$-fraction of what remains to be dominated, and at least $\ell$ elements.
+Note that with our choice of constants, if there are more than $q$ vertices not
+covered yet, any vertex that covers an $\alpha$-fraction of what remains also
+covers at least $\ell$ elements.
+
+
+The next lemma shows how to derive the existence of pseudo-covers from
+the existence of covers.
+
+\begin{lemma}\label{lem:cover-to-pseudo-cover}
+Let $W\subseteq V(G)$ be of size at least
+$q$ and let~$Z$ be a cover of $W$ with~$k$ elements.
+There exists an ordering of the vertices of $Z$ as $z_1,\ldots, z_k$
+and $m\leq k$ such that $(z_1,\ldots, z_m)$ is a pseudo-cover of $W$.
+\end{lemma}
+\begin{proof}
+ We build the order greedily by induction. We order the elements by neighborhood size, while removing the neighborhoods of the previously ordered vertices. More precisely, assume that $(z_1,\ldots,z_i)$ have been defined for \mbox{some~$i\ge 0$}. We then define $z_{i+1}$ as the element that maximizes $|N[z] \cap (W \setminus \bigcup_{j\le i}N[z_j])|$.
+
+ Once we have ordered all vertices of $Z$, we define $m$ as the maximal integer not larger than $k$ such that for every $i \le m$ we have:
+ \begin{itemize}
+   \item $z_i$ is $\alpha$-strong for $W\setminus\bigcup_{j<i}N[z_j]$, and
+   \item $|N[z_i] \cap (W \setminus \bigcup_{j\le i}N[z_j])| \ge \ell$.
+ \end{itemize}
+
+This made sure that $(z_1,\ldots, z_m)$ satisfies the last 3 properties of a
+ pseudo-cover of $W$. It only remains to check the first one.
+ To do so, we define $W' \coloneq W \setminus\bigcup_{i\le m}N[z_i]$. We want to prove
+ that $|W'| \le q$. Note that because $Z$ covers~$W$, if $m=k$ we
+ have $W'=\emptyset$ and we are done. We can therefore assume
+ that $m<k$ and $W'\neq \emptyset$. Since $Z$ is a cover of $W$,
+ we also know that $(z_{m+1},\ldots z_k)$ is a cover of $W'$,
+ therefore there is an element in $(z_{m+1},\ldots z_k)$ that
+ dominates at least a $1 / k$ fraction of $W'$. Thanks to the
+ previously defined order, we know that~$z_{m+1}$ is such element.
+ Since $\alpha = 1/k$, it follows that~$z_{m+1}$ is $\alpha$-strong
+ for $W'$.
+ This, together with the definition of $m$, we have that $|N[z_i] \cap (W \setminus \bigcup_{j\le i}N[z_j])| < \ell$ meaning that $|N[z_{m+1}] \cap W'| < \ell$. This implies that $|W'|/k < \ell$. And since $\ell = q/k$, we have $|W'|<q$.
+%
+  Hence, $(z_1,\ldots, z_m)$ is a pseudo-cover of $W$.
+\end{proof}
+
+%We will apply the pseudo-covers to neighborhoods
+%of vertices.
+
+While there can exist unboundedly many covers for a set $W\subseteq V(G)$,
+the nice observation of Czygrinow et al.\ was that the number of
+pseudo-covers is bounded whenever the input graph excludes some
+biclique $K_{s,t}$ as a subgraph. We do not state the result in this
+generality, as it leads to enormous constants. Instead, we focus on the
+case where small covers exist, that is, on the case where~$\nabla_1(G)$
+is bounded and optimize the constants for this case.
+
+\begin{lemma}\label{lem:num-high-degree}
+Let $W\subseteq V(G)$ of size at least $8\nabla_1 / \alpha^2$.
+Then there are at most $4\nabla_1/\alpha$ vertices that are
+$\alpha$-strong for $W$.
+\end{lemma}
+\begin{proof}
+  Assume that there is such a set $W$ with at least $c\coloneq 4\nabla_1 /\alpha$ vertices that are $\alpha$-strong for $W$.
+  We build a $1$-shallow minor $H$ of the graph $G$ with $|W|$ branch sets.
+  Each branch set is either a single element of $W$, or a pair $\{w,a\}$, where $w$ is in $W$ and $a$ is an $\alpha$-strong vertex for $W$, connected to $w$, and that is not in $W$. This is obtained by iteratively contracting one edge of an $\alpha$-strong vertex with a vertex of $W$. This is possible because $\alpha |W|>c$, so during the process and for any \mbox{$\alpha$-strong} vertex we can find a connected vertex in $W$ that is not part of any contraction.
+
+  Once this is done, we have that $|V_H|=|W|$. For the edges, each of the \mbox{$\alpha$}-strong vertices can account for $\alpha |W|$ many edges. We need to subtract~$c^2$ from the total as we do not count twice an edge between two strong vertices. Therefore $|E_H| \ge c\alpha |W| - c^2$. Note also that because $|W| \ge 8\nabla_1 / \alpha^2$, we have that $ 2\nabla_1\ge (4\nabla_1)^2 / (\alpha^2|W|)$. All of this together leads to:
+
+  $$\frac{|E_H|}{|V_H|} \ge \frac{c\alpha |W| - c^2}{|W|} \ge 4 \nabla_1 - \frac{(4\nabla_1)^2}{\alpha^2|W|} \ge 4\nabla_1 - 2\nabla_1 > \nabla_1 $$
+
+  This contradicts the definition of $\nabla_1$.
+\end{proof}
+
+This leads quickly to a bound on the number of pseudo-covers.
+
+\begin{lemma}\label{lem:num-pseudo-covers}
+For every $W\subseteq V(G)$ of size at least $\ell$, the number of pseudo-covers is bounded by $2(4\nabla_1(G)/\alpha)^k$.
+\end{lemma}
+
+The proof of the lemma is exactly as the proof of Lemma~7 in the
+presentation of Czygrinow et al.~\cite{czygrinow2018distributed},
+we therefore refrain from repeating it here.
+
+%
+%Having previous decided to fix $K$ and $\alpha$, \cref{lem:num-pseudo-covers}
+%yields the following handy corollary.
+%\begin{corollary}\label{cor:num-pseudo-covers}
+%  Let $G$ be a graph. Fixe $k\coloneq 2\nabla_1(G)$, and then define
+%  $\alpha = 1/k$, $K=k$, $\ell =4k^3+1$, and $q:= 4k^4$.
+%  Then for every $W\subseteq V(G)$ of size at least $\ell$, the number of
+%  $(\alpha,q,\ell,K)$-pseudo-covers of $W$
+%  is bounded by $2(2k^2)^k$.
+%\end{corollary}
+
+% \textcolor{blue}{
+% \begin{example} Let $G$ be a planar graph. We can strongly optimize
+% the construction. For $\alpha>0, \ell\geq 8, q\geq 0$ and
+% $K\leq 6$ the number of vertices appearing in any $(\alpha, q,\ell, K)$-pseudo-cover
+% of $N(v)$ for a vertex $v$ is at most $7$.
+% The neighborhood $N(v)$ is dominated by $v$ and also by
+% at most $6$ vertices from $D'$. Then there does not exist
+% a further vertex that dominates at least $8$ vertices of
+% $N(v)$ as $G$ is planar. PROOF+PICTURE.
+% \end{example}
+% }
+
+\begin{tcolorbox}
+We write $\Tt(v)$ for the set of all pseudo-covers
+of $N(v)$ and $\Pp(v)$ for the set of all vertices that appear in a
+pseudo-cover of $N(v)$.
+\end{tcolorbox}
+
+
+
+\begin{corollary}\label{cor:nb-dominators}
+For every $v\in V(G)$ with $|N(v)|> \ell$, we have
+  $|\Tt(v)|\le 2(2k^2)^k$ and $|\Pp(v)|\le 2k(2k^2)^k\le (2k)^{2k+1}$.
+\end{corollary}

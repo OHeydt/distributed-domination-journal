@@ -1,0 +1,143 @@
+% !TEX root = sirocco-main.tex
+
+\section{Preliminaries}
+
+In this paper we study the distributed time complexity of finding
+dominating sets in planar graphs in the classical LOCAL model of
+distributed computing.
+We assume familiarity with this model and refer to the survey~\cite{suomela2013survey} for extensive
+background on distributed computing and the LOCAL model.
+
+We use standard notation from graph theory and refer to the
+textbook~\cite{diestel} for extensive background.  All graphs in this
+paper are undirected and simple. We write $V(G)$ for the vertex set of
+a graph $G$ and~$E(G)$ for its edge set. The \emph{girth} of a graph
+$G$ is the length of a shortest cycle in $G$. A graph is called
+\emph{triangle-free} if it does not contain a triangle, that is, a
+cycle of length three as a subgraph. Equivalently, a triangle-free
+graph is a graph of girth at least four.
+
+A graph is \emph{bipartite} if its vertex set can be partitioned into
+two parts such that all its edges are incident with two vertices from
+different parts. More generally, the \emph{chromatic number}~$\chi(G)$
+of a graph $G$ is the minimum number $k$ such that the vertices of $G$
+can be partitioned into $k$ parts such that all edges are incident
+with two vertices from different parts. Hence, the bipartite graphs
+are exactly the graphs with chromatic number two. A set $A$ is
+\emph{independent} if all two distinct vertices $u,v\in A$ are
+non-adjacent.  Every graph $G$ contains an independent set of size at
+least $\lceil|V(G)|/\chi(G)\rceil$. Every bipartite graph is triangle-free.
+
+A graph is \emph{planar} if it can be embedded in the plane, that is,
+it can be drawn on the plane in such a way that its edges intersect
+only at their endpoints. By the famous theorem of Wagner, planar
+graphs can be characterized as those graphs that exclude the complete
+graph $K_5$ on five vertices and the complete bipartite $K_{3,3}$ with
+parts of size three as a minor.  A graph~$H$ is a \emph{minor} of a
+graph~$G$, written~$H\minor G$, if there is a set
+\mbox{$\{G_v :v\in V(H)\}$} of pairwise vertex disjoint and connected
+subgraphs $G_v\subseteq G$ such that if~$\{u,v\}\in E(H)$, then there
+is an edge between a vertex of~$G_u$ and a vertex of~$G_v$. We
+call~$V(G_v)$ the \emph{branch set} of $v$ and say that it is
+\emph{contracted} to the vertex~$v$.  We call $H$ a \emph{$1$-shallow
+  minor}, written~$H\minor_1 G$, if $H\minor G$ and there is a minor
+model \mbox{$\{G_v :v\in V(H)\}$} witnessing this, such that all
+branch sets $G_v$ have radius at most $1$, that is, in each~$G_v$
+there exists $w$ adjacent to all other vertices of $G_v$. In other
+words, $H\minor_1 G$ if~$H$ is obtained from $G$ by deleting some
+vertices and edges and then contracting a set of pairwise disjoint
+stars. We refer to~\cite{nevsetvril2012sparsity} for an in-depth study
+of the theory of sparsity based on shallow minors.
+
+A graph is \emph{outerplanar} if it has an embedding in the plane such
+that all vertices belong to the unbounded face of the embedding.
+Equivalently, a graph is outerplanar if it does not contain the
+complete graph $K_4$ on four vertices and the complete bipartite graph
+$K_{2,3}$ with parts of size $2$ and $3$, respectively, as a minor. If
+$J\minor H$ and $H\minor G$, then $J\minor G$, hence a minor of a
+planar graph is again planar and a minor of an outerplanar graph is
+again outerplanar.
+
+
+By Euler's formula, planar graphs are sparse: every planar $n$-vertex
+graph ($n\geq 3$) has at most $3n-6$ edges (and a graph with at most
+two vertices has at most one edge). The ratio $|E(G)|/|V(G)|$ is
+called the \emph{edge density} of $G$. In particular, every planar
+graph $G$ has edge density strictly smaller than three.
+
+\begin{lemma}\label{lem:densities}
+  Let $G$ be a planar graph. Then the edge density of $G$ is strictly
+  smaller than $3$ and $\chi(G)\leq 4$. Furthermore,
+
+  \vspace{-2mm}
+  \begin{enumerate}
+  \item if $G$ is bipartite, then the edge density of $G$ is strictly
+    smaller than $2$ and $\chi(G)\leq 2$,\smallskip
+  \item if $G$ is triangle-free or outerplanar, then the edge density
+    of $G$ is strictly smaller than $2$ and $\chi(G)\leq 3$.
+    % and\smallskip
+    % \item if $G$ has girth at least $5$, then the edge density of
+    %   $G$ is strictly smaller than $\frac{5}{3}$ and
+    %   $\chi(G)\leq 3$.
+  \end{enumerate}
+\end{lemma}
+
+An orientation of a graph $G$ is a directed graph $\vec{G}$ that
+for every edge $\{u,v\}\in E(G)$ has one of the arcs $(u,v)$ or
+$(v,u)$. The out-degree $d^+(v)$ of a vertex~$v$ in an orientation $\vec{G}$ 
+of $G$ is the number $|\{ w : (v,w)\in E(\vec{G}\}|$. The following
+lemma is implicit in the work of Hakimi~\cite{sup_orie}, see also 
+\mbox{\cite[Proposition 3.3]{nevsetvril2012sparsity}}. 
+
+\begin{lemma}\label{lem:orientations}
+Let $d=\lceil\max_{H\subseteq G}\{|E(H)|/|V(H)|\}\rceil$. Then $G$ has an 
+orientation with maximum out-degree $d$. 
+\end{lemma}
+%\begin{proof}
+%We start with an arbitrary orientation $\vec{G}$. Assume there is a vertex $v$ 
+%with out-degree greater than~$d$. Consider the subgraph $\vec{H}$
+%induced by all vertices that are reachable from $v$. The underlying undirected
+%graph $H$ has $\sum_{v\in V(H)}d^+(v)$ many edges. As $v$ has 
+%out-degree strictly larger than $d$ we conclude that there must be one 
+%vertex $w$ in $\vec{H}$ that has out-degree strictly smaller than $d$. By definition
+%of $\vec{H}$ there exists a directed path from $v$ to $w$. By reversing the 
+%edges on that path we decrease the out-degree of $v$ by one, increase the
+%out-degree of $w$ by one and leave the out-degrees of all other vertices of
+%the path unchanged. By iterating this procedure we successively improve
+%the orientation until no vertex of out-degree greater than $d$ remains. 
+%\end{proof}
+
+As every subgraph of a (triangle-free or outerplanar) planar graph 
+is again a (triangle-free or outerplanar) planar graph we
+have the following corollary. 
+
+\begin{cor}\label{cor:planar-orientations}
+Let $G$ be a planar graph. Then 
+
+  \vspace{-2mm}
+\begin{enumerate}
+\item $G$ has an orientation with maximum out-degree $3$. \smallskip
+\item Furthermore, if $G$ is triangle-free or outerplanar, then 
+$G$ has an orientation with maximum out-degree~$2$. 
+\end{enumerate}
+\end{cor}
+
+For a graph $G$ and $v\in V(G)$ we write
+$N(v)=\{u~:~\{u,v\}\in E(G)\}$ for the \emph{open neighborhood} of $v$
+and $N[v]=N(v)\cup\{v\}$ for the \emph{closed neighborhood}
+of~$v$. For a set $A\subseteq V(G)$ let $N[A]=\bigcup_{v\in A}N[v]$.
+% We write $N_r[v]$ for the set of vertices at distance at most $r$
+% from a vertex $v$.
+A~\emph{dominating set} in a graph~$G$ is a set $D\subseteq V(G)$ such
+that $N[D]=V(G)$. We write $\gamma(G)$ for the size of a minimum
+dominating set of $G$. For $W\subseteq V(G)$ we say that a set
+$Z\subseteq V(G)$ \emph{dominates} $W$ if $W\subseteq N[Z]$.
+
+\smallskip
+In the following we mark important definitions and assumptions about
+our input graph in gray boxes and steps of the algorithm in red boxes.
+
+\begin{tcolorbox}
+  We fix a planar graph $G$ and a minimum dominating set~$D$ of $G$
+  with $\gamma \coloneqq |D|=\gamma(G)$.
+\end{tcolorbox}

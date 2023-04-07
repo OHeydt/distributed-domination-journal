@@ -1,0 +1,204 @@
+% !TEX root = sirocco-main.tex
+
+\section{Introduction}\label{sec:intro}
+
+A dominating set in an undirected and simple graph $G$ is a set
+$D\subseteq V(G)$ such that every vertex $v\in V(G)$ either belongs
+to $D$ or has a neighbor in $D$. The dominating set problem is a
+classical NP-complete problem~\cite{karp1972reducibility} with many
+applications in theory and practice, see e.g.~\cite{du2012connected,sasireka2014applications}. In this paper we study
+the distributed time complexity of finding
+dominating sets in planar graphs in the classical LOCAL model of distributed computing.
+In this model, a distributed system is modeled
+by an undirected (planar) graph~$G$. Every vertex represents a
+computational entity and the vertices communicate through the edges of
+$G$. The vertices are equipped with unique identifiers and initially,
+every vertex is only aware of its own identity. A computation then
+proceeds in synchronous rounds.  In every round, every vertex sends
+messages to its neighbors, receives messages from its neighbors and
+performs an arbitrary computation.  The complexity of a LOCAL
+algorithm is the number of rounds until all vertices return their
+answer, in our case, whether they belong to a dominating set
+or~not.
+
+
+The problem of approximating
+dominating sets in the LOCAL model has received considerable
+attention in the literature. Since in general graphs
+it is not possible to compute a
+constant factor approximation in a constant number of rounds~\cite{KuhnMW16},
+much effort has been invested to improve the ratio between approximation
+factor and number of rounds on special graph classes. A very successful
+line of structural analysis of graph properties that can lead to improved
+algorithms was started by the influential paper of Lenzen et al.~\cite{lenzen2013distributed}, who in particular proved that on planar graphs
+a 130-approximation
+of a minimum dominating set can be computed in a constant number of
+rounds. A careful analysis of Wawrzyniak~\cite{wawrzyniak2014strengthened}
+later showed that the algorithm computes in fact a 52-approximation.
+In terms of lower bounds, Hilke et al.~\cite{hilke2014brief} showed that there is no
+deterministic local algorithm (constant-time distributed graph algorithm) that
+finds a~$(7-\epsilon)$-approximation of a minimum dominating set on
+planar graphs, for any positive constant~$\epsilon$. Better approximation
+ratios are known for some special cases, e.g.\ 32 if the planar graph is
+triangle-free \mbox{\cite[Theorem 2.1]{alipour2020distributed}}, 18 if the planar graph has girth
+five~\cite{alipour2020local} and 5 if the graph is
+outerplanar (and this bound is tight)~\cite[Theorem 1]{bonamy2021tight}.
+
+In this work we tighten the gap between the best-known
+lower bound of~$7$ and the best-known upper bound of $52$ on planar graphs
+by providing a new approximation algorithm computing an $(11+\e)$\hspace{1pt}-\hspace{1pt}approximation (for every $\e>0$).
+
+Our algorithm proceeds in three phases.
+The first phase is a preprocessing phase that was similarly employed in the
+algorithm of Lenzen et al.~\cite{lenzen2013distributed}. In a key lemma,
+Lenzen et al.\ proved that there are only few vertices whose open neighborhood
+cannot be dominated by at most six vertices.
+We improve this lemma and show
+that there are only slightly more vertices whose open neighborhood cannot be
+dominated by \emph{three} other vertices. All these vertices are selected into an
+initial partial dominating set and as a consequence the open neighborhoods of all
+remaining vertices can be dominated by at most three vertices.
+
+%\bigskip
+%\noindent\hrulefill
+%\vspace{-6mm}
+%\subsubsection*{Acknowledgements} We thank the anonymous
+%referee for pointing out that the third phase of our algorithm can be
+%improved by the use of LP-based techniques when the maximum
+%degree is bounded.
+
+
+By defining the notion of \emph{pseudo-covers},
+Czygrinow et  al.~\cite{czygrinow2018distributed} provided a tool to carry
+out a fine grained analysis of the vertices that can potentially dominate
+the remaining neighborhoods.
+Using ideas of~\cite{kublenz2020distributed} and~\cite{siebertz2019greedy}
+we provide an even finer analysis for planar graphs on which we
+base the second phase of our distributed algorithm and compute a
+second partial dominating set.
+
+
+For the third phase, call the number of non-dominated neighbors of a vertex~$v$
+the \emph{residual degree} of $v$. We prove that
+after the second phase we are left with a graph where every vertex
+has residual degree at most~$30$. In particular, every vertex
+from a minimum dominating set $D$ can dominate at most 30
+non-dominated vertices and we conclude that the set $R$
+of non-dominated vertices has size bounded by~$31|D|$ (each
+vertex dominates its neighbors and itself). Hence, we could at this
+point pick all non-dominated vertices to add at most $31|D|$ vertices
+and conclude. Instead, we study two different ways to proceed.
+
+Our first option is to apply an LP-approximation based on
+aresults of Bansal and Umboh~\cite{bansal2017tight}, who showed
+that a very simple selection procedure leads to a constant factor
+approximation when the solution to the dominating set linear
+program (LP) is given. As shown by Kuhn et al.~\cite{kuhn2006price} we can approximate such a solution in a
+constant number of rounds when the maximum degree $\Delta$
+of the graph is bounded.
+To apply these results we have to overcome two obstacles. First,
+note that even though we have established that the maximum residual
+degree is bounded by $30$, we may still have unbounded maximum
+degree $\Delta$. We overcome this problem by keeping only a few
+representative potential dominators around the set $R$. By a simply
+density argument there can be only very few high degree vertices left
+that we simply select into the dominating set. The second obstacle,
+which is easily overcome, is that we do not need to dominate the
+whole remaining graph but only the set $R$. This requires a small
+adaptation of the LP-formulation of the problem and a proof that the
+algorithm of Bansal and Umboh still works for this slightly different problem.
+In total, in this third phase of the algorithm we add at most $(7+\e)|D|$ vertices to
+the dominating set, leading to an
+$(11+\e)$\hspace{1pt}-\hspace{1pt}approximation in total (\cref{thm:planar}).
+%On
+%the downside, we use quite heavy machinery and the number of
+%rounds depends on the LOCAL LP-approximation algorithm of Kuhn et al.,
+%which is constant but large.
+
+\smallskip
+Our second option is to study a parallel distributed version of the
+classical greedy algorithm. We proceed in a greedy manner in $30$ rounds as follows. In the first round, if a non-dominated
+vertex has a neighbor of residual degree~$30$, it elects one such neighbor into
+the dominating set (or if it has residual degree $30$ itself, it may choose itself).
+The neighbors of the chosen elements are
+marked as dominated and the residual degrees are updated. Note that
+all non-dominated neighbors of a vertex of residual degree $30$
+in this round choose a dominator, hence, the residual degrees
+of all vertices of residual degree $30$ are decreased to~$0$, hence, after
+this round there are no vertices of residual degree $30$ left.
+In the second round, if a non-dominated vertex has a neighbor
+of residual degree~$29$, it elects
+one such vertex into the dominating set, and so on, until after $30$ rounds
+in the final round every vertex chooses a dominator. Unlike in the general
+case, where
+nodes cannot learn the current maximum residual degree in a constant
+number of rounds, by establishing
+an upper bound on the maximum residual degree and proceeding in exactly
+this number of rounds, we ensure that we iteratively exactly choose the
+vertices of maximum residual degree. It remains to analyze the performance
+of this algorithm.
+
+
+A simple density argument shows
+that there cannot be too many vertices of degree $i\geq 6$ in a planar
+graph. At a first glance it seems that the algorithm would perform worst
+when in every of the $30$ rounds it would pick as many vertices as possible,
+as the constructed dominating set would grow as much as possible. However,
+this is not the case, as picking many high degree vertices at the same time makes
+the largest progress towards dominating the whole graph. It turns
+out that there is a delicate balance between the vertices that we pick
+in round $i$ and the remaining non-dominated vertices that leads
+to the worst case. 
+%We formulate these conditions as a
+%linear program and solve the linear program. 
+In total, this
+leads to a 20\hspace{1pt}-\hspace{1pt}approximation (\cref{thm:planar-greedy}).
+While this approach falls short of achieving the best approximation ratio
+the algorithm is simple and interesting to study in its own right.
+
+\smallskip
+We then analyze our algorithm on more restricted graph classes, and prove that
+it computes the following approximations of factors: ($8+\e$) for triangle-free
+planar graphs, $(7+\e)$ for bipartite planar graphs, $(8+\e)$ for outerplanar
+graphs, and $7$ for planar graphs of girth $5$
+(\cref{thm:bip,thm:tri,thm:outer,thm:girth-2} respectively).
+% We then analyze our algorithm on bipartite planar graphs,
+% triangle-free planar graphs,
+% planar graphs of girth $5$ and outerplanar graphs and prove that
+% it computes a 12, 14, 7 and 12 approximation, respectively (\cref{thm:bip,thm:tri,thm:girth,thm:outer}).
+This
+improves the currently best known approximation ratios of 32
+and 18 for triangle-free planar graphs and planar graphs of girth $5$,
+respectively. %, while our algorithm fails short of achieving
+%the optimal approximation ratio of 5 on outerplanar graphs.
+
+%While we could tighten the gap between the best known lower and upper
+%bound on planar graphs there is still much room for improvement. We
+%believe that the optimum approximation rate is much closer to $7$ than
+%to $24$. We also stress that we are not satisfied with our brute-force
+%CPLEX proof, but we must unfortunately leave a more elegant proof
+%for future work.
+
+
+
+
+
+%
+%, see e.g.~\cite{akhoondian2018distributed,%
+%akhoondian2016local,%
+%alipour2020local,%
+%amiri2016brief,%
+%amiri2019distributed,%
+%barenboim2018fast,%
+%czygrinow2008fast,%
+%czygrinow2018distributed,%
+%DBLP:conf/stoc/GhaffariKM17,%
+%hilke2014brief,%
+%kublenz2020distributed,%
+%KuhnMW16,%
+%lenzen2013distributed,%
+%lenzen2008leveraging,%
+%lenzen2010minimum,%
+%DBLP:conf/stoc/RozhonG20,%
+%wawrzyniak2013brief,%
+%wawrzyniak2014strengthened}.

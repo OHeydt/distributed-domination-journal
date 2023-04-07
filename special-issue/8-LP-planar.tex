@@ -1,0 +1,112 @@
+% !TEX root = main.tex
+
+\subsection{Phase 3: LP-based approximation}\label{sec:LP-planar}
+
+\sebi{Update the general case such that we can work
+with arbitrary $\epsilon$.} 
+
+Recall that we chose $\rho$ such that $|(D_1 \cup D_2)\cap D| =\rho\gamma$.
+When $\rho\gamma$ vertices of $D$ were already chosen into
+the partial dominating set $D_1\cup D_2$ we have $|D_R|\leq (1-\rho)\gamma$.
+With \cref{cor:planar-orientations} we conclude the following corollary.
+
+\sebi{Put this to the general case.}
+
+\begin{corollary}\label{cor:LP-approx}
+  Let $G$ be a graph that has an orientation with maximum out-degree
+  $d$, let $R\subseteq V(G)$, let~$D_R$ be a
+  minimum dominating set of $R$, and let $\e>0$. Then we can
+  compute a set $D'$ of size at most~$(2d+1)(1+\e)|D_R|$ that dominates
+  $R$ in $\Oof(\log \Delta/(\log (1+\e))$ rounds in the LOCAL
+  model.
+
+  In particular, for our algorithm when
+
+  \vspace{-2mm}
+  \begin{enumerate}
+    \item $G$ is planar, then $|D'|\leq 7(1+\e)|D_R|
+      \leq 7(1+\e)(1-\rho)\gamma$, and when
+    \item $G$ is planar and triangle-free or outerplanar, then
+      $|D'|\leq 5(1+\e)|D_R|\leq 5(1+\e)(1-\rho)\gamma$.
+  \end{enumerate}
+\end{corollary}
+
+\subsubsection{Conclusion of LP approach for $K_{3,t}$-free graphs}
+
+\sebi{Stopped here.}
+
+We now proceed with the LP-based approximation as in the general case
+presented in \cref{sec:LP}. Recall that for any desired $\epsilon>0$ 
+we defined $\Gamma$ as an high degree and defined 
+$D_3^1$ as the set of all vertices with degree greater than $\Gamma$. 
+By the choice of $\Gamma$ we concluded with \cref{lem:size-D31}
+that $|D_3^1|\leq \epsilon\gamma$. 
+
+We now pick an arbitrary $\e>0$ and select all vertices with degree at least
+$\Gamma$ into our
+dominating set, where $\Gamma$ is chosen such that there exist at
+most $(\e/8)(1-\rho)\gamma$ vertices of degree at least $\Gamma$.
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+  Let $\e>0$, $\e':= \e/8$,
+  $\Gamma\coloneqq 6\frac{372}{\e'}$, and \quad
+  $D_3^1\coloneqq \{v\in R ~:~ d(v)>\Gamma\}$.
+\end{tcolorbox}
+
+\begin{lemma}\label{lem:size-D31}
+  $|D_3^1|\le \e'(1-\rho)\gamma$.
+\end{lemma}
+\begin{proof}
+  We assume the opposite and count the number of edges and vertices of $G$.
+  When we sum the degree of some of the vertices, we get at most twice the
+  number of edges.
+  Hence we have~$2\cdot |E(G)|\ge 6\frac{372}{\e'} \cdot \e'(1-\rho)\gamma$.
+  Hence, with \cref{cor:size-g},
+  $|E(G)|\ge 3\cdot 372(1-\rho)\gamma\geq 3|V(G)|$. This
+  contradict the fact the graph is planar.
+\end{proof}
+
+After picking $D_3^1$ into the dominating set, marking the neighbors of
+$D_3^1$ as dominated and updating the set $R$, we can delete the
+vertices of $D_3^1$. We are left with a graph of maximum degree~$\Gamma$.
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+  Let $D_3^2$ be the set computed by the LOCAL algorithm of \cref{cor:LP-approx}
+  with parameter $\e'$.
+\end{tcolorbox}
+
+Let $D_3=D_3^1 \cup D_3^2$. We already noted that the definition of $D_3$ implies that
+$D_1\cup D_2\cup D_3$ is a dominating set of $G$. We now conclude the
+analysis of the size of this computed set.
+
+\begin{lemma}\label{lem:D3-LP}
+  We have that $|D_3| \le (7+\e)(1-\rho)\gamma$
+\end{lemma}
+\begin{proof}
+  By \cref{cor:LP-approx} and \cref{lem:size-D31} we have
+  $|D_3^2|\leq 7(1+\e')(1-\rho)\gamma$, and $|D_3^1|\le \e'(1-\rho)\gamma$.
+  This, together with~$\e'=\e/8$, concludes the proof.
+\end{proof}
+
+\subsection{Corollaries for graphs on surfaces}
+
+\sebi{Update}
+
+We can now complete the analysis of our algorithm for planar graphs.
+\begin{theorem}\label{thm:planar-ccl}
+  There exists a distributed LOCAL algorithm that, for every $\e>0$, and every
+  planar graph~$G$, computes in a constant number of rounds a dominating set
+  of size at most $(11+\e)\gamma(G)$.
+\end{theorem}
+\begin{proof}
+  First, $D_1,D_2$, and $D_3$ are computed locally, in a bounded number of
+  rounds, and additionally the set $D_1 \cup D_2 \cup D_3$ dominates $G$.
+%
+  Second, by \cref{lem:size-D12} we have $|D_1\cup D_2|<4\gamma+4\rho\gamma$;
+  and by \cref{lem:D3-LP} we have $|D_3|\leq (7+\e)(1-\rho)\gamma$.
+
+  Therefore $|D_1 \cup D_2 \cup D_3|\leq \gamma(4+4\rho +7 - 7\rho +\e - \e\rho)
+  \leq \gamma(11+\e-3\rho -\e\rho)$.
+  As $\rho\in[0,1]$, this is maximized when $\rho=0$. Hence
+  $|D_1 \cup D_2 \cup D_3| \le \gamma(11+\e)$.
+\end{proof}

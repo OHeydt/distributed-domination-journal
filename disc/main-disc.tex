@@ -1,0 +1,749 @@
+
+\documentclass[a4paper,UKenglish,thm-restate,numberwithinsect]{lipics-v2021}
+%This is a template for producing LIPIcs articles.
+%See lipics-v2021-authors-guidelines.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+%for section-numbered lemmas etc., use "numberwithinsect"
+%for enabling cleveref support, use "cleveref"
+%for enabling autoref support, use "autoref"
+%for anonymousing the authors (e.g. for double-blind review), add "anonymous"
+%for enabling thm-restate support, use "thm-restate"
+%for enabling a two-column layout for the author/affilation part (only applicable for > 6 authors), use "authorcolumns"
+%for producing a PDF according the PDF/A standard, add "pdfa"
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{Brief announcement: Local domination on planar graphs revisited} %TODO Please add
+
+\titlerunning{} %TODO optional, please use if title is longer than one line
+
+%\author{Simeon Kublenz}{University of Bremen, Germany}{kublenz@uni-bremen.de}{}{}%TODO mandatory, please use full name; only 1 author per \author macro; first two parameters are mandatory, other parameters can be empty. Please provide at least the name of the affiliation and the country. The full address is optional
+
+\author{Sebastian Siebertz}{University of Bremen, Germany}{siebertz@uni-bremen.de}{https://orcid.org/0000-0002-6347-1198}{}
+
+\author{Alexandre Vigny}{University of Bremen, Germany}{vigny@uni-bremen.de}{https://orcid.org/0000-0002-4298-8876}{}
+
+\author{Ozan Heydt}{University of Bremen, Germany}{heydt@uni-bremen.de}{}{}
+
+\authorrunning{S. Siebertz, A. Vigny and O. Heydt} %TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+\Copyright{?} %TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+\ccsdesc[500]{\textcolor{red}{Theory of computation~Self-organization}} %TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm
+
+\keywords{Dominating set, LOCAL algorithm, planar graph} %TODO mandatory; please add comma-separated list of keywords
+
+\category{} %optional, e.g. invited paper
+
+\relatedversion{} %optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\relatedversiondetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93]{Classification (e.g. Full Version, Extended Version, Previous Version}{URL to related version} %linktext and cite are optional
+
+%\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+%\supplementdetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93, subcategory={Description, Subcategory}, swhid={Software Heritage Identifier}]{General Classification (e.g. Software, Dataset, Model, ...)}{URL to related version} %linktext, cite, and subcategory are optional
+
+%\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+\acknowledgements{}%optional
+
+%\nolinenumbers %uncomment to disable line numbering
+
+\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Access}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% End LIPICS stuff
+
+% -- Added Packages --
+\usepackage{mathtools}
+\usepackage{tikz}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{dark-blue}{rgb}{0.05,0.25,1}
+\usepackage{tcolorbox}
+\usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks = true,
+    linkcolor = blue,
+    citecolor=blue
+    }
+\usepackage[noabbrev,capitalise,nameinlink]{cleveref}
+\newcommand\claimref[2]{\hyperref[{#1}]{#2}}
+
+\newcommand{\nc}[1]{\newcommand{#1}}
+\newcommand{\Oof}{\mathcal{O}}
+\newcommand{\Cc}{\mathscr{C}}
+\newcommand{\Aa}{\mathcal{A}}
+\newcommand{\Bb}{\mathcal{B}}
+\newcommand{\Tt}{\mathcal{T}}
+\newcommand{\Nn}{\mathcal{N}}
+\newcommand{\Ss}{\mathcal{S}}
+\newcommand{\Pp}{\mathcal{P}}
+\newcommand{\Qq}{\mathcal{Q}}
+\newcommand{\Rr}{\mathcal{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\minor}{\preceq}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\nc{\e}{\epsilon}
+\nc{\dd}{\delta}
+
+% -- End of added Packages --
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% % % % % % % % % % % % % % For commenting the text % % % % % % % % % % % % % %
+\newcommand{\commentmargin}[1]{\marginpar{\tiny\textit{#1}}}
+\newcommand{\commenttext}[1]{ \begin{center} {\fbox{\begin{minipage}[h]{0.9 \linewidth}   {\sf #1} \end{minipage} }} \end{center}}
+
+% Add your name and pick a color !
+\newcommand{\alex}[1]{{\color{blue}\commenttext{Alex: #1}}}
+\newcommand{\alexpb}[1]{{\color{purple}\commenttext{ATTENTION (Alex): #1}}}
+\newcommand{\alexmargin}[1]{\commentmargin{\color{blue}Alex: #1}}
+
+
+
+\newcommand{\sebi}[1]{{\color{red}\commenttext{Sebi: #1}}}
+\newcommand{\sebimargin}[1]{\commentmargin{\color{red}Sebi: #1}}
+
+\newcommand{\nicole}[1]{{\color{green!60!black}\commenttext{Nicole: #1}}}
+\newcommand{\nicolemargin}[1]{\commentmargin{\color{green!60!black}Nicole: #1}}
+
+%\newcommand{\red}[1]{{\color{red}#1}}
+%%% uncomment what follows to remove the comments %%%
+
+% \renewcommand{\commentmargin}[1]{}
+% \renewcommand{\commenttext}[1]{}
+% \renewcommand{\red}[1]{}
+
+% % % % % % % % % % % % % % End commenting the text % % % % % % % % % % % % % %
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+
+
+\begin{document}
+
+\maketitle
+
+%TODO mandatory: add short abstract of the document
+\begin{abstract}
+A dominating set in a graph $G$ is a subset $D\subseteq V(G)$ of vertices
+such that all vertices of $G$ are in or adjacent to a vertex of $D$.
+While it is known that in general no constant factor approximations
+can be computed in a constant number of rounds in the LOCAL model,
+this is possible in several restricted graph classes. In particular,
+an elegant an simple algorithm of Lenzen et al.\ computes a
+52-approximation in a constant number of rounds in planar graphs.
+We combine the preprocessing phase of Lenzen et al.'s algorithm
+with recent work of Czygrinow et al.\ and Kublenz et al.\ to obtain a
+new approach to compute small dominating sets in planar graphs
+in a constant number of rounds. While the algorithm falls short
+of achieving the best known approximation it gives interesting
+new insights into LOCAL domination on planar graphs.
+\end{abstract}
+
+\section{Introduction}
+A dominating set in an undirected and simple graph $G$ is a set
+$D\subseteq V(G)$ such that every vertex $v\in V(G)$ either belongs
+to $D$ or has a neighbor in $D$. The dominating set problem is a
+classical NP-complete problem~\cite{karp1972reducibility} with many
+applications in theory and practice. In this paper we study
+the distributed time complexity of finding
+dominating sets in the classic LOCAL model of distributed computing.
+The problem of approximating
+dominating sets in the LOCAL model has received considerable
+attention in the literature~\cite{akhoondian2018distributed,
+akhoondian2016local,
+alipour2020local,
+amiri2016brief,
+amiri2019distributed,
+barenboim2018fast,
+czygrinow2008fast,
+czygrinow2018distributed,
+DBLP:conf/stoc/GhaffariKM17,
+hilke2014brief,
+kublenz2020distributed,
+KuhnMW16,
+lenzen2013distributed,
+lenzen2008leveraging,
+lenzen2010minimum,
+DBLP:conf/stoc/RozhonG20,
+wawrzyniak2013brief,
+wawrzyniak2014strengthened}. Since in general graphs
+it is not possible to compute a
+constant factor approximation in a constant number of rounds~\cite{KuhnMW16},
+much effort has been invested to improve the ratio between approximation
+factor and number of rounds on special graph classes. In particular, a
+line of structural analysis of graph properties that can lead to improved
+algorithms was started by the influential paper of Lenzen et al.~\cite{lenzen2013distributed}, who in particular proved that on planar graphs
+a 130-approximation
+of a minimum dominating set can be computed in a constant number of
+rounds. A careful analysis of Wawrzyniak~\cite{wawrzyniak2014strengthened}
+later showed that the algorithm computes in fact a 52-approximation.
+In terms of lower bounds, Hilke et al.~\cite{hilke2014brief} showed that there is no
+deterministic local algorithm (constant-time distributed graph algorithm) that
+finds a~$(7-\epsilon)$-approximation of a minimum dominating set on
+planar graphs, for any positive constant~$\epsilon$.
+
+The algorithm of Lenzen et al.~\cite{lenzen2013distributed} works in two
+phases. The first phase is a preprocessing step that leaves us with
+only vertices whose neighborhoods can be dominated by a few other
+vertices. In the second phase it is then sufficient that every remaining
+non-dominated vertex chooses a neighbor of maximum residual
+degree\footnote{The residual degree of a vertex is the number of
+its non-dominated neighbors.}.
+
+Recently, Czygrinow et  al.~\cite{czygrinow2018distributed} proposed
+a new algorithm that works for much more general graphs, namely
+for graphs that exclude some topological minor. This gain in
+applicability to more general graph classes however, comes at the
+cost of a much more complicated algorithm. By defining a notion
+of \emph{pseudo-covers}, Czygrinow et
+al.~\cite{czygrinow2018distributed} provided tool to carry out a
+fine grained analysis of vertices that can potentially dominate
+the neighborhoods of vertices in graphs that exclude some topological
+minor. A sophisticated iterative procedure then leads to the
+computation of a dominating set that is only constantly much
+larger than an optimum dominating set. Kublenz et al.~\cite{kublenz2020distributed} generalized the algorithm
+to classes with bounded expansion and optimized constants,
+however, the constants arising in the construction are still
+astronomically high.
+
+In this paper we combine the preprocessing approach of
+Lenzen et al.~\cite{lenzen2013distributed} with the
+construction of Czygrinow et al.~\cite{czygrinow2018distributed}
+on planar graphs. As planar graphs are much simpler than
+graphs that exclude a topological minor we are able to carry
+out the construction of Czygrinow et al.\ without the
+complicated construction of pseudo-covers by applying
+only very basic combinatorial tools. After the selection of
+a small number of initial dominating vertices we are quickly
+left with a graph of bounded maximum degree. A parallel
+greedy procedure then leads us to the final dominating set.
+
+While we do not achieve the best known approximation factor
+of 52, we believe that we gain interesting new insights into
+the LOCAL domination properties of planar graphs. In particular,
+it is perceivable that a combination with the tools of \cite{wawrzyniak2014strengthened} can lead to an
+even improved approximation factor.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Preliminaries}
+
+We work with the classic LOCAL model of distributed computing
+restricted to planar graphs.
+In this model, a distributed system is modeled by an undirected planar
+graph~$G$,
+in which every vertex represents a computational entity of the network and every edge represents a bidirectional communication channel. The vertices are equipped with unique identifiers.
+In a distributed algorithm, initially, the nodes have no knowledge about
+the network graph. They must then communicate and coordinate
+their actions by passing messages to one another in order to achieve
+a common goal, in our case, to compute a dominating set of the
+network graph. The complexity of a LOCAL algorithm is the number of communication rounds it needs until it returns its answer.
+
+By the famous theorem of Wagner, planar graphs can be characterized
+as those graphs that exclude the complete graph $K_5$ and the
+complete bipartite $K_{3,3}$ with partitions of size $3$ as a minor.
+A graph~$H$ is a minor of a graph~$G$, written~$H\minor G$, if
+there is a set \mbox{$\{G_v :v\in V(H)\}$} of pairwise vertex disjoint and
+connected subgraphs
+$G_v\subseteq G$ such that if~$\{u,v\}\in E(H)$, then there is an edge
+between a vertex of~$G_u$ and a vertex of~$G_v$. We call~$V(G_v)$ the
+\emph{branch set} of $v$ and say that it is
+\emph{contracted} to the vertex~$v$. By Euler's formula, planar graphs
+are sparse: every planar $n$-vertex graph ($n\geq 3$) has
+at most $3n-6$ edges. Minors of planar graphs are again planar graphs,
+so that this formula applies also to all minors of a planar graph. In
+the following we assume that each component of our input graph $G$
+has at least $3$ vertices. This is justified by the observation that a
+minimum dominating set of a disconnected graph is a union of
+minimum dominating sets for each component and that we can
+compute optimal dominating sets in components of bounded size
+in a constant number of rounds.
+
+For a graph $G$ and $v\in V(G)$ we write $N(v)=\{w~:~\{v,w\}\in E(G)\}$
+for the \emph{open neighborhood} of $v$ and $N[v]=N(v)\cup\{v\}$ for
+the \emph{closed neighborhood} of~$v$. For a set $A\subseteq V(G)$ let
+$N[A]=\bigcup_{v\in A}N[v]$.
+%We write $N_r[v]$ for the set
+%of vertices at distance at most $r$ from a vertex $v$.
+A dominating set in a graph~$G$ is a set
+$D\subseteq V(G)$ such that $N[D]=V(G)$. We write $\gamma(G)$ for
+the size of a minimum dominating set of $G$. For $W\subseteq V(G)$
+we say that a set $Z\subseteq V(G)$ \emph{dominates}
+ $W$ if $W\subseteq N[Z]$.
+
+\begin{tcolorbox}
+  In the following we fix a planar graph $G$ and a minimum dominating
+  set $D$ with $\gamma \coloneqq |D|=\gamma(G)$. We assume
+  that every component
+  of $G$ has at least $3$ vertices.
+\end{tcolorbox}
+
+\alex{We need to agree on some color code for the textboxes
+  \begin{itemize}
+    \item Sets computed by the algorithm (the definition of the sets $D_1$, $D_2$, ...) (RED)
+    \item For what is assumed in what follows (not sure that this is needed)
+    \item For important definitions (not computed by the algorithm, like $\hat D$) (GREY)
+  \end{itemize}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Preprocessing}
+
+\alex{I'm rewriting the paper without saying that we 'remove' vertices and carefully mentioning $D_1$ in he second step, and $D_1\cup D_2$ in the third.}
+
+The algorithm of Lenzen et al.~\cite{lenzen2013distributed} works in two
+phases. The first phase is a preprocessing step that leaves us with
+only vertices whose neighborhoods can be dominated by a few other
+vertices. It is based on the following key combinatorial lemma (which
+can be generalized to more general graphs).
+We select all vertices whose neighborhood cannot be dominated by $6$ other
+vertices.
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+  Let $D_1\coloneqq \{v\in V(G) : $ for all set $A\subseteq V(G)\setminus \{v\}$
+  with $N(v)\subseteq N[A]$ we have $|A|> 6\}$.
+\end{tcolorbox}
+
+The first phase of the algorithm is to compute this set $D_1$ which can be done
+in only 2 rounds of communication.
+The following lemma states that there exist only few such vertices.
+
+\begin{lemma}[Lemma 6.3 of Lenzen et al.~\cite{lenzen2013distributed}]\label{lem:lenzen}
+  We have $|D_1\setminus D|< 3\gamma$.
+\end{lemma}
+\alex{add proof to be more self contained? (copy past from sirocco paper)}
+
+The analysis of the next steps of the algorithms require definitions of sets of
+vertices that are not computed by the algorithm.
+%
+First, the neighborhood of the vertices that where not selected can be
+dominated by few other vertices.
+\begin{tcolorbox}
+  For every $v\in V(G)\setminus D_1$, we fix $A_v\subseteq V(G)\setminus \{v\}$
+  such that: \center $N(v)\subseteq N[A_v]$ and $|A_v|\leq 6$.
+\end{tcolorbox}
+There are potentially many such sets $A_v$; we fix one such set arbitrarily.
+
+Second, it is possible to define a set resembling $D_1$ with a stronger
+constraint: we can require the sets $A$ to be subsets of the dominating set $D$.
+\begin{tcolorbox}
+  Let $\hat D\coloneqq \{v\in V(G) : $ for all set $A\subseteq D\setminus \{v\}$
+  with $N(v)\subseteq N[A]$ we have $|A|> 6\}$.
+\end{tcolorbox}
+
+By following the proof of~\cref{lem:lenzen}, we get similar result for $\hat D$.
+
+% We can also prove by following the lines of the proof of the above
+% lemma that almost all vertices $v$ have even better properties,
+% namely that we can choose the set~$A_v$ as a
+% subset of~$D$ for almost all vertices.
+% Note that since $D$ is unknown this set cannot be computed by our algorithm.
+
+\begin{lemma}\label{lem:D-hat}
+  We have $|\hat{D}\setminus D|< 3\gamma$, and
+  $|\hat{D}|< 4\gamma$.
+\end{lemma}
+
+We stress once again that $A_v$ and $\hat D$ are not computed by the algorithm.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Analyzing the local dominators}
+
+By defining a notion of \emph{pseudo-covers}, Czygrinow et  al.~\cite{czygrinow2018distributed} provided tool to carry out a
+fine grained analysis of
+vertices that can potentially belong to a set $A$ used to dominate
+the neighborhood $N(v)$ of a vertex $v$. This tool can in fact
+be applied to much more general graphs than planar graphs, namely,
+to all graphs that exclude some complete bipartite graph~$K_{t,t}$.
+A refined analysis for classes of bounded expansion was provided
+by Kublenz et al.~\cite{kublenz2020distributed}.
+We provide an even finer analysis for planar graphs on which we
+base a second phase of our distributed algorithm.
+
+We first describe what the algorithm computes, and then provide bounds on the
+number of selected vertices. Intuitively, we select every pair of vertices with
+sufficiently many neighbors in common.
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+  For $v\in V(G)$ let $B_v\coloneqq \{z\in V(G)\setminus
+  \{v\}: |N(v)\cap N(z)|\geq 19\}$.\\
+  Then let $W$ be the set of vertices $v\in V(G) \setminus D_1$ such
+  that $B_v  \setminus D_1 \neq \emptyset$.\\
+  Finally let $D_2\coloneqq \bigcup\limits_{v\in W} (\{v\}\cup B_v)$.
+\end{tcolorbox}
+
+Once $D_1$ has been computed in the previous step, 2 more rounds of
+communication are enough to compute the sets $B_v$ and $D_2$. We now turn to the
+analysis of the sets $B_v$ and $D_2$.
+First, $B_v$ cannot be too big, and has nice properties.
+\begin{lemma}\label{lem:dominating-dominators}
+  For all vertices $v$ of $V(G) \setminus D_1$, we have:
+  \begin{itemize}
+    \item $B_v \subseteq A_v$ (hence $|B_v|\le 6$), and
+    \item if $v\not\in \hat{D}$, then $B_v\subseteq D$.
+  \end{itemize}
+\end{lemma}
+
+\begin{proof}
+  Assume $A_v=\{v_1,\ldots, v_6\}$ and assume there is $z\in V(G)\setminus \{v,v_1,\ldots, v_6\}$
+  with $|N(z) \cap N(v)| \geq 19$.
+  As $v_1, \ldots, v_6$ dominate $N(v)$ (and in particular $N(v)\cap N(z)$)
+  there must be some~$v_i$, $1\leq i\leq 6$, with
+  \mbox{$N(z) \cap N(v) \cap N[v_i] \geq \lceil 19/6\rceil \geq 4$}. \\
+  Therefore,
+  \mbox{$N(z) \cap N(v) \cap N(v_i) \geq 3$}, which shows that $K_{3,3}$ is a
+  subgraph of $G$, contradicting the assumption that $G$ is planar.
+  \alexmargin{fix linebreak once all is decided.}
+
+  If furthermore $v\not\in \hat{D}$, we can fix $w_1,\ldots, w_6$ from $D$
+  that dominate $N(v)$. If $z\in V(G)\setminus \{v,w_1,\ldots, w_6\}$
+  with $|N(z) \cap N(v)| \geq 19$ we can argue as above to obtain
+  a contradiction.
+\end{proof}
+
+% In the light of \cref{lem:dominating-dominators}, we select all paires of nodes
+% with sufficiently large intersecting neighborhood.
+%
+% \begin{tcolorbox}
+%   For $v\in V(G)$ let $B_v\coloneqq \{z\in V(G)\setminus \{v\}:
+%   |N(v)\cap N(z)|\geq 19\}$.
+% \end{tcolorbox}
+
+% \begin{corollary}\label{cor:dominating-dominators}
+%   For every vertex $v$, $B_v\subseteq A_v$, in particular,
+%  $|B_v|\leq 6$ and if $v\not\in \hat{D}$, then $B_v\subseteq D$.
+% \end{corollary}
+%
+% \begin{tcolorbox}
+%   We define $W$ as the set of vertices $v\in V(G)$ such
+%   that $B_v\neq \emptyset$. We define \[D_2\coloneqq \bigcup_{v\in W}
+%   (\{v\}\cup B_v).\]
+% \end{tcolorbox}
+% \vspace{0mm}
+
+% Our algorithm now proceeds as follows. Obviously, every
+% vertex $v$ can locally compute the set $B_v$. The algorithm
+% adds the set $D_2$ to the dominating set, removes~$D_2$ from the graph and marks
+% all vertices dominated by $D_2$ as dominated.
+% \alex{here again 'remove' vertices?}
+
+Let us now analyze the size of $D_2$. For this we refine the set $D_2$
+and define
+\begin{tcolorbox}
+  \begin{enumerate}
+    \item $D_2^1\coloneqq \bigcup_{v\in D}
+    (\{v\}\cup B_v)$, \\[-3mm]
+    \item $D_2^2\coloneqq \bigcup_{v\in \hat{D}\setminus D}
+    (\{v\}\cup B_v)$, and \\[-3mm]
+    \item $D_2^3\coloneqq \bigcup_{v\in W\setminus (D\cup \hat{D})}
+    (\{v\}\cup B_v)$.
+  \end{enumerate}
+\end{tcolorbox}
+
+Obviously $D_2=D_2^1\cup D_2^2\cup D_2^3$. We then bound the size of
+newly defined sets.
+
+\begin{lemma}\label{lem:size-D21}
+  $|D_2^1\setminus D|\leq 6\gamma$.
+\end{lemma}
+\begin{proof}
+  We have $|\bigcup_{v\in D}B_v|\leq \sum_{v\in D}|B_v|\leq 6\gamma$.
+\end{proof}
+
+\begin{lemma}\label{lem:size-D22}
+  $|D_2^2\setminus D|< 3\gamma$.
+\end{lemma}
+\begin{proof}
+  Let $v\in \hat{D}\setminus D$ and let $z\in B_v$. By symmetry, $v\in B_z$ and
+  according to \cref{lem:dominating-dominators}, if $z\not\in \hat{D}$ then $v\in D$.
+  Since this is not the case, we conclude that $z\in\hat{D}$.
+  Hence $B_v\subseteq \hat{D}$ and, more generally, $D_2^2\subseteq \hat{D}$.
+  Finally, according to \cref{lem:D-hat}, we have $|\hat{D}\setminus D|<3\gamma$.
+\end{proof}
+
+Finally, the set that appears largest at first glance was actually
+already counted, as shown in the next lemma.
+\begin{lemma}\label{lem:size-D23}
+  $D_2^3\subseteq D_2^1$.
+\end{lemma}
+\begin{proof}
+  If $v\not\in \hat{D}$, then $B_v\subseteq D$ by \cref{lem:dominating-dominators}.
+  Hence $v\in B_z$ for some $z\in D$, and $v\in D_2^1$.
+\end{proof}
+
+Additionally, observe that the situation where $|D_2^1\setminus D| = 6\gamma$
+is not the worst as it would imply that for each vertex $v$ of $D$, $|B_v|=6$,
+implying that $D\subseteq D_2^1$, and therefore the algorithm
+could stop here.
+For a finer analysis, we need to define what is the amount of vertices of $D$
+that have been selected in this step.
+
+\begin{tcolorbox}
+  Let $\e\in [0,1]$ be such that $|D_2^1\cap D| =\e\gamma$.
+\end{tcolorbox}
+
+\begin{lemma}\label{lem:size-D2}
+  We have that $|D_2\setminus D| \le 3\gamma + 6\e\gamma$.
+\end{lemma}
+The proof of~\cref{lem:size-D2} is a direct consequence of
+\cref{lem:size-D21,lem:size-D22,lem:size-D23} and the definition of $\e$.
+
+%
+% Several observation can be made before jumping to the third and final phase of
+% the algorithm.
+% First, every vertex $v$ that is not in $D_1\cup D_2$ has degree at most $114$.
+% Otherwise, (as $v$ is not in $D_1$) its $115$ neighbors would be dominated by a
+% set $A_v$ of at most 6 vertices. Hence there would be vertex $z$ dominating at
+% least $\lceil 115/6\rceil = 20$ of them. Therefore we would have
+% $|N(v)\cap N(z)|\geq 19$, contradicting that $v$ is not in $D_2$
+%
+% \alex{remove what's below?}
+%
+% \begin{tcolorbox}
+%   In the following we assume that for all $v\in V(G)$ there does not
+%   exist $w\in V(G)\setminus\{v\}$ with $|N(v)\cap N(z)|\geq 19$.
+%   In particular, every vertex has at most $6\cdot 19=114$ non-dominated
+%   neighbors and $G$ has at most $115\gamma$ non-dominated vertices.
+% \end{tcolorbox}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Greedy domination in planar graphs of maximum
+residual degree}
+
+\alex{All of that Section has to be rewritten with the linear programming things.}
+
+For a set of vertices $Z$, we define the \emph{$Z$-residual degree} of a vertex
+$v$, noted $\dd^Z(v)$ as the number of neighbors of~$v$ that are not in $N[Z]$.
+
+\begin{lemma}\label{lem:res-degree}
+  Every vertex of $G$ has $(D_1\cup D_2)$-residual degree at most $114$.
+\end{lemma}
+\begin{proof}
+  First, every vertex of $D_1\cup D_2$ has residual degree $0$.
+  Assume that there is a vertex $v$ of residual degree at least $115$.
+  As $v$ is not in $D_1$ its $115$ neighbors are dominated by a
+  set $A_v$ of at most 6 vertices. Hence there is be vertex $z$ (not in $D_1$
+  nor $D_2$) dominating at least $\lceil 115/6\rceil = 20$ of them. Therefore we
+  have $|N(v)\cap N(z)|\geq 19$, contradicting that $v$ is not in~$D_2$.
+\end{proof}
+
+In the light of \cref{lem:res-degree}, we could simply pick every element not in $N[D_1\cup D_2]$.
+We would get a constant factor approximation,
+but not a very good one. We instead choose a more subtle strategy.
+
+We iteratively pick all elements of residual degree $i$, where $i$ starts at
+$114$. Then every vertex recomputes its residual degree and $i$ is set to $113$.
+We continue until $i$ reaches $10$. After picking all vertices of residual
+degree $10$, we simply pick all remaining non-dominated vertices.
+The choice of changing strategy when $i=9$ will be explained in the analysis
+of the size of $D_3$.
+More formally, we define several sets as follows.
+\begin{tcolorbox}[colback=red!5!white,colframe=red!50!black]
+  Let $Z_{115}\coloneqq D_1\cup D_2$. \hfill \textit{\small initial partial dominating set}\\
+  For $114\geq i\geq 9$ let:
+  \begin{itemize}
+    \item $H_i \coloneqq G\setminus N[Z_{i+1}]$ \hfill \textit{\small non-dominated vertices}
+    \item $\Delta_i \coloneqq \{v\in G ~:~ \dd^{Z_{i+1}}(v)=i\}$ \hfill \textit{\small vertices of maximal residual degree}
+    \item $Z_{i} \coloneqq Z_{i+1} \cup \Delta_i$ \hfill \textit{\small update partial dominating set}
+  \end{itemize}
+
+  And finally, $D_3:= \bigcup\limits_{10\le i\le 114} \Delta_i  \cup H_{9}$
+\end{tcolorbox}
+
+As the last step consist of picking $H_9$ i.e.\ all non-dominated vertices, it
+is clear that $D_1\cup D_2\cup D_3$ is a dominating set, and is computed in a
+bounded number of communication rounds. We now turn to bounding the size of $D_3$.
+
+\begin{lemma}\label{lem:h1}
+  For every $9\le i\le 114$, $|H_i| \le (i+1)(1-\e)\gamma$.
+\end{lemma}
+
+\begin{lemma}\label{lem:delta}
+  For every $10\le i\le 114$, $|\Delta_i| \le \frac{3|H_i|}{i-6}$.
+\end{lemma}
+
+\begin{lemma}\label{lem:h2}
+  For every $9\le i\le 114$, $|H_i| \le |H_{i+1}| - \frac{(i-5)|\Delta_{i+1}|}{3}$.
+\end{lemma}
+
+\alex{expand the following argumentation / justification
+  \begin{itemize}
+    \item intuitively, if $\Delta_i$ is quite large, then $H_{i-1}$ is almost empty.
+    \item we then maximize the size of $D_3$ within those constraints.
+    \item We do not prove formal bounds
+    \item we solve the problem in CPLEX
+    \item the result correspond to put equality instead of inequality (to be checked).
+    \item The choice of turning point at $9$ is by testing all possibility.
+  \end{itemize}
+}
+\begin{lemma}\label{lem:size-D3}
+  $|D_3|\le 20.3(1-\e)\gamma$.
+\end{lemma}
+\alex{to be checked}
+
+
+\begin{proof}[Proof of \cref{lem:h1}]
+  First note that for every $i$, $D\setminus Z_i$ is a dominating set for $H_i$.
+  Then every vertex of $D\setminus Z_i$ has residual degree at most $i$.
+  And finally, $D\setminus Z_i$ is a subset of $D\setminus D_2^1$. Hence by the definition of $\e$, we get that $|D\setminus Z_i|\le (1-\e)\gamma$.
+
+  All together, we get that $|H_i|\le (i+1)(1-\e)\gamma$
+\end{proof}
+
+\begin{proof}[Proof of \cref{lem:delta}]
+  Let $i$ be an integer in $[10,114]$. We bound the size of $\Delta_i$ by a
+  counting argument, using that $G$ (as well as each of its subgraph) is planar,
+  and can therefore not have to many edges.
+
+  Let $J := G[\Delta_i]$, the subgraph of $G$ induced by the vertices of
+  residual degree $i$. Let $K := G[\Delta_i \cup (N[\Delta_i]\cap H_i)]$,
+  the subgraph of $G$ induced by the vertices of residual degree $i$, together
+  with their non-dominated neighbors.
+
+  As $J$ is planar, $E_J < 3|\Delta_i|$. As every vertex of $J$ has residual degree
+  exactly $i$, we get $E_K > i\Delta_i - |E_J| \ge (i-3)\Delta_i$. We subtracted $|E_J|$ to not count twice
+  the edges of $K$ that are between two vertices of $J$.
+  We also have that $|K| \le |J| + |H_i|$. We finally apply Euler's formula again to $K$ and get that
+  $|E_K| < 3|V_K|$ hence $(i-3)|\Delta_i| < 3|\Delta_i| + 3|H_i|$. And therefore $|\Delta_i|< \frac{3|H_i|}{i-6}$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{lem:h2}]
+  Similarly to the proof of \cref{lem:delta} (by replacing $i$ by $i+1$),
+  we define $J := G[\Delta_{i+1}]$ and $K:= G[\Delta_{i+1} \cup (N[\Delta_{i+1}]\cap H_{i+1})]$.
+  We then replace the bound $|K| \le |J| + |H_{i+1}|$ by $|K| \le |J| + |N[\Delta_{i+1}]\cap H_{i+1}|$. We then get:
+  \[|E_K| < 3 |V_K| \]
+  \[(i+1)|\Delta_{i+1}| - 3|\Delta_{i+1}| < 3(|\Delta_{i+1}| + |N[\Delta_{i+1}]\cap H_{i+1}|)\]
+  \[ |N[\Delta_{i+1}\cap H_{i+1}]| > \frac{(i+1-6)|\Delta_{i+1}|}{3}\]
+
+  Finally, see that $H_i = G\setminus N[Z_{i+1}] = H_{i+1} \setminus N[\Delta_{i+1}]$.
+
+  Therefore $|H_i| \le |H_{i+1}| - |N[\Delta_{i+1}\cap H_{i+1}]|$.
+
+  We conclude with $|H_i| < |H_{i+1}| - \frac{(i+1-6)|\Delta_{i+1}}{3}$.
+
+
+\end{proof}
+
+%
+% As $\Delta_0$ contains all non-dominated vertices of $G_0$, which are
+% the remaining vertices that have not been dominated, the set
+% $D_3\coloneqq \bigcup_{i=0}^{114}\Delta_i$ is a dominating set of
+% $G$ of order $\sum_{i=0}^{114}m_i$.
+% We have a non-increasing sequence $r_{114}\geq r_{113}\geq
+% \ldots\geq r_0$, where $r_{i-1}=r_i-d_i$.
+%
+% \begin{lemma}
+%   $r_i\leq \sum_{j=0}^{i}\gamma_i\cdot i$.
+% \end{lemma}
+%
+%
+% We first observe that the algorithm performs best when it selects
+% a maximum possible number of high degree vertices as fast as possible.
+%
+% \begin{lemma}
+%   For all $115\leq i\leq 6$ if $n_i\geq i\gamma$, then
+%   $\Delta_i>\frac{3}{i-3}\gamma$.
+% \end{lemma}
+%
+% \begin{lemma}
+%   For all $114\leq i\leq 6$ we have $\leq |\Delta_i| \leq \frac{3}{i-3}n_i$.
+% \end{lemma}
+%
+% Let $X$ be the set of non-dominated vertices of $G$ and let $Y\coloneqq
+% N[X]\setminus X$. For an integer $m$ let $X_{>m}$ be the set of
+% vertices of $X$ that have residual degree greater than $m$ and
+% similarly, let $Y_{>m}$ be the set of vertices of $Y$ that have residual degree greater than $m$. Let $G'$ be the graph induced by $X$ and $Y$.
+% \textcolor{red}{Clean this}
+%
+% \begin{lemma}\label{lem:num-high-degree}
+%   Let $G'$ be $d$-degenerate and let $m\geq 2d$. Then $|X_{>m}|< ... $
+%   and $|Y_>m|< ...$ and $|X_{>m}\cup Y_{>m}|<2d/(m-d)|X|$.
+% \end{lemma}
+% \begin{proof}
+%   The number of edges in $G[X]$ would be greater than $m|X_{>m}|-d|X_{>m}|$.
+%   This implies $|X_{>m}|<2d/(m-d)|X|$. The number of edges between
+%   $X$ and $Y$ would be greater than $m|Y_{>m}|$, which implies
+%   $|Y_{>m}|<2d/m|X|$. The maximum is attained when all edges are hidden
+%   in $X$, so the final inequality follows.
+% \end{proof}
+%
+% \textcolor{red}{Idea:
+%   We now proceed in $115$ rounds $i=115,114,\ldots, 6$. Let $G_{116}\coloneqq
+%   G$ and let $G_i$ for $6\leq i\leq 115$ be the graph that is obtained
+%   by handling the vertices of residual degree $i$. We get from $G_{i+1}$ to
+%   $G_i$ by picking all vertices of residual degree $i$. Assume that in
+%   this step we pick $k_i$ vertices of residual degree $i$. Denote by $n_i$
+%   the number of vertices of $G_i$. Then $n_i\leq n_{i+1}-k_i(i-3)/6$. By the
+%   lemma we have $0\leq k_i\leq 2d/(i-3)n_{i+1}$. The algorithm performs
+%   best when $k_i$ for large $i$ is maximal.
+%   There is a break-even point for the algorithm where picking $k_i$
+%   vertices of degree $i$ has still more effect (by dominating $k_i(i-3)/6$
+%   vertices) than leaving us with vertices of degree $i$ and hence
+%   having a graph with at most $i\gamma$ vertices.
+% }
+%
+%
+%
+% For planar graphs we want to minimize the function
+% $m+6\cdot 115/(m-3)$. This minimum is attained at $m=29$.
+% Let $D_3$ be the set of all vertices of residual degree at least $29$.
+% Then by \cref{lem:num-high-degree} we have $|D_3|\leq 27\gamma$.
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Cleaning up and concluding}
+
+$D_1\cup D_2\cup D_3$ is a dominating set of $G$.
+First, by \cref{lem:lenzen}, $|D_1\setminus D|\le 3\gamma$.
+Then by \cref{lem:size-D2}, we have that $|D_2\setminus D|\le 3\gamma +6\e\gamma$.
+Finally, by \cref{lem:size-D3}, we have that $|D_3|\le 20.3(1-\e)\gamma$.
+\alexmargin{check constant}
+
+Therefore $|(D_1 \cup D_2 \cup D_3 ) \setminus D|
+\le 3\gamma + 3\gamma +6\e\gamma + 20.3(1-\e)\gamma
+\le 26.3\gamma -14.3\e\gamma$
+
+As $\e\in[0,1]$, this value is maximized when $\e=0$. Therefore
+$|(D_1 \cup D_2 \cup D_3 )|< 28 \gamma$.
+
+\begin{theorem}
+There exists a distributed LOCAL algorithm that, for every planar graph
+$G$, computes in a constant number of rounds a dominating set
+of size at most $28\gamma(G)$.
+\end{theorem}
+
+%%
+%% Bibliography
+%%
+
+%% Please use bibtex,
+
+\bibliography{ref}
+
+\appendix
+
+\end{document}

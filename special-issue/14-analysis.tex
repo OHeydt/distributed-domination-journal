@@ -1,0 +1,137 @@
+\section{Analysis}
+
+Let$k,D$ be fixed integers with $D\ge 3k$.
+
+\begin{problem}
+Maximize $S=\sum_{i=0}^D d_i$ subject to the constraints $d_i\ge 0$ and 
+\begin{align}
+	r_i &\ge \sum_{j\le i} d_j&\text{($0\le i\le D$)}\label{eq:1}\\
+	r_i &\le	i+1&\text{($0\le i\le D$)}\label{eq:2}\\
+%	d_i&\leq \frac{k}{i-2k}r_{i}&\text{($2k+1\leq i\leq D$)}\label{eq:3}\\
+	d_{i}&\leq \frac{k}{i-2k}\,(r_{i}-r_{i-1})&\text{($2k< i\le D$)}\label{eq:4}
+\end{align}
+\end{problem}
+
+Let $a$ be the minimum integer such that $d_a>0$.
+
+\begin{lemma}
+	We can assume $r_i=0$ for all $i<a$.
+\end{lemma}
+\begin{proof}
+	Putting $r_i=0$ for all $i<a$ obviously preserves \cref{eq:1,eq:2}. It also preserves \cref{eq:4} as the only case 
+	to check is $i=a-1$ (if $a\ge 2k$), for which the right hand side was possibly increased.
+\end{proof}
+
+\begin{lemma}
+	If $a\le 3k-1$, then decreasing $d_a$ to $0$ and $r_a$ to $r_a-d_a$ and increasing $d_{a+1}$ to $d_a+d_{a+1}$ preserves  all the constraints and the value of $S$.
+\end{lemma}
+\begin{proof}
+	The sum in \cref{eq:1} does not change if $i>a$ and \cref{eq:1} is obviously satisfied after modifications for $i\le a$.
+	\cref{eq:2} is trivially satisfied after modification, as no $r_i$ increases.
+	The only changes for \cref{eq:4} correspond to the case $i=a-1$ (for which the left hand side decreases,  while the right hand side increases) or to the case $i=a$ (for which the left hand side increases by $d_a$,  while the right hand side increases by $k/(a+1-2k)\,d_a\ge d_a$).
+\end{proof}
+
+From the above lemmas, as $r_a\geq d_a$, it follows that we may assume $a\ge 3k$ and $r_i=0$ for all $i<a$.
+
+%Note that for $i=a-1$, \cref{eq:4} follows from \cref{eq:1}. Hence, if we modify the values, we only have to check \cref{eq:4} for $i\geq a$.
+
+Note that \cref{eq:4} implies 
+\begin{equation}
+	r_{2k}\le r_{2k+1}\le \dots\le r_D.
+\end{equation}
+
+Remark that increasing $r_D$ obviously preserves \cref{eq:1,eq:4}. Hence, we can assume that $r_D=D+1$.
+Let $b$ be minimum with $r_{i}=i+1$ for all $i\geq b$. Note that $b\ge a$.
+
+
+\begin{lemma}
+	Let $\alpha=\min(b-r_{b-1},\sum_{j<b-1}d_j)$.
+If $b\ge 3k+1$, then increasing  $d_{b-1}$ and $r_{b-1}$ by $\alpha$ and decreasing 
+$\sum_{j<b-1}$ by $\alpha$ preserves the constraints and the value of $S$.
+\end{lemma}
+\begin{proof}
+	\cref{eq:1,eq:2} are obviously preserved. For \cref{eq:4} we have to check the case where $i=b-1$ (for which the right hand side decreases by $k/(b-1-2k)\,\alpha\le\alpha$ and the left hand side decreases by $\alpha$) and the case $i=b-2$  (for which the right hand side increases and the left hand side decreases).
+\end{proof}
+Applying this lemma, either we can reduce $b$ to $3k$ (hence $b=a$), or we force $d_i=0$ for all $i<b-1$. Thus, $a=b-1$ or $a=b$.
+
+\begin{lemma}
+	We can assume that for every $b< i\le D$ we have  $d_i=k/(i-2k)$.
+\end{lemma}
+\begin{proof}
+Indeed, as $b\ge a\ge 3k$, for $b< i\le D$,  \cref{eq:1,eq:2,eq:4} reduce to 
+$d_{i}\le \frac{k}{i-2k}$. Hence, we can assume $d_i=k/(i-2k)$ if $i> b$.
+\end{proof}
+
+\begin{lemma}
+	We can assume $b=a$. 
+\end{lemma}
+\begin{proof}
+	Assume $a=b-1$ and let $\alpha=b-r_a$.
+	We have $d_a\le\frac{k}{a-2k} (b-\alpha)$ and $d_b\le \frac{k}{b-2k} (1+\alpha)$.
+	If we increase $r_a$ to $b$, we can increase $d_a$ by $\frac{k\alpha}{a-2k}$ and decrease
+	$d_b$ by  $\frac{k\alpha}{b-2k}$, while preserving the constraints and increasing $S$.
+\end{proof}
+
+\begin{lemma}
+	We can assume $a=3k$.
+\end{lemma}
+\begin{proof}
+Assume $a\ge 3k+1$. Bu putting $r_{a-1}=a$ we can increase $d_{a-1}$ by $\frac{k}{a-1-2k}a$ and decrease $d_a$ by  $\frac{k}{a-2k}a$. Note that the condition $a\ge 3k+1$ implies that 
+$\frac{k}{a-1-2k}\le 1$, which is needed to preserve \cref{eq:1}.
+\end{proof}
+
+Now we have $a=b=3k$ and we can put $d_a=a+1$. 
+Hence,  the optimum is
+
+$d_i=0$ if $i<3k$, $d_{3k}=3k+1$ and $d_{3k+i}=k/(k+i)$.
+Altogether, we get
+\[
+S=3k+1+k\sum_{i=k+1}^{D-2k}\frac{1}{i}=k(H_{D-2k}-H_k)+3k+1,
+\]
+where $H_i=1+1/2+\dots+1/ii$ is the $i$th harmonic number.
+
+It is known \cite{DeTemple1991} that 
+\[
+\frac{1}{24(n+1)^2}<H_n-\ln \Bigl(n+\frac12\Bigl)-\gamma<\frac{1}{24n^2},
+\]
+where $\gamma$ is the Euler--Mascheroni constant.
+We deduce that for $n>m$ we have
+\[
+-\frac{1}{24m^2}<\frac{1}{24}\Bigl(\frac{1}{(n+1)^2}-\frac{1}{m^2}\Bigr)<(H_n-H_m)-\ln \Bigl(\frac{2n+1}{2m+1}\Bigr)<\frac{1}{24}\Bigl(\frac{1}{n^2}-\frac{1}{(m+1)^2}\Bigr)\le 0
+\]
+
+ we deduce
+ \[
+ -\frac{1}{24k^2}<S-\biggl(
+ k\ln\Bigl(\frac{2D-4k+1}{2k+1}\Bigr)+3k+1\biggr)<0.
+ \]
+ 
+ Hence, with a (negative) error less than $0.042$ we have
+ \[
+ S\approx k\ln\Bigl(\frac{2D-4k+1}{2k+1}\Bigr)+3k+1.
+ \]
+
+For $k=3,D=30$ we have the exact values
+\[
+S=\frac{693417203}{118982864}+10=\frac{1883245843}{118982864}\approx 15.8279
+\]
+
+and for $k=2,D=18$ we have
+\[
+S=\frac{1892453}{180180}\approx 10.5031
+\]
+
+
+With the general bound for $D$, we get (for $\nabla_1\ge 1$)
+\[
+D<(2\nabla_1)^{2\nabla_1}(4\nabla_1+1+128\nabla_1^5)<(2\nabla_1)^{2\nabla_1}(e^5\nabla_1^5).
+\]
+Hence,
+\[
+\ln((2D-4k+1)/(2k+1))<\ln D<(2\nabla_1)\ln(2\nabla_1)+5\nabla_1+5.
+\]
+Thus, as $k\le\nabla_1$ we have
+\[
+S< 2\nabla_1^2\ln (2\nabla_1)+5\nabla_1^2+8\nabla_1+1
+\]
+In particular, for $K_t$-free graphs, $S=O((t\ln t)^2)$.

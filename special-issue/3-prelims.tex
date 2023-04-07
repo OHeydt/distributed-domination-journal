@@ -1,0 +1,224 @@
+% !TEX root = main.tex
+
+\section{Preliminaries}
+
+In this paper we study the distributed time complexity of finding
+dominating sets in undirected and simple graphs in the classical
+LOCAL model of distributed computing.
+We assume familiarity with this model and refer to the survey~\cite{suomela2013survey} for an extensive
+background on distributed computing and on the LOCAL model.
+
+We use standard notation from graph theory and refer to the
+textbook~\cite{diestel} for extensive background.  All graphs in this
+paper are undirected and simple. We write $V(G)$ for the vertex set of
+a graph $G$ and~$E(G)$ for its edge set. The \emph{girth} of a graph
+$G$ is the length of a shortest cycle in~$G$. A graph is 
+\emph{triangle-free} if it does not contain a triangle (that is, a
+cycle of length three) as a subgraph. Equivalently, a triangle-free
+graph is a graph with  girth at least four.
+
+A graph is \emph{bipartite} if its vertex set can be partitioned into
+two parts such that all its edges are incident with two vertices from
+different parts. We write $K_{s,t}$ for the complete bipartite
+graph with parts of size $s$ and $t$, respectively. A set $A$ is
+\emph{independent} if no two vertices $u,v\in A$ are
+adjacent. We write $\alpha(G)$ for the size of the largest
+independent set in a graph~$G$. The \emph{Hall ratio} $\rho(G)$ of
+$G$ is defined as $\max\bigl\{|V(H)|/\alpha(H)\mid H\subseteq G\bigr\}$.
+Hence, every subgraph $H$ of $G$ contains an independent set of
+size at least $|V(H)|/\rho(G)$.
+
+%More generally, the \emph{chromatic number}~$\chi(G)$
+%of a graph $G$ is the minimum number $k$ such that the vertices of $G$
+%can be partitioned into $k$ parts such that every edge connects
+%two vertices from different parts. Hence, the bipartite graphs
+%are exactly the graphs with chromatic number two.
+%Every graph $G$ contains an independent set of size at
+%least $\lceil|V(G)|/\chi(G)\rceil$.
+
+A graph~$H$ is a \emph{minor} of a
+graph~$G$, written~$H\minor G$, if there is a set
+\mbox{$\{G_v :v\in V(H)\}$} of  vertex disjoint and connected
+subgraphs $G_v\subseteq G$ such that if~$\{u,v\}\in E(H)$, then there
+is an edge between a vertex of~$G_u$ and a vertex of~$G_v$. We 
+say that 
+$V(G_v)$ is the \emph{branch set} of $v$ and say that it is
+\emph{contracted} to the vertex~$v$. 
+The set~\mbox{$\{G_v :v\in V(H)\}$} is a \emph{minor model} of $H$.
+The  \emph{depth} of a minor model is the maximum radius of one of its branch sets.
+ We call $H$ a \emph{$1$-shallow
+  minor}, written~$H\minor_1 G$, if $H\minor G$ and there is a minor
+model \mbox{$\{G_v :v\in V(H)\}$} with depth at most $1$ witnessing this.
+In other
+words, $H\minor_1 G$ if $H$ is obtained from $G$ by deleting some
+vertices and edges and then contracting a set of pairwise disjoint
+stars. We refer to~\cite{nevsetvril2012sparsity} for an in-depth study
+of the theory of sparsity based on shallow minors.
+
+A graph is \emph{planar} if it can be embedded in the plane, that is,
+it can be drawn on the plane in such a way that its edges intersect
+only at their endpoints. By the famous theorem of Wagner, planar
+graphs can be characterized as those graphs that exclude the complete
+graph $K_5$ on five vertices and the complete bipartite $K_{3,3}$ with
+parts of size three as a minor. In particular, a minor of a planar graph
+is again planar. 
+
+A graph is \emph{outerplanar} if it has an embedding in the plane such
+that all vertices belong to the unbounded face of the embedding.
+Equivalently, a graph is outerplanar if it does not contain the
+complete graph $K_4$ on four vertices and the complete bipartite graph
+$K_{2,3}$ with parts of size~$2$ and~$3$, respectively, as a minor. 
+Again, a minor of an outerplanar graph is again outerplanar. 
+
+By Euler's formula, planar graphs are sparse: every planar $n$-vertex
+graph ($n\geq 3$) has at most $3n-6$ edges (and a graph with at most
+two vertices has at most one edge).
+The ratio $|E(G)|/|V(G)|$ is
+called the \emph{edge density} of $G$.
+In particular, every planar
+graph $G$ has edge density strictly smaller than three.
+We define
+\begin{align*}
+\nabla_0(G)&=\max\Bigl\{\ \frac{|E(H)|}{|V(H)|}\ \Bigr|\  H\subseteq G\Bigr\},\\
+\nabla_1(G)&=\max\Bigl\{\ \frac{|E(H)|}{|V(H)|}\ \Bigr| \  H\minor_1 G\Bigr\},\\
+\nabla_1^B(G)&=\max\Bigl\{\ \frac{|E(H)|}{|V(H)|}\ \Bigr| \  H\minor_1 G, H\text{ bipartite}\Bigr\}.
+\end{align*}
+
+
+  It is immediate 
+that $\nabla_0(G) \le \nabla_1^B(G)\le\nabla_1(G)$. Note that every graph $G$ (and each of its subgraphs)
+contains a vertex with degree at most $2\nabla_0(G)$. By iteratively
+removing a minimum degree vertex and its neighbors, we can  find a 
+large independent set, as stated in the next lemma. The bounds for graphs
+on surfaces are well known.
+
+% Every
+% graph $G$ has a vertex of degree at most
+% $2\nabla_0(G)$ and is $2\nabla_0(G)+1$-colorable.
+%
+% \begin{lemma}\label{lem:densities}
+%   Let $G$ be a planar graph. Then the edge density of $G$ is strictly
+%   smaller than $3$ and $\chi(G)\leq 4$. Furthermore,
+%
+%   \vspace{-2mm}
+%   \begin{enumerate}
+%   \item if $G$ is bipartite, then the edge density of $G$ is strictly
+%     smaller than $2$ and $\chi(G)\leq 2$,\\[-6mm]
+%   \item if $G$ is triangle-free or outerplanar, then the edge density
+%     of $G$ is strictly smaller than $2$ and $\chi(G)\leq 3$.
+%     % and\smallskip
+%     % \item if $G$ has girth at least $5$, then the edge density of
+%     %   $G$ is strictly smaller than $\frac{5}{3}$ and
+%     %   $\chi(G)\leq 3$.
+%   \end{enumerate}
+% \end{lemma}
+\begin{lemma}\label{lem:bounds}
+For all graphs $G$ we have $\rho(G)\leq 2\nabla_0(G)+1$. Furthermore,
+  \begin{enumerate}
+    \item if $G$ is planar, then $\nabla_0(G)<3$, $\nabla_1^B(G)<2$ and $\rho(G)\le 4$;
+    \item if $G$ is outerplanar, or planar and triangle free, then $\nabla_0(G)<2$ and $\rho(G)\le 3$;
+    \item if $G$ is planar and bipartite, then $\nabla_0(G)<2$ and $\rho(G)\le 2$.
+  \end{enumerate}
+\end{lemma}
+
+For a graph $G$ and $v\in V(G)$ we write
+$N(v)=\{u\colon\{u,v\}\in E(G)\}$ for the \emph{open neighborhood} of $v$
+and $N[v]=N(v)\cup\{v\}$ for the \emph{closed neighborhood}
+of~$v$. For a set $A\subseteq V(G)$ let $N[A]=\bigcup_{v\in A}N[v]$.
+% We write $N_r[v]$ for the set of vertices at distance at most $r$
+% from a vertex $v$.
+A~\emph{dominating set} in a graph~$G$ is a set $D\subseteq V(G)$ such
+that $N[D]=V(G)$. We write~$\gamma(G)$ for the size of a minimum
+dominating set of $G$. For a set $R\subseteq V(G)$ we say that a set
+$Z\subseteq V(G)$ \emph{dominates} or \emph{covers}
+$R$ if $R\subseteq N[Z]$. For $v\in V(G)$ we let 
+$\Nr(v)=N(v)\cap R$ and $\dr(v)=|\Nr(v)|$. 
+
+
+%\smallskip
+% In the following we mark important definitions and assumptions about
+% our input graph in gray boxes and steps of the algorithm in red boxes.
+
+
+
+An \emph{orientation} of a graph $G$ is a directed graph $\vec{G}$ that
+ has exactly one of the arcs $(u,v)$ and
+$(v,u)$
+for each edge $\{u,v\}\in E(G)$. The \emph{out-degree} $d^+(v)$ of a vertex $v$ in  $\vec{G}$
+is the number of arcs leaving~$v$. The following
+lemma is implicit in the work of Hakimi~\cite{sup_orie}, see \mbox{also~\cite[Proposition 3.3]{nevsetvril2012sparsity}.}
+
+\begin{lemma}\label{lem:orientations}
+  Every graph $G$ has an
+  orientation with maximum out-degree $\nabla_0$.
+\end{lemma}
+%\begin{proof}
+%  We start with an arbitrary orientation $\vec{G}$. Assume there is a vertex $v$
+%  with out-degree greater than~$d$. Consider the subgraph $\vec{H}$
+%  induced by all vertices that are reachable from $v$. The underlying undirected
+%  graph $H$ has $\sum_{v\in V(H)}d^+(v)$ many edges. As $v$ has
+%  out-degree strictly larger than $d$ we conclude that there must be one
+%  vertex $w$ in $\vec{H}$ that has out-degree strictly smaller than $d$. By definition
+%  of $\vec{H}$ there exists a directed path from $v$ to $w$. By reversing the
+%  edges on that path we decrease the out-degree of $v$ by one, increase the
+%  out-degree of $w$ by one and leave the out-degrees of all other vertices of
+%  the path unchanged. By iterating this procedure we successively improve
+%  the orientation until no vertex of out-degree greater than $d$ remains.
+%\end{proof}
+
+%As every subgraph of a (triangle-free or outerplanar) planar graph
+%is again a (triangle-free or outerplanar) planar graph we
+%have the following corollary.
+We immediately deduce the next corollary.
+
+\begin{corollary}\label{cor:planar-orientations}
+  Let $G$ be a planar graph. Then
+  \begin{enumerate}
+    \item $G$ has an orientation with maximum out-degree $3$.%\smallskip
+    \item If $G$ is triangle-free or outerplanar, then
+    $G$ has an orientation with maximum out-degree~$2$.
+  \end{enumerate}
+\end{corollary}
+
+\begin{tcolorbox}
+  \begin{tabular}{p{.45\textwidth}p{.5\textwidth}}
+  	  In the following we fix&and (possibly defined in terms of $\nabla_1$)\\
+  	  \hlx{vv}
+  	\begin{itemize}
+  		\item the input graph $G$,
+  		\item a minimum dominating set~$D$,
+  		\item $\gamma \coloneqq |D|$,
+  		\item the parameter $\nabla_1\ge \nabla_1(G)$,
+  	\end{itemize}
+  	&
+  	\begin{itemize}
+  		\item the parameter $\nabla_0\in[\nabla_0(G),\nabla_1]$,
+  		\item the parameter $\nn\in (\nabla_1^B(G),\nabla_1+1]$,
+  		\item the parameters $s\leq t$ with $K_{s,t}\not\subseteq G$,
+  		%\item the parameter $g\ge g(G)$,
+  	\end{itemize}\\
+  \hlx{vv}
+  \end{tabular}\\
+  where $D$ and $\gamma$ are used only to analyze the performance of the algorithm, and where all the  parameters are integers.
+%  \begin{itemize}
+%  \item a graph $G$,
+%  \item a minimum dominating set~$D$ of $G$,
+%  \item $\gamma \coloneqq |D|$,
+%  \item $\nabla_0\ge \nabla_0(G)$,
+%  \item $\nabla_1\ge \nabla_1(G)$,
+%  \item $\nn > \nabla_1^B(G) $,
+%  \item integers $s,t$ such that $K_{s,t}\not\subseteq G$, and
+%  \item the genus $g$ of $G$.
+%  \end{itemize}
+\end{tcolorbox}
+
+Above, $[a,b]$ denotes the closed real interval containing all 
+$x$ with $a\leq x\leq b$ and $(a,b]$ denotes the half-open 
+interval containing all $x$ with $a<x\leq b$. We can choose
+$s=t=2\lfloor\nabla_0(G)\rfloor+1$.
+
+%The algorithm can be called with a set of parameters bounding
+%$\nabla_0$, $\nabla_1, s,t$ and $g$ to give the best approximation
+%ratio. It does not require all of these parameters as input though,
+%it is also sufficient to give as input only a bound on $\nabla_1$, as $\nabla_1$
+%functionally bounds all other parameters as follows.
